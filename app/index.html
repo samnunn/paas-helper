@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PAS Helper</title>
+    <link rel="stylesheet" href="/pico.min.css" />
+    <link rel="stylesheet" href="/main.css">
+</head>
+<body>
+    <header>
+        <div class="wrapped">
+            <h1 id="site-title">PAAS Helper 😴</h2>
+            <details class="dropdown">
+                <summary class="contrast">Deep Links</summary>
+                <ul>
+                    <li><a href="#" target="_blank" deeplink="bossnet">BOSSNet</a></li>
+                    <li><a href="#" target="_blank" deeplink="ereferrals">eReferrals</a></li>
+                    <li><a href="#" target="_blank" deeplink="inteleconnect">IntelleConnect</a></li>
+                    <li><a href="#" target="_blank" deeplink="nacs">NaCS</a></li>
+                </ul>
+            </details>
+        </div>
+    </header>
+    <main class="wrapped">
+        <h2>Identification</h2>
+        <div class="grid">
+            <label>UMRN <input placeholder="A1234567" type="text" name="" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on"></label>
+            <label>Name<input placeholder="Anna S. Thesia" type="text" name="" id=""></label>
+        </div>
+        <div class="grid">
+            <formgroup class="grid">
+                <label>Male<input type="radio" name="sex" id=""></label>
+                <label>Female<input type="radio" name="sex" id=""></label>
+            </formgroup>
+            <div></div>
+        </div>
+        
+
+        <h2>Anthropometry</h2>
+        <div class="grid">
+            <label>Height (cm)<input type="number" name="" id="height" paas-sync-parameter="anthropometry-height"></label>
+            <label>Weight (kg)<input type="number" name="" id="weight" paas-sync-parameter="anthropometry-weight"></label>
+            <label>BMI<input type="text" name="" id="bmi" paas-sync-parameter="anthropometry-bmi" readonly></label>
+            <label>
+                Sex
+                <select name="" id="anthropometry-height">
+                    <option disabled selected value=""></option>
+                    <option value="m">Male</option>
+                    <option value="f">Female</option>
+                </select>
+            </label>
+        </div>
+
+        <h2>Medical Background</h2>
+        <h4>PMHx</h4>
+        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" class="bigbox"></textarea>
+        <h4>Rx</h4>
+        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" class="bigbox"></textarea>
+        <h4>Allergies</h4>
+        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" class="bigbox"></textarea>
+        
+        <h2>Anaesthetic History</h2>
+        <h4>Previous Anaesthesia</h4>
+        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" class="bigbox"></textarea>
+        <h4>Airway Assessment</h4>
+        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" class="bigbox"></textarea>
+        
+        <h2>Risk Calculators</h2>
+        <h4>Apfel</h4>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Female</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Non-smoker</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Prior PONV or motion sickness</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Postop opioids</label>
+        <progress paas-calculator-output="apfel" value="0" max="4"></progress>
+        <p paas-calculator-output="apfel">0</p>
+        
+        <h4>STOP-BANG</h4>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Snorer</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Tiredness</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Observed apnoea</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Hypertensive</label>
+        <!-- <label><input type="text" paas-value="bmi" paas-sync-parameter="anthropometry-bmi" paas-calculator="stopbang" readonly>BMI</label> -->
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang" id="stopbang-bmi">BMI > 35</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Age > 50</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Neck circumference ≥ 40cm</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Male</label>
+        <progress paas-calculator-output="stopbang" value="0" max="8"></progress>
+        <p paas-calculator-output="stopbang">0</p>
+        
+        <h4>RCRI</h4>
+        <label><input type="checkbox" tabindex=0 name="" paas-value="1" paas-calculator="rcri" id="">Elevated risk <aside><small>Intraperitoneal, intrathoracic, or suprainguinal vascular surgery</small></aside></label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">IHD</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">CCF</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">CVA</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">On insulin</label>
+        <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">Cr > 176.8 µmol/L</label>
+        <progress paas-calculator-output="apfel" value="0" max="6"></progress>
+        <p paas-calculator-output="rcri">0</p>
+        
+        <h4>SORT Score</h4>
+        <a href="http://www.sortsurgery.com/">External Link</a>
+        
+        <h2>Consent</h2>
+        <label><input type="checkbox" tabindex=0>General anaesthesia</label>
+        <label><input type="checkbox" tabindex=0>Sedation</label>
+        <label><input type="checkbox" tabindex=0>Regional</label>
+        <label><input type="checkbox" tabindex=0>Neuraxial</label>
+        <label><input type="checkbox" tabindex=0>Blood products</label>
+    </main>
+    <script src="/main.js"></script>
+</body>
+</html>

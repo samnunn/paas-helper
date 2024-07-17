@@ -1,0 +1,81 @@
+/* :root {
+    --sans-serif: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+    --bg-colour: white;
+    --text-colour: black;
+    --link-colour-plain: rgb(0, 105, 194);
+    --link-colour-visited: rgb(142, 68, 173);
+
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --table-stripe-colour: rgb(45, 52, 54);
+        --bg-colour: #000000;
+        --text-colour: white;
+        --link-colour-plain: rgb(82,151,248);
+        --link-colour-visited: rgb(172,128,255);
+    }
+    img {
+        filter: brightness(.8) contrast(1.2);
+        transition: 0.2s ease-in-out;
+
+    }
+    img:hover {
+        filter: none;
+    }
+} */
+
+/* Wrapper */
+
+.wrapped {
+    width: calc(100vw - 30px);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+textarea.bigbox {
+    width: 100%;
+    aspect-ratio: 3/1;
+    font-size: 1rem;
+    resize: none;
+}
+
+/* Headings */
+main h2::before {
+    content: "# ";
+    font-style: italic;
+    color: lightgray;
+} 
+
+header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: white;
+    border-bottom: 2px solid lightgrey;
+
+    & div {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    & h1 {
+        margin: 0;
+    }
+
+    & details {
+        margin: 0;
+    }
+}
+
+main {
+    margin-top: 5rem;
+}
+/*
+main h2::before {
+    content: "## ";
+    font-style: italic;
+    color: lightgray;
+} */
+
+/* Forms */
