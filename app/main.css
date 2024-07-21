@@ -1,29 +1,60 @@
-/* :root {
-    --sans-serif: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
-    --bg-colour: white;
-    --text-colour: black;
-    --link-colour-plain: rgb(0, 105, 194);
-    --link-colour-visited: rgb(142, 68, 173);
-
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+h2 {
+    margin: 2rem 0 0.5rem 0;
+}
+h4 {
+    margin: 0.5rem 0 0.25rem 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --table-stripe-colour: rgb(45, 52, 54);
-        --bg-colour: #000000;
-        --text-colour: white;
-        --link-colour-plain: rgb(82,151,248);
-        --link-colour-visited: rgb(172,128,255);
+/* GRID */
+.hstack {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+    .hstack {
+        grid-template-columns: repeat(auto-fit, minmax(0%, 1fr));
     }
-    img {
-        filter: brightness(.8) contrast(1.2);
-        transition: 0.2s ease-in-out;
+}
+.hstack > * {
+    min-width: 0;
+}
+.vstack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
-    }
-    img:hover {
-        filter: none;
-    }
-} */
+
+/* INPUTS */
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+label:has(> input[type="checkbox"]) {
+    flex-direction: row;
+}
+input[type="text"], input[type="number"], select, textarea {
+    outline: none;
+    border: 2px solid lightgrey;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: darkslategray;
+}
+select {
+    appearance: none;
+    border-radius: 0;
+    outline: none;
+}
 
 /* Wrapper */
 
@@ -35,9 +66,11 @@
 
 textarea.bigbox {
     width: 100%;
-    aspect-ratio: 3/1;
+    max-width: 100%;
+    aspect-ratio: 2/1;
     font-size: 1rem;
     resize: none;
+    box-sizing: border-box;
 }
 
 /* Headings */
@@ -51,20 +84,23 @@ header {
     position: sticky;
     top: 0;
     width: 100%;
-    background-color: white;
+    background-color: #2c3e50;
     border-bottom: 2px solid lightgrey;
+    padding: 1rem 0;
+
+    & * {
+        margin: 0;
+        color: white;
+    }
 
     & div {
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
 
     & h1 {
-        margin: 0;
-    }
-
-    & details {
-        margin: 0;
+        font-size: 1.2rem;
     }
 }
 
@@ -79,3 +115,16 @@ main h2::before {
 } */
 
 /* Forms */
+
+#render {
+    color: black;
+}
+#output {
+    border: 2px solid black;
+    padding: 1rem;
+}
+dialog {
+    /* position: absolute; */
+    /* top: 0; */
+    /* width: 100%; */
+}
