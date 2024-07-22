@@ -9,12 +9,12 @@
 <body>
     <header>
         <div class="wrapped">
-            <h1 id="site-title">PAAS Helper 😴</h2>
+            <h1 id="site-title" class="mr-auto">PAAS Helper 😴</h2>
+            <a aria-disabled="true" deeplink="bossnet">BOSSNet</a>
+            <a aria-disabled="true" deeplink="ereferrals">eReferrals</a>
+            <a aria-disabled="true" deeplink="inteleconnect">IntelleConnect</a>
+            <a aria-disabled="true" deeplink="nacs">NaCS</a>
             <button id="render">Render</button>
-                <a aria-disabled="true" deeplink="bossnet">BOSSNet</a>
-                <a aria-disabled="true" deeplink="ereferrals">eReferrals</a>
-                <a aria-disabled="true" deeplink="inteleconnect">IntelleConnect</a>
-                <a aria-disabled="true" deeplink="nacs">NaCS</a>
         </div>
     </header>
     <main class="wrapped">
@@ -26,7 +26,7 @@
 
         <h2>Anthropometry</h2>
         <div class="hstack">
-            <label>Age<input type="number" name="" id="height" paas-sync-parameter="anthropometry-age"></label>
+            <label>Age<input type="number" name="" id="" paas-sync-parameter="anthropometry-age"></label>
             <label>Height (cm)<input type="number" name="" id="height" paas-sync-parameter="anthropometry-height"></label>
             <label>Weight (kg)<input type="number" name="" id="weight" paas-sync-parameter="anthropometry-weight"></label>
             <label>BMI (auto)<input type="text" placeholder="Auto-generated" name="" id="bmi" paas-sync-parameter="anthropometry-bmi" readonly></label>
@@ -48,7 +48,15 @@
             </div>
             <div>
                 <h4>Social Hx</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-shx" id="" paas-sync-parameter="history-socialhx" class="bigbox"></textarea>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-shx" id="" paas-sync-parameter="history-socialhx" class="bigbox">
+- Smoking: 
+- etOH: 
+- Drugs: 
+- Occupation: 
+- Functioning: 
+- Carers: 
+- Dependants: 
+                </textarea>
             </div>
         </div>
         <div class="hstack">
@@ -68,7 +76,14 @@
             </div>
             <div>
                 <h4>Examination</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-sync-parameter="history-examination" class="bigbox"></textarea>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-sync-parameter="history-examination" class="bigbox">
+- Mallampati: 
+- Mouth opening: 
+- Thyromental distance: 
+- Dentition: 
+- Bearded: 
+- Neck ROM: 
+                </textarea>
             </div>
         </div>
         
@@ -81,7 +96,7 @@
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Prior PONV or motion sickness</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Postop opioids</label>
                 <progress paas-calculator-output="apfel" value="0" max="4"></progress>
-                <p paas-calculator-output="apfel" paas-sync-parameter="score-apfel" >0</p>
+                <p paas-calculator-output="apfel" paas-sync-parameter="score-apfel">0</p>
             </div>
             
             <div>
@@ -114,14 +129,16 @@
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">CVA</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">On insulin</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">Cr > 176.8 µmol/L</label>
-                <progress paas-calculator-output="apfel" value="0" max="6"></progress>
+                <progress paas-calculator-output="rcri" value="0" max="6"></progress>
                 <p paas-calculator-output="rcri" paas-sync-parameter="score-rcri">0</p>
             </div>
             
             <div>
                 <h4>SORT Score</h4>
-                <a href="http://www.sortsurgery.com/">External Link</a>
-                <input type="number" name="" id=""  paas-sync-parameter="score-sort">
+                <div class="vstack">
+                    <input type="text" id=""  paas-sync-parameter="score-sort">
+                    <a href="http://www.sortsurgery.com/">External Link</a>
+                </div>
             </div>
         </div>
         
@@ -144,7 +161,7 @@ function onBeforeUnload(e) {
     e.preventDefault()
 }
 
-window.addEventListener('beforeunload', onBeforeUnload);
+// window.addEventListener('beforeunload', onBeforeUnload);
     </script>
 </body>
 </html>

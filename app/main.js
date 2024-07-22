@@ -174,23 +174,38 @@ umrnInput.addEventListener('input', (e) => {
             targetLink.setAttribute('href', href)
             targetLink.setAttribute('aria-disabled', 'false')
             targetLink.style = 'pointer-events: auto;'
-            deeplinksButton.classList.add('contrast')
-            deeplinksButton.classList.remove('secondary')
-            deeplinksButton.classList.remove('outline')
+            // deeplinksButton.classList.add('contrast')
+            // deeplinksButton.classList.remove('secondary')
+            // deeplinksButton.classList.remove('outline')
         }
     } else {
         let deeplinks = document.querySelectorAll('[deeplink]')
         for (let d of deeplinks) {
             d.setAttribute('aria-disabled', 'true')
             d.removeAttribute('href')
-            deeplinksButton.classList.add('secondary')
-            deeplinksButton.classList.add('outline')
-            deeplinksButton.classList.remove('contrast')
+            // deeplinksButton.classList.add('secondary')
+            // deeplinksButton.classList.add('outline')
+            // deeplinksButton.classList.remove('contrast')
         }
     }
 })
 
 // TEMPLATE
+
+const consentSnippets = {
+    'consent-ga': `Discussed risks and benefits of GA by prevalence.  
+
+- VERY COMMON: sore throat (45% ETT, 20% LMA), PONV
+- COMMON: minor lip/tongue injury (1 in 100)
+- RARE: damage to teeth, severe allergy, nerve damage
+- VERY RARE: awareness, death (1 in 100,000 ASA 1, 1 in 50,000 for all ASAs)
+
+Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.`,
+    'consent-sedation': `Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.`,
+    'consent-regional': `Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions.`,
+    'consent-neuraxial': `Discussed risks and benefits of spinal anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.`,
+    'consent-blood': `Consented to blood products.`,
+}
 
 const template = `# BIO
 - Name: {{ biography-name }}
@@ -224,28 +239,12 @@ const template = `# BIO
 - STOPBANG: {{ score-stopbang }}/8
 - RCRI: {{ score-rcri }}/6
 - Apfel: {{ score-apfel }}/4
-- SORT: {{ score-sort }}
-
-# CONSENT
-Discussed risks and benefits of GA by prevalence.  
-
-- VERY COMMON: sore throat (45% ETT, 20% LMA), PONV
-- COMMON: minor lip/tongue injury (1 in 100)
-- RARE: damage to teeth, severe allergy, nerve damage
-- VERY RARE: awareness, death (1 in 100,000 ASA 1, 1 in 50,000 for all ASAs)
-
-Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.
-
-Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.
-
-Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions 
-
-Discussed risks and benefits of spinal anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique
-
-Consented to blood products.
+- SORT: {{ score-sort }}%
 
 # FASTING ADVICE
 Fasting from midnight if AM, fasting from early morning, light breakfast if PM list.
+
+# CONSENT
 `
 
 function renderTemplate() {
@@ -261,12 +260,25 @@ function renderTemplate() {
         if (!paasSyncTarget) {
             console.warn(`TEMPLATE ERROR: no such parameter as "${paasSyncParameter}"`)
         } else {
-            paasSyncValue = paasSyncTarget.value || ''
+            paasSyncValue = paasSyncTarget.value || paasSyncTarget.innerText || ''
         }
 
         output = output.replace(stringtoReplace, paasSyncValue)
 
     }
+
+    for (let c in consentSnippets) {
+        // find out if it's checked
+        let relevantCheckbox = document.querySelector(`[paas-sync-parameter="${c}"]`)
+        console.log(relevantCheckbox)
+        let checked = relevantCheckbox.checked || false
+    
+        // if checked, append to output
+        if (checked == true) {
+            output += ( consentSnippets[c] + '\n\n' )
+        }
+    }
+    console.log('wow')
     return output
 }
 

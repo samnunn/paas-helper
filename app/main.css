@@ -95,13 +95,19 @@ header {
 
     & div {
         display: flex;
-        justify-content: space-between;
+        flex-direction: row;
+        justify-content: end;
         align-items: center;
+        gap: 1rem;
     }
 
     & h1 {
         font-size: 1.2rem;
     }
+}
+
+.mr-auto {
+    margin-right: auto;
 }
 
 main {
