@@ -4,6 +4,7 @@
     <title>PAS Helper</title>
     <!-- <link rel="stylesheet" href="/pico.min.css" /> -->
     <link rel="stylesheet" href="/main.css">
+    <link rel="manifest" href="/manifest.json" />
 </head>
 <body>
     <header>
@@ -143,5 +144,12 @@
         <div id="output"></div>
     </dialog>
     <script src="/main.js"></script>
+    <script>
+function onBeforeUnload(e) {
+    e.preventDefault()
+}
+
+window.addEventListener('beforeunload', onBeforeUnload);
+    </script>
 </body>
 </html>
