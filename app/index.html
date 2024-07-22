@@ -20,15 +20,15 @@
     <main class="wrapped">
         <h2>Identification</h2>
         <div class="hstack">
-            <label>UMRN <input type="text" name="" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-sync-parameter="biography-umrn"></label>
+            <label>UMRN <input paas-autocaps type="text" name="" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-sync-parameter="biography-umrn"></label>
             <label>Name<input type="text" name="" id="" autocomplete="off" paas-sync-parameter="biography-name"></label>
         </div>
 
         <h2>Anthropometry</h2>
         <div class="hstack">
             <label>Age<input type="number" name="" id="" paas-sync-parameter="anthropometry-age"></label>
-            <label>Height (cm)<input type="number" name="" id="height" paas-sync-parameter="anthropometry-height"></label>
-            <label>Weight (kg)<input type="number" name="" id="weight" paas-sync-parameter="anthropometry-weight"></label>
+            <label>Height (cm)<input type="number" step="0.1" id="height" paas-sync-parameter="anthropometry-height"></label>
+            <label>Weight (kg)<input type="number" step="0.1" id="weight" paas-sync-parameter="anthropometry-weight"></label>
             <label>BMI (auto)<input type="text" placeholder="Auto-generated" name="" id="bmi" paas-sync-parameter="anthropometry-bmi" readonly></label>
             <label>
                 Sex
@@ -95,7 +95,6 @@
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Non-smoker</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Prior PONV or motion sickness</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Postop opioids</label>
-                <progress paas-calculator-output="apfel" value="0" max="4"></progress>
                 <p paas-calculator-output="apfel" paas-sync-parameter="score-apfel">0</p>
             </div>
             
@@ -110,7 +109,6 @@
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Age > 50</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Neck circumference ≥ 40cm</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang" id="stopbang-sex">Male</label>
-                <progress paas-calculator-output="stopbang" value="0" max="8"></progress>
                 <p paas-calculator-output="stopbang" paas-sync-parameter="score-stopbang">0</p>
             </div>
         </div>
@@ -129,7 +127,6 @@
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">CVA</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">On insulin</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">Cr > 176.8 µmol/L</label>
-                <progress paas-calculator-output="rcri" value="0" max="6"></progress>
                 <p paas-calculator-output="rcri" paas-sync-parameter="score-rcri">0</p>
             </div>
             
@@ -158,6 +155,17 @@
         window.addEventListener('beforeunload', (e) => {
             e.preventDefault()
         })
+
+        // autocapitalise
+        let autocapitalisedInputs = document.querySelectorAll('[paas-autocaps]')
+        for (let a of autocapitalisedInputs) {
+            a.addEventListener('input', (e) => {        
+                let cursorPosition = e.target.selectionStart
+                e.target.value = e.target.value.toUpperCase()
+                e.target.selectionStart = cursorPosition
+                e.target.selectionEnd = cursorPosition
+            })
+        }
     </script>
 </body>
 </html>
