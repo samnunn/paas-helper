@@ -207,33 +207,31 @@ Specific risks including aspiration, LRTI, post op confusion, covert CVA with po
     'consent-blood': `Consented to blood products.`,
 }
 
-const template = `# BIO
-- Name: {{ biography-name }}
-- UMRN: {{ biography-umrn }}
+const template = `# {{ biography-name }} ({{ biography-umrn }})
 
-# ANTHROPOMETRY
+## ANTHROPOMETRY
 - Age: {{ anthropometry-age }}
 - Sex: {{ anthropometry-sex }}
 - Height: {{ anthropometry-height }}
 - Weight: {{ anthropometry-weight }}
 - BMI: {{ anthropometry-bmi }}
 
-# PMHx
+## PMHx
 {{ history-pmhx }}
  
-# SHx
+## SHx
 {{ history-socialhx }}
  
-# Medications
+## Medications
 {{ history-rx }}
  
-# Allergies
+## Allergies
 {{ history-allergies }}
  
-# PSHx
+## PSHx
 {{ history-pshx }}
  
-# Anaesthetic Assessment
+## Anaesthetic Assessment
 {{ history-examination }}
  
 - STOPBANG: {{ score-stopbang }}/8
@@ -241,15 +239,18 @@ const template = `# BIO
 - Apfel: {{ score-apfel }}/4
 - SORT: {{ score-sort }}%
 
-# FASTING ADVICE
+## INVESTIGATIONS
+{{ history-investigation }}
+
+## FASTING ADVICE
 Fasting from midnight if AM, fasting from early morning, light breakfast if PM list.
 
-# CONSENT
+## CONSENT
 `
 
 function renderTemplate() {
     let output = template
-    let tagFinder = /\{\{ ?(.*\b) ?\}\}/gim
+    let tagFinder = /\{\{ ?(.*?) ?\}\}/gim
     for (let m of output.matchAll(tagFinder)) {
         // find in DOM
         let [stringtoReplace, paasSyncParameter] = m
