@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PASS Helper</title>
+    <title>PAAS Helper</title>
     <!-- <link rel="stylesheet" href="/pico.min.css" /> -->
     <link rel="stylesheet" href="/main.css">
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="/manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <header>
@@ -14,122 +15,232 @@
             <a aria-disabled="true" deeplink="ereferrals">eReferrals</a>
             <a aria-disabled="true" deeplink="inteleconnect">IntelleConnect</a>
             <a aria-disabled="true" deeplink="nacs">NaCS</a>
-            <button id="render">Render</button>
+            <button id="render">Export</button>
         </div>
     </header>
     <main class="wrapped">
-        <h2>Identification</h2>
         <div class="hstack">
-            <label>UMRN <input paas-autocaps type="text" name="" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-sync-parameter="biography-umrn"></label>
-            <label>Name<input type="text" name="" id="" autocomplete="off" paas-sync-parameter="biography-name"></label>
-        </div>
-
-        <h2>Anthropometry</h2>
-        <div class="hstack">
-            <label>Age<input type="number" name="" id="" paas-sync-parameter="anthropometry-age"></label>
-            <label>Height (cm)<input type="number" step="0.1" id="height" paas-sync-parameter="anthropometry-height"></label>
-            <label>Weight (kg)<input type="number" step="0.1" id="weight" paas-sync-parameter="anthropometry-weight"></label>
-            <label>BMI (auto)<input type="text" placeholder="Auto-generated" name="" id="bmi" paas-sync-parameter="anthropometry-bmi" readonly></label>
+            <label>UMRN <input paas-autocaps type="text" name="" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-parameter="biography-umrn"></label>
+            <label>Name<input type="text" name="" id="" autocomplete="off" paas-parameter="biography-name"></label>
             <label>
-                Sex
-                <select name="" id="anthropometry-sex" paas-sync-parameter="anthropometry-sex">
-                    <option disabled selected value=""></option>
-                    <option value="m">Male</option>
-                    <option value="f">Female</option>
-                </select>
+                Mode
+                <div class="selectbox">
+                    <select name="" id="">
+                        <option value="">Face-to-face</option>
+                        <option value="">Telephone</option>
+                    </select>
+
+                </div>
             </label>
         </div>
 
-        <h2>Medical Background</h2>
-        <div class="hstack">
-            <div>
-                <h4>Medical Hx</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-sync-parameter="history-pmhx" class="bigbox">
-- METs: 
-- GORD: 
-                </textarea>
-            </div>
-            <div>
-                <h4>Social Hx</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-shx" id="" paas-sync-parameter="history-socialhx" class="bigbox">
-- Smoking: 
-- etOH: 
-- Drugs: 
-- Occupation: 
-- Functioning: 
-- Carers: 
-- Dependants: </textarea>
+        <div class="vstack">
+            <div class="hstack">
+                <label>Age<input type="number" name="" id="" paas-parameter="anthropometry-age"></label>
+                <label>
+                    Sex
+                    <div class="selectbox">
+                        <select name="" id="anthropometry-sex" paas-parameter="anthropometry-sex">
+                            <option disabled selected value=""></option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                </label>
+                <label>Height (cm)<input type="number" step="0.1" id="height" paas-parameter="anthropometry-height"></label>
+                <label>Weight (kg)<input type="number" step="0.1" id="weight" paas-parameter="anthropometry-weight"></label>
+                <label>BMI<input type="text" placeholder="Auto-generated" name="" id="bmi" paas-parameter="anthropometry-bmi" readonly></label>
             </div>
         </div>
-        <div class="hstack">
-            <div>
-                <h4>Rx</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-sync-parameter="history-rx" class="bigbox"></textarea>
-            </div>
-            <div>
-                <h4>Allergies</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-sync-parameter="history-allergies" class="bigbox"></textarea>
-            </div>
+
+        <div class="hstack" style="grid-template-columns: 75% 1fr 1fr;">
+            <label>
+                Operation
+                <input type="text" name="" id="" paas-parameter="biography-operation">
+            </label>
+            <label>
+                Triage
+                <div class="selectbox">
+                    <select name="" id="" paas-parameter="biography-triage">
+                        <option value="" disabled selected></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </label>
+            <label>
+                ASA
+                <div class="selectbox">
+                    <select name="" id="" paas-parameter="biography-asa">
+                        <option value="" disabled selected></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+            </label>
         </div>
         <div class="hstack">
-            <div>
-                <h4>Surgical Hx</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-sync-parameter="history-pshx" class="bigbox"></textarea>
+            <div class="vstack optional-check-input">
+                <h4>Systems Review</h4>
+                <label><input type="checkbox" paas-parameter="se-cvd" tabindex=0>Cardiovascular Disease</label>
+                <label><input type="checkbox" paas-parameter="se-resp" tabindex=0>Respiratory Disease</label>
+                <label><input type="checkbox" paas-parameter="se-gord" tabindex=0>GORD</label>
+                <label><input type="checkbox" paas-parameter="se-endo" tabindex=0>Endocrine Issues / Diabetes</label>
+                <label><input type="checkbox" paas-parameter="se-gitrenal" tabindex=0>Hepatic / Renal Disease</label>
+                <label><input type="checkbox" paas-parameter="se-cns" tabindex=0>CNS Disease</label>
+                <label><input type="checkbox" paas-parameter="se-coagulation" tabindex=0>Coagulation problem</label>
+                <label><input type="checkbox" paas-parameter="se-pain" tabindex=0>Chronic Pain / Opioids</label>
+                <label><input type="checkbox" paas-parameter="se-alcohol" tabindex=0>Alcohol</label>
+                <label><input type="checkbox" paas-parameter="se-smoking" tabindex=0 paas-sync-parameter="smoker" paas-sync-inverted>Smoking</label>
             </div>
-            <div>
-                <h4>Examination</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-sync-parameter="history-examination" class="bigbox">
-- Mallampati: 
-- Mouth opening: 
-- Thyromental distance: 
-- Dentition: 
-- Bearded: 
-- Neck ROM: </textarea>
+            <div class="vstack">
+                <h4>PMHx</h4>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="history-pmhx" class="bigbox fullheight" placeholder="- Itises
+- Osises"></textarea>
+            </div>
+        </div>
+
+        <div class="hstack">
+            <label>
+                <strong>Allergies</strong>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="history-allergies" class="bigbox"></textarea>
+            </label>
+            <label>
+                <strong>Medications</strong>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="history-rx" class="bigbox"></textarea>
+            </label>
+        </div>
+
+        <div class="hstack">
+            <div class="vstack">
+                <h4>Anaesthetic and Surgical History</h4>
+                <label><input type="checkbox" tabindex=0 paas-parameter="history-prevanaes">Previous Anaesthesia</label>
+                <label><input type="checkbox" tabindex=0 paas-parameter="history-anaesissues">Anaestheisa Issues</label>
+                <label><input type="checkbox" tabindex=0 paas-parameter="history-anaesfhx">Family History</label>
+                <label><input type="checkbox" tabindex=0 paas-parameter="history-mets">METS > 4</label>
+                <label><input type="checkbox" tabindex=0 paas-parameter="history-ponv" paas-sync-parameter="PONV">PONV</label>
+                <label>
+                    <!-- <h4>Previous Surgery</h4> -->
+                    <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pshx" id="" paas-parameter="history-pshx" class="bigbox fullheight" placeholder="- Ectomies
+- Otomies
+- Oscopies"></textarea>
+                </label>
+            </div>
+            <div class="vstack sidebyside">
+                <h4>Airway Assessment</h4>
+                <label>
+                    Mallampati
+                    <div class="selectbox">
+                        <select paas-parameter="airway-mallampati">
+                            <option value="" disabled selected></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                </label>
+                <label>
+                    Mouth Opening (cm)
+                    <input type="number" min="0" max="7" step="1" paas-parameter="airway-mouthopening">
+                </label>
+                <label>
+                    Thyromental Distance
+                    <input type="number" min="0" max="12" step="1" paas-parameter="airway-tmd">
+                </label>
+                <label>
+                    Cervical ROM
+                    <div class="selectbox">
+                        <select paas-parameter="airway-neckrom">
+                            <option value="" disabled selected></option>
+                            <option value="Normal">Normal</option>
+                            <option value="Mildly limited">Mildly limited</option>
+                            <option value="Moderately limited">Moderately limited</option>
+                            <option value="Severely limited">Severely limited</option>
+                            <option value="Immobile">Immobile</option>
+                        </select>
+                    </div>
+                </label>
+                <label>
+                    Beard
+                    <div class="selectbox">
+                        <select paas-parameter="airway-beard">
+                            <option value="" disabled selected></option>
+                            <option value="Yes, will trim">Yes, will trim</option>
+                            <option value="Yes, won't trim">Yes, won't trim</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </label>
+                <label>
+                    Jaw Protrusion
+                    <div class="selectbox">
+                        <select paas-parameter="airway-jaw">
+                            <option value="" disabled selected></option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>No
+                            <option value="C">C</option>
+                        </select>
+                    </div>
+                </label>
+                <label>
+                    Dentition
+                    <input type="text" placeholder="One measly fang" paas-parameter="airway-dentition">
+                </label>
             </div>
         </div>
         <div class="hstack">
             <div>
                 <h4>Investigations</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-sync-parameter="history-investigation" class="bigbox">
-- ECG: 
-- FBC: 
-- UEC: 
-- LFT: 
-- Iron studies: 
-- TTE: 
-- PFTs: </textarea>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="history-investigation" class="bigbox" placeholder="- Bloods
+- ECG
+- Echo
+- PFTs"></textarea>
             </div>
-            <div></div>
+            <div class="vstack">
+                <h4>Consent</h4>
+                <label><input type="checkbox" paas-parameter="consent-ga" tabindex=0>General anaesthesia</label>
+                <label><input type="checkbox" paas-parameter="consent-sedation" tabindex=0>Sedation</label>
+                <label><input type="checkbox" paas-parameter="consent-regional" tabindex=0>Regional</label>
+                <label><input type="checkbox" paas-parameter="consent-neuraxial" tabindex=0>Neuraxial</label>
+                <label><input type="checkbox" paas-parameter="consent-blood" tabindex=0>Blood products</label>
+            </div>
         </div>
-        
-        <h2>Risk Calculators</h2>
+
+        <hr>
+
         <div class="hstack">
-            <div>
+            <div class="risk-calculator">
                 <h4>Apfel</h4>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel" id="apfel-sex">Female</label>
-                <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Non-smoker</label>
-                <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Prior PONV or motion sickness</label>
+                <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel" paas-sync-parameter="smoker" checked>Non-smoker</label>
+                <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel" paas-sync-parameter="PONV">Prior PONV or motion sickness</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="apfel">Postop opioids</label>
-                <p paas-calculator-output="apfel" paas-sync-parameter="score-apfel">0</p>
+                <p paas-calculator-output="apfel" paas-parameter="score-apfel">0</p>
             </div>
             
-            <div>
+            <div class="risk-calculator">
                 <h4>STOP-BANG</h4>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Snorer</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Tiredness</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Observed apnoea</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Hypertensive</label>
-                <!-- <label><input type="text" paas-value="bmi" paas-sync-parameter="anthropometry-bmi" paas-calculator="stopbang" readonly>BMI</label> -->
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang" id="stopbang-bmi">BMI > 35</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Age > 50</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Neck circumference ≥ 40cm</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang" id="stopbang-sex">Male</label>
-                <p paas-calculator-output="stopbang" paas-sync-parameter="score-stopbang">0</p>
+                <p paas-calculator-output="stopbang" paas-parameter="score-stopbang">0</p>
             </div>
         </div>
         
         <div class="hstack">
-            <div>
+            <div class="risk-calculator">
                 <h4>RCRI</h4>
                 <label><input type="checkbox" tabindex=0 name="" paas-value="1" paas-calculator="rcri" id="">
                     <div class="">
@@ -142,24 +253,17 @@
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">CVA</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">On insulin</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="rcri">Cr > 176.8 µmol/L</label>
-                <p paas-calculator-output="rcri" paas-sync-parameter="score-rcri">0</p>
+                <p paas-calculator-output="rcri" paas-parameter="score-rcri">0</p>
             </div>
             
-            <div>
+            <div class="risk-calculator">
                 <h4>SORT Score</h4>
                 <div class="vstack">
-                    <input type="text" id=""  paas-sync-parameter="score-sort">
+                    <input type="text" id=""  paas-parameter="score-sort">
                     <a href="http://www.sortsurgery.com/">External Link</a>
                 </div>
             </div>
         </div>
-        
-        <h2>Consent</h2>
-        <label><input type="checkbox" paas-sync-parameter="consent-ga" tabindex=0>General anaesthesia</label>
-        <label><input type="checkbox" paas-sync-parameter="consent-sedation" tabindex=0>Sedation</label>
-        <label><input type="checkbox" paas-sync-parameter="consent-regional" tabindex=0>Regional</label>
-        <label><input type="checkbox" paas-sync-parameter="consent-neuraxial" tabindex=0>Neuraxial</label>
-        <label><input type="checkbox" paas-sync-parameter="consent-blood" tabindex=0>Blood products</label>
 
         <h2>Output</h2>
         <div id="output"></div>
@@ -168,7 +272,9 @@
     <script>
         // prevent accidental closure
         window.addEventListener('beforeunload', (e) => {
-            e.preventDefault()
+            if (location.hostname.search('localhost') != -1) {
+                // e.preventDefault()
+            }
         })
 
         // autocapitalise

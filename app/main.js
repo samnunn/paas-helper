@@ -22,8 +22,15 @@ function applySyncInputListeners() {
             let similarInputs = document.querySelectorAll(`[paas-sync-parameter="${syncParameter}"]`)
             // update this value in each
             for (let s of similarInputs) {
+                if (e.target == s) {
+                    continue
+                }
                 if (e.target.getAttribute('type') == 'checkbox') {
-                    s.checked = e.target.checked
+                    if (e.target.hasAttribute('paas-sync-inverted')) {
+                        s.checked = !e.target.checked
+                    } else {
+                        s.checked = e.target.checked
+                    }
                 } else {
                     s.value = e.target.value
                 }
@@ -207,33 +214,60 @@ Specific risks including aspiration, LRTI, post op confusion, covert CVA with po
     'consent-blood': `Consented to blood products.`,
 }
 
-const template = `# {{ biography-name }} ({{ biography-umrn }})
+const template = `# DETAILS
+- NAME: {{ biography-name }}
+- UMRN: {{ biography-umrn }}
+- ASA: {{ biography-asa }}
+- TRIAGE: {{ biography-triage }}
+- OPERATION: {{ biography-operation }}
 
-## ANTHROPOMETRY
-- Age: {{ anthropometry-age }}
-- Sex: {{ anthropometry-sex }}
-- Height: {{ anthropometry-height }}
-- Weight: {{ anthropometry-weight }}
+# ANTHROPOMETRY
+- AGE: {{ anthropometry-age }}
+- SEX: {{ anthropometry-sex }}
+- HEIGHT: {{ anthropometry-height }} cm
+- WEIGHT: {{ anthropometry-weight }} kg
 - BMI: {{ anthropometry-bmi }}
 
-## PMHx
+# PMHx
 {{ history-pmhx }}
- 
-## SHx
-{{ history-socialhx }}
- 
-## Medications
+
+# SYSTEMS REVIEW
+- [{{ se-cvd }}] CVD 
+- [{{ se-resp }}] RESP
+- [{{ se-gord }}] GORD
+- [{{ se-endo }}] ENDO/DM
+- [{{ se-gitrenal }}] GIT/RENAL
+- [{{ se-cns }}] CNS
+- [{{ se-coagulation }}] COAGS
+- [{{ se-pain }}] CHRONIC PAIN
+- [{{ se-alcohol }}] ALCOHOL
+- [{{ se-smoking }}] SMOKING
+
+# MEDICATIONS
 {{ history-rx }}
- 
-## Allergies
+
+## ALLERGIES
 {{ history-allergies }}
  
-## PSHx
+# ANAESTHETIC Hx
+- [{{ history-prevanaes }}] PREVIOUS ANAESTHESIA
+- [{{ history-anaesissues }}] ISSUES WITH ANAESTHESIA
+- [{{ history-anaesfhx }}] FAMILY Hx
+- [{{ history-mets }}] METS > 4
+
+# PREVIOUS SURGERY/ANAESTHESIA
 {{ history-pshx }}
- 
-## Anaesthetic Assessment
-{{ history-examination }}
- 
+
+## AIRWAY ASSESSMENT
+- MALLAMPATI: {{ airway-mallampati }}
+- MOUTH OPENING: {{ airway-mouthopening }}
+- TMD: {{ airway-tmd }}
+- NECK ROM: {{ airway-neckrom }}
+- BEARD: {{ airway-beard }}
+- JAW PROTRUSION: {{ airway-jaw }}
+- DENTITION: {{ airway-dentition }}
+
+# RISK ASSESSMENT
 - STOPBANG: {{ score-stopbang }}/8
 - RCRI: {{ score-rcri }}/6
 - Apfel: {{ score-apfel }}/4
@@ -254,14 +288,20 @@ function renderTemplate() {
     for (let m of output.matchAll(tagFinder)) {
         // find in DOM
         let [stringtoReplace, paasSyncParameter] = m
-        let paasSyncTarget = document.querySelector(`[paas-sync-parameter="${paasSyncParameter}"]`)
+        let paasSyncTarget = document.querySelector(`[paas-parameter="${paasSyncParameter}"]`)
 
         // replace (if it exists)
         let paasSyncValue = ''
         if (!paasSyncTarget) {
             console.warn(`TEMPLATE ERROR: no such parameter as "${paasSyncParameter}"`)
         } else {
-            paasSyncValue = paasSyncTarget.value || paasSyncTarget.innerText || ''
+            if (paasSyncTarget.getAttribute('type') == 'checkbox') {
+                // console.log(paasSyncTarget.getAttribute('type'))
+                console.log(paasSyncTarget.checked)
+                paasSyncValue = paasSyncTarget.checked == true ? "x" : "  "
+            } else {
+                paasSyncValue = paasSyncTarget.value || paasSyncTarget.innerText || ''
+            }
         }
 
         output = output.replace(stringtoReplace, paasSyncValue)
@@ -270,8 +310,8 @@ function renderTemplate() {
 
     for (let c in consentSnippets) {
         // find out if it's checked
-        let relevantCheckbox = document.querySelector(`[paas-sync-parameter="${c}"]`)
-        console.log(relevantCheckbox)
+        let relevantCheckbox = document.querySelector(`[paas-parameter="${c}"]`)
+        // console.log(relevantCheckbox)
         let checked = relevantCheckbox.checked || false
     
         // if checked, append to output
@@ -279,7 +319,7 @@ function renderTemplate() {
             output += ( consentSnippets[c] + '\n\n' )
         }
     }
-    console.log('wow')
+
     return output
 }
 
@@ -288,5 +328,5 @@ let outputArea = document.querySelector('#output')
 let dialog = document.querySelector('dialog')
 renderButton.addEventListener('click', (e) => {
     outputArea.innerText = renderTemplate()
-    dialog.show()
+    // dialog.show()
 })
