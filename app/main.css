@@ -140,9 +140,9 @@ textarea.bigbox {
 }
 
 .risk-calculator {
-    border: 2px solid lightgrey;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
+    /* border: 2px solid lightgrey; */
+    /* border-radius: 0.5rem; */
+    /* padding: 0.5rem; */
 
     & [paas-calculator-output] {
         /* text-align: right; */
@@ -172,6 +172,9 @@ header {
 
     & * {
         margin: 0;
+    }
+    
+    & a, h1 {
         color: white;
     }
 

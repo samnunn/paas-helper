@@ -330,3 +330,17 @@ renderButton.addEventListener('click', (e) => {
     outputArea.innerText = renderTemplate()
     // dialog.show()
 })
+
+function downloadTextFile(filename) {
+	var temporaryElement = document.createElement('a')
+	temporaryElement.setAttribute('href','data:text/plain;charset=utf-8,' + encodeURIComponent(renderTemplate()))
+	temporaryElement.setAttribute('download', filename)
+	temporaryElement.style.visibility = "hidden"
+	document.body.appendChild(temporaryElement)
+	temporaryElement.click()
+}
+
+document.querySelector('#archive')?.addEventListener('click', (e) => {
+    let filename = document.querySelector('#umrn').value || 'anon-patient'
+    downloadTextFile(filename)
+})
