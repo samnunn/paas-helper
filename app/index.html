@@ -15,23 +15,16 @@
             <a aria-disabled="true" deeplink="ereferrals">eReferrals</a>
             <a aria-disabled="true" deeplink="inteleconnect">IntelleConnect</a>
             <a aria-disabled="true" deeplink="nacs">NaCS</a>
-            <button id="archive">Archive</button>
-            <button id="render">Export</button>
+            <button id="archive">Download</button>
         </div>
     </header>
     <main class="wrapped">
         <div class="hstack">
             <label>UMRN <input paas-autocaps type="text" name="" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-parameter="biography-umrn"></label>
-            <label>Name<input type="text" name="" id="" autocomplete="off" paas-parameter="biography-name"></label>
+            <label>Name<input type="text" name="" id="name" autocomplete="off" paas-parameter="biography-name"></label>
             <label>
-                Mode
-                <div class="selectbox">
-                    <select name="" id="">
-                        <option value="">Face-to-face</option>
-                        <option value="">Telephone</option>
-                    </select>
-
-                </div>
+                Phone Appointment
+                <input type="checkbox" name="" id="" paas-parameter="phone-appointment">
             </label>
         </div>
 
@@ -108,14 +101,33 @@
         </div>
 
         <div class="hstack">
-            <label>
-                <strong>Allergies</strong>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="history-allergies" class="bigbox"></textarea>
-            </label>
-            <label>
-                <strong>Medications</strong>
+            <div>
+                <h4>Medications</h4>
                 <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="history-rx" class="bigbox"></textarea>
-            </label>
+            </div>
+            <div>
+                <h4>SHx</h4>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="history-shx" class="bigbox" placeholder="">- Smoking:
+- etOH: 
+- Drugs: 
+- ADLs: 
+- Carers: 
+- Dependants: </textarea>
+            </div>
+        </div>
+
+        <div class="hstack">
+            <div>
+                <h4>Allergies</h4>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="history-allergies" class="bigbox"></textarea>
+            </div>
+            <div>
+                <h4>Investigations</h4>
+                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="history-investigation" class="bigbox" placeholder="- Bloods
+- ECG
+- Echo
+- PFTs"></textarea>
+            </div>
         </div>
 
         <div class="hstack">
@@ -196,23 +208,6 @@
                 </label>
             </div>
         </div>
-        <div class="hstack">
-            <div>
-                <h4>Investigations</h4>
-                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="history-investigation" class="bigbox" placeholder="- Bloods
-- ECG
-- Echo
-- PFTs"></textarea>
-            </div>
-            <div class="vstack">
-                <h4>Consent</h4>
-                <label><input type="checkbox" paas-parameter="consent-ga" tabindex=0>General anaesthesia</label>
-                <label><input type="checkbox" paas-parameter="consent-sedation" tabindex=0>Sedation</label>
-                <label><input type="checkbox" paas-parameter="consent-regional" tabindex=0>Regional</label>
-                <label><input type="checkbox" paas-parameter="consent-neuraxial" tabindex=0>Neuraxial</label>
-                <label><input type="checkbox" paas-parameter="consent-blood" tabindex=0>Blood products</label>
-            </div>
-        </div>
 
         <hr>
 
@@ -233,7 +228,7 @@
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Observed apnoea</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Hypertensive</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang" id="stopbang-bmi">BMI > 35</label>
-                <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Age > 50</label>
+                <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang" id="stopbang-age">Age > 50</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang">Neck circumference ≥ 40cm</label>
                 <label><input type="checkbox" tabindex=0 paas-value="1" paas-calculator="stopbang" id="stopbang-sex">Male</label>
                 <p paas-calculator-output="stopbang" paas-parameter="score-stopbang">0</p>
@@ -266,6 +261,20 @@
             </div>
         </div>
 
+        <hr>
+
+
+        <div class="hstack">
+            <div class="vstack">
+                <h4>Consent</h4>
+                <label><input type="checkbox" paas-parameter="consent-ga" tabindex=0>General anaesthesia</label>
+                <label><input type="checkbox" paas-parameter="consent-sedation" tabindex=0>Sedation</label>
+                <label><input type="checkbox" paas-parameter="consent-regional" tabindex=0>Regional</label>
+                <label><input type="checkbox" paas-parameter="consent-neuraxial" tabindex=0>Neuraxial</label>
+                <label><input type="checkbox" paas-parameter="consent-blood" tabindex=0>Blood products</label>
+            </div>
+        </div>
+
         <h2>Output</h2>
         <div id="output"></div>
     </main>
@@ -274,7 +283,7 @@
         // prevent accidental closure
         window.addEventListener('beforeunload', (e) => {
             if (location.hostname.search('localhost') != -1) {
-                // e.preventDefault()
+                e.preventDefault()
             }
         })
 

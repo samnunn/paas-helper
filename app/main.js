@@ -140,6 +140,16 @@ sexInput.addEventListener('input', (e) => {
     stopbangSexOutput.dispatchEvent(new Event('input'))
 })
 
+let ageInput = document.querySelector('[paas-parameter="anthropometry-age"]')
+let stopbangAgeOutput = document.querySelector('#stopbang-age')
+ageInput.addEventListener('input', (e) => {
+    if (e.target.value > 50) {
+        stopbangAgeOutput.checked = true
+    } else {
+        stopbangAgeOutput.checked = false
+    }
+})
+
 // DOT POINTS
 let allTextAreas = document.querySelectorAll('textarea.bigbox')
 for (let a of allTextAreas) {
@@ -198,22 +208,6 @@ umrnInput.addEventListener('input', (e) => {
 })
 
 // TEMPLATE
-
-const consentSnippets = {
-    'consent-ga': `Discussed risks and benefits of GA by prevalence.  
-
-- VERY COMMON: sore throat (45% ETT, 20% LMA), PONV
-- COMMON: minor lip/tongue injury (1 in 100)
-- RARE: damage to teeth, severe allergy, nerve damage
-- VERY RARE: awareness, death (1 in 100,000 ASA 1, 1 in 50,000 for all ASAs)
-
-Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.`,
-    'consent-sedation': `Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.`,
-    'consent-regional': `Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions.`,
-    'consent-neuraxial': `Discussed risks and benefits of spinal anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.`,
-    'consent-blood': `Consented to blood products.`,
-}
-
 const template = `# DETAILS
 - NAME: {{ biography-name }}
 - UMRN: {{ biography-umrn }}
@@ -230,6 +224,9 @@ const template = `# DETAILS
 
 # PMHx
 {{ history-pmhx }}
+
+# SHx
+{{ history-shx }}
 
 # SYSTEMS REVIEW
 - [{{ se-cvd }}] CVD 
@@ -255,23 +252,24 @@ const template = `# DETAILS
 - [{{ history-anaesfhx }}] FAMILY Hx
 - [{{ history-mets }}] METS > 4
 
-# PREVIOUS SURGERY/ANAESTHESIA
+## PREVIOUS SURGERY/ANAESTHESIA
 {{ history-pshx }}
 
 ## AIRWAY ASSESSMENT
-- MALLAMPATI: {{ airway-mallampati }}
-- MOUTH OPENING: {{ airway-mouthopening }}
-- TMD: {{ airway-tmd }}
-- NECK ROM: {{ airway-neckrom }}
-- BEARD: {{ airway-beard }}
-- JAW PROTRUSION: {{ airway-jaw }}
-- DENTITION: {{ airway-dentition }}
+[[ phone-appointment ]]** TELEPHONE ASSESSMENT ONLY **[[ phone-appointment ]]
+[[ airway-mallampati ]]- MALLAMPATI: {{ airway-mallampati }}[[ airway-mallampati ]]
+[[ airway-mouthopening ]]- MOUTH OPENING: {{ airway-mouthopening }}[[ airway-mouthopening ]]
+[[ airway-tmd ]]- TMD: {{ airway-tmd }}[[ airway-tmd ]]
+[[ airway-neckrom ]]- NECK ROM: {{ airway-neckrom }}[[ airway-neckrom ]]
+[[ airway-beard ]]- BEARD: {{ airway-beard }}[[ airway-beard ]]
+[[ airway-jaw ]]- JAW PROTRUSION: {{ airway-jaw }}[[ airway-jaw ]]
+[[ airway-dentition ]]- DENTITION: {{ airway-dentition }}[[ airway-dentition ]]
 
 # RISK ASSESSMENT
 - STOPBANG: {{ score-stopbang }}/8
 - RCRI: {{ score-rcri }}/6
 - Apfel: {{ score-apfel }}/4
-- SORT: {{ score-sort }}%
+[[ score-sort ]]- SORT: {{ score-sort }}%[[ score-sort ]]
 
 ## INVESTIGATIONS
 {{ history-investigation }}
@@ -280,10 +278,47 @@ const template = `# DETAILS
 Fasting from midnight if AM, fasting from early morning, light breakfast if PM list.
 
 ## CONSENT
+[[ consent-ga ]]
+Discussed risks and benefits of GA by prevalence.  
+
+- VERY COMMON: sore throat (45% ETT, 20% LMA), PONV
+- COMMON: minor lip/tongue injury (1 in 100)
+- RARE: damage to teeth, severe allergy, nerve damage
+- VERY RARE: awareness, death (1 in 100,000 ASA 1, 1 in 50,000 for all ASAs)
+
+Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.[[ consent-ga ]]
+[[ consent-sedation ]]
+Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.[[ consent-sedation ]]
+[[ consent-regional ]]
+Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions.[[ consent-regional ]]
+[[ consent-neuraxial ]]
+Discussed risks and benefits of spinal anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.[[ consent-neuraxial ]]
+[[ consent-blood ]]
+Consented to blood products.[[ consent-blood ]]
 `
 
 function renderTemplate() {
     let output = template
+    
+    // eliminate conditionals
+    let conditionalFinder = /\n\[\[ ?(.*?) ?\]\](?<conditional>.*?)\[\[ ?.*? ?\]\]/sgm
+    for (let c of output.matchAll(conditionalFinder)) {
+        let [stringtoReplace, parameter, conditional] = c
+        let paasSyncTarget = document.querySelector(`[paas-parameter="${parameter}"]`)
+        let active = false
+        // console.log('checked', paasSyncTarget?.checked == true)
+        // console.log('selected', paasSyncTarget?.selectedIndex != 0)
+        // console.log('value', paasSyncTarget?.value != '')
+        active = paasSyncTarget?.checked == true || paasSyncTarget?.selectedIndex > 0 || paasSyncTarget?.value != ''
+
+        if (active) {
+            output = output.replace(stringtoReplace, `\n${conditional}`)
+        } else {
+            output = output.replace(stringtoReplace, '')
+        }
+    }
+
+    // replace tags
     let tagFinder = /\{\{ ?(.*?) ?\}\}/gim
     for (let m of output.matchAll(tagFinder)) {
         // find in DOM
@@ -296,8 +331,6 @@ function renderTemplate() {
             console.warn(`TEMPLATE ERROR: no such parameter as "${paasSyncParameter}"`)
         } else {
             if (paasSyncTarget.getAttribute('type') == 'checkbox') {
-                // console.log(paasSyncTarget.getAttribute('type'))
-                console.log(paasSyncTarget.checked)
                 paasSyncValue = paasSyncTarget.checked == true ? "x" : "  "
             } else {
                 paasSyncValue = paasSyncTarget.value || paasSyncTarget.innerText || ''
@@ -308,29 +341,24 @@ function renderTemplate() {
 
     }
 
-    for (let c in consentSnippets) {
-        // find out if it's checked
-        let relevantCheckbox = document.querySelector(`[paas-parameter="${c}"]`)
-        // console.log(relevantCheckbox)
-        let checked = relevantCheckbox.checked || false
-    
-        // if checked, append to output
-        if (checked == true) {
-            output += ( consentSnippets[c] + '\n\n' )
-        }
-    }
-
     return output
 }
 
-let renderButton = document.querySelector('#render')
 let outputArea = document.querySelector('#output')
-let dialog = document.querySelector('dialog')
-renderButton.addEventListener('click', (e) => {
-    outputArea.innerText = renderTemplate()
-    // dialog.show()
+
+// RENDER
+let renderPaused = false
+document.addEventListener('input', (e) => {
+    if (renderPaused == false) {
+        renderPaused = true
+        setTimeout(() => {
+            outputArea.innerText = renderTemplate()
+            renderPaused = false
+        }, 100)
+    }
 })
 
+// DOWNLOADER
 function downloadTextFile(filename) {
 	var temporaryElement = document.createElement('a')
 	temporaryElement.setAttribute('href','data:text/plain;charset=utf-8,' + encodeURIComponent(renderTemplate()))
@@ -341,6 +369,11 @@ function downloadTextFile(filename) {
 }
 
 document.querySelector('#archive')?.addEventListener('click', (e) => {
-    let filename = document.querySelector('#umrn').value || 'anon-patient'
+    let today = new Date()
+    let year = today.getFullYear()
+    let month = String(today.getMonth() + 1).padStart(2, '0')
+    let day = String(today.getDate()).padStart(2, '0')
+    let formattedDate = `${year}-${month}-${day}`;
+    let filename = `${formattedDate} ${document.querySelector('#umrn').value || ''} ${document.querySelector('[paas-parameter="biography-name"]').value || ''}`
     downloadTextFile(filename)
 })
