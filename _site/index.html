@@ -3,19 +3,24 @@
 <head>
     <title>PAAS Helper</title>
     <link rel="stylesheet" href="/main.css">
-    <!-- <link rel="manifest" href="/manifest.json"> -->
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="/manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#222f3e" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#222f3e" media="(prefers-color-scheme: light)">
 </head>
 <body>
     <header>
         <div>
-            <h1 id="site-title" class="mr-auto">🤖 <span id="patient-details">PAAS Helper</span></h2>
-                <a aria-disabled="true" deeplink="bossnet">BOSSNet</a>
-                <a aria-disabled="true" deeplink="ereferrals">eReferrals</a>
-                <a aria-disabled="true" deeplink="inteleconnect">IntelleConnect</a>
-                <a aria-disabled="true" deeplink="nacs">NaCS</a>
-                <button id="download">Download</button>
+            <h1 id="site-title" class="mr-auto">🤖 <span id="patient-details">PAAS Helper</span></h1>
+            <select id="deeplinks">
+                <option selected disabled>Deep Links</option>
+                <option deeplink="bossnet" disabled>BOSSNet</option>
+                <option deeplink="ereferrals" disabled>eReferrals</option>
+                <option deeplink="inteleconnect" disabled>IntelleConnect</option>
+                <option deeplink="nacs" disabled>NaCS</option>
+            </select>
+            <button id="download">Download</button>
+            <button id="reset">Reset</button>
             </div>
         </header>
         <main class="wrapped">
@@ -124,7 +129,7 @@
                     <div class="rendered-template"></div>
                     <template># PMHx
 {{pmhx}}
-
+<br>
 # SHx
 - Smoking: {{smoking}}
 --&gt; {{smoking-details}}
@@ -151,7 +156,7 @@
                     <div class="rendered-template"></div>
                     <template># Medications
 {{rx}}
-
+<br>
 # Allergies
 {{allergies}}</template>
                 </div>
@@ -199,6 +204,8 @@
                                 TMD
                                 <input type="number" min="0" max="12" step="1" paas-parameter="tmd" autocomplete="off">
                             </label>
+                        </div>
+                        <div class="hstack">
                             <label>
                                 Neck ROM
                                 <div class="selectbox">
@@ -212,8 +219,6 @@
                                     </select>
                                 </div>
                             </label>
-                        </div>
-                        <div class="hstack">
                             <label>
                                 Beard
                                 <div class="selectbox">
@@ -236,6 +241,9 @@
                                     </select>
                                 </div>
                             </label>
+
+                        </div>
+                        <div class="hstack">
                             <label>
                                 Dentition
                                 <input type="text" paas-parameter="teeth" autocomplete="off">
@@ -249,6 +257,17 @@
                                         <option value="fair">Fair</option>
                                         <option value="poor">Poor</option>
                                         <option value="very poor">Very poor</option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label>
+                                GORD
+                                <div class="selectbox">
+                                    <select paas-parameter="gord">
+                                        <option value="" disabled selected></option>
+                                        <option value="yes, medicated">Medicated</option>
+                                        <option value="yes, NOT medicated">Unmedicated</option>
+                                        <option value="no">No</option>
                                     </select>
                                 </div>
                             </label>
@@ -274,22 +293,23 @@
                     <div class="rendered-template"></div>
                     <template># Previous Anaesthesia
 {{pahx}}
-
+<br>
 # Physical Fitness
 - METs: {{mets}}
 --&gt; {{mets-details}}
-
+<br>
 # Airway Assessment
 - Mallampati: {{mallampati}}
 - Mouth opening: {{mouth-opening}} cm
 - Thyromental distance: {{tmd}} cm
 - Neck ROM: {{neckrom}}
+- GORD: {{gord}}
 - Bearded: {{beard}}
 - Jaw protrusion: {{jaw-protrusion}}
 - Dentition: {{teeth}}
 - Vein quality: {{veins}}
-
-# General Assessment
+<br>
+# Other Findings
 - Heart sounds: {{heart}}
 - Lung sounds: {{lung}}
 {{other-examination}}</template>
@@ -532,10 +552,30 @@
                         Key Issues
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="issues" class="bigbox tiny"></textarea>
                     </label>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Key Issues
+{{issues}}</template>
+                </div>
+            </section>
+            <section>
+                <div class="vstack">
                     <label>
                         Anaesthetic Plan
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="plan" class="bigbox tiny"></textarea>
                     </label>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Anaesthetic Plan
+{{plan}}</template>
+                </div>
+            </section>
+            <section>
+                <div class="vstack">
                     <label>
                         Medications and Fasting
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="medication" class="bigbox tiny"></textarea>
@@ -544,13 +584,7 @@
                 <div class="output">
                     <input class="copy" value="Copy" type="button">
                     <div class="rendered-template"></div>
-                    <template># Key Issues
-{{issues}}
-
-# Anaesthetic Plan
-{{plan}}
-
-# Medications and Fasting
+                    <template># Medications and Fasting
 {{medication}}</template>
                 </div>
             </section>

@@ -125,7 +125,6 @@ let deepLinkTemplates = {
     'inteleconnect':   'https://inteleconnect.hdwa.health.wa.gov.au/Portal/app#patients/A1234567',
 }
 let umrnInput = document.getElementById('umrn')
-let deeplinksButton = document.querySelector('#deeplinks')
 umrnInput.addEventListener('input', (e) => {
     let umrnTester = /^[A-Za-z]\d{7}$/
     let valid = umrnTester.test(e.target.value)
@@ -133,18 +132,22 @@ umrnInput.addEventListener('input', (e) => {
         for (let t in deepLinkTemplates) {
             let targetLink = document.querySelector(`[deeplink="${t}"]`)
             let href = deepLinkTemplates[t].replace('A1234567', e.target.value)
-            targetLink.setAttribute('target', "_blank")
-            targetLink.setAttribute('href', href)
-            targetLink.setAttribute('aria-disabled', 'false')
-            targetLink.style = 'pointer-events: auto;'
+            targetLink.setAttribute('value', href)
+            targetLink.removeAttribute('disabled')
         }
     } else {
         let deeplinks = document.querySelectorAll('[deeplink]')
         for (let d of deeplinks) {
-            d.setAttribute('aria-disabled', 'true')
-            d.removeAttribute('href')
+            d.removeAttribute('value')
+            d.setAttribute('disabled', 'true')
         }
     }
+})
+
+let deepLinkDropdown = document.querySelector('#deeplinks')
+deepLinkDropdown.addEventListener('change', (e) => {
+    window.open(e.target.value, '_blank')
+    e.target.selectedIndex = 0
 })
 
 //    ____                  _       _    ____                                      
@@ -411,11 +414,12 @@ document.addEventListener('input', (e) => {
 
 // TOP BAR
 document.addEventListener('input', (e) => {
-    let name = persistentDataProxy['fullname']
-    let umrn = persistentDataProxy['umrn']
+    let name = persistentDataProxy['fullname'] || ''
+    let umrn = persistentDataProxy['umrn'] || ''
     let target = e.target.getAttribute('paas-parameter') || ''
     if (['umrn', 'fullname'].includes(target)) {
-        document.querySelector('#patient-details').innerText = `${name.length > 0 ? name : 'PAAS Helper'} ${umrn.length == 8 ? umrn : ''}`
+
+        document.querySelector('#patient-details').innerText = `${name.length > 0 ? name : 'PAAS Helper'} ${name.length > 0 && umrn.length == 8 ? umrn : ''}`
     }
 })
 
@@ -458,7 +462,7 @@ document.addEventListener('input', (e) => {
 //   | |_| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |                        
 //   |____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|                        
 
-document.querySelector('#download')?.addEventListener('click', (e) => {
+function downloadDocument() {
     // JS really needs better date string formatting tools
     let today = new Date()
     let year = today.getFullYear()
@@ -473,7 +477,7 @@ document.querySelector('#download')?.addEventListener('click', (e) => {
     // Create a text dump
     let textDump = ''
     for (let o of document.querySelectorAll('div.output')) {
-        textDump += o.innerText + '\n'
+        textDump += o.innerText.trim() + '\n\n'
     }
 
     // Create sham download link
@@ -485,6 +489,21 @@ document.querySelector('#download')?.addEventListener('click', (e) => {
 
     // Pull the lever, Kronk
 	downloadLink.click()
+}
+
+document.querySelector('#download')?.addEventListener('click', (e) => {
+    downloadDocument()
+})
+
+// RESET
+document.querySelector('#reset')?.addEventListener('click', (e) => {
+    if (confirm('Are you sure you want to reset the page?')) {
+        if (confirm('Do you want to download a copy first?')) {
+            downloadDocument()
+        }
+        localStorage.setItem('paas-data', '{}')
+        window.location.reload()
+    }
 })
 
 //     ____                    ____        _   _                                   
@@ -503,7 +522,6 @@ for (let o of allOutputs) {
 
     // copy output text (when output OR button is clicked)
     o.addEventListener('click', (e) => {
-        console.log('wow')
         navigator.clipboard.writeText(o.innerText.trim())
     })
 }
