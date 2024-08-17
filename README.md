@@ -1,12 +1,8 @@
 # [PAAS Helper](https://paas.nunn.io) 🤖
-This single-page utility is designed to make life easier in pre-anaesthetic clinic.
-
-<p align="center"><b><a href="https://paas.nunn.io/">You can check out PAAS Helper online right now!</a></b></p>
-
-The key features are…
+This single-page utility is designed to make life easier in pre-anaesthetic clinic. The key features are:
 
 - **Structured data entry** to make sure you get everything you need
-- **Embedded calculators** for a few risk scoring tools:
+- **Embedded calculators** for a few risk scoring tools
     - Apfel Score
     - RCRI
     - STOP-BANG
@@ -24,7 +20,7 @@ To speed things along, I re-implemented the score to run inside the browser tab 
 ## Experiments with Embeddings
 Searching manually by category and then sub-category is a pain and frequently leads to dead ends. In `/api-server` you'll find the remnants of some experiments where I used [embeddings](https://www.cloudflare.com/en-gb/learning/ai/what-are-embeddings/) (weighted according to operation frequency) to pick operations from the list. That necessitated running servers and was proving to be not-all-that-useful, so I scrapped it.
 
-For now…
+For now.
 
 ## References
 - [Protopapa KL, Simpson JC, Smith NC, Moonesinghe SR. Development and validation of the Surgical Outcome Risk Tool (SORT). Br J Surg. 2014 Dec;101(13):1774-83. doi: 10.1002/bjs.9638. PMID: 25388883; PMCID: PMC4240514.](https://doi.org/10.1002/bjs.9638)
