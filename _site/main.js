@@ -201,7 +201,7 @@ let sexInput = document.querySelector('#anthropometry-sex')
 let apfelSexOutput = document.querySelector('#apfel-sex')
 let stopbangSexOutput = document.querySelector('#stopbang-sex')
 sexInput.addEventListener('input', (e) => {
-    if (sexInput.value == 'm') {
+    if (sexInput.value == 'M') {
         apfelSexOutput.checked = false
         stopbangSexOutput.checked = true
     } else {
@@ -452,6 +452,8 @@ document.addEventListener('input', (e) => {
         for (let t of allTargets) {
             if (t == e.target) continue
             setAnyInputValue(t, value)
+            // prompt re-render of the enclosing <section>'s template
+            t.closest('section').dispatchEvent(new Event('input'))
         }
     }
 })

@@ -86,6 +86,20 @@
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="pmhx" class="bigbox"></textarea>
                     </label>
                     <label>
+                        GORD
+                        <div class="hstack">
+                            <div class="selectbox">
+                                <select paas-parameter="gord">
+                                    <option value="" disabled selected></option>
+                                    <option value="no symptoms">No symptoms</option>
+                                    <option value="yes, medicated">Yes, on medication</option>
+                                    <option value="yes, NOT medicated">Yes, off medication</option>
+                                </select>
+                            </div>
+                            <input type="text" paas-parameter="gord-details" placeholder="Details">
+                        </div>
+                    </label>
+                    <label>
                         Smoking
                         <div class="hstack">
                             <div class="selectbox">
@@ -129,6 +143,8 @@
                     <div class="rendered-template"></div>
                     <template># PMHx
 {{pmhx}}
+- GORD: {{gord}}
+--&gt; {{gord-details}}
 <br>
 # SHx
 - Smoking: {{smoking}}
@@ -197,15 +213,15 @@
                                 </div>
                             </label>
                             <label>
-                                MO
+                                Mouth Opening
                                 <input type="number" min="0" max="7" step="1" paas-parameter="mouth-opening" autocomplete="off">
                             </label>
+                        </div>
+                        <div class="hstack">
                             <label>
                                 TMD
                                 <input type="number" min="0" max="12" step="1" paas-parameter="tmd" autocomplete="off">
                             </label>
-                        </div>
-                        <div class="hstack">
                             <label>
                                 Neck ROM
                                 <div class="selectbox">
@@ -219,6 +235,8 @@
                                     </select>
                                 </div>
                             </label>
+                        </div>
+                        <div class="hstack">
                             <label>
                                 Beard
                                 <div class="selectbox">
@@ -231,7 +249,7 @@
                                 </div>
                             </label>
                             <label>
-                                Jaw
+                                Jaw Protrusion
                                 <div class="selectbox">
                                     <select paas-parameter="jaw-protrusion" autocomplete="off">
                                         <option value="" disabled selected></option>
@@ -249,7 +267,7 @@
                                 <input type="text" paas-parameter="teeth" autocomplete="off">
                             </label>
                             <label>
-                                Veins
+                                Vein Quality
                                 <div class="selectbox">
                                     <select paas-parameter="veins" autocomplete="off">
                                         <option value="" disabled selected></option>
@@ -257,17 +275,6 @@
                                         <option value="fair">Fair</option>
                                         <option value="poor">Poor</option>
                                         <option value="very poor">Very poor</option>
-                                    </select>
-                                </div>
-                            </label>
-                            <label>
-                                GORD
-                                <div class="selectbox">
-                                    <select paas-parameter="gord">
-                                        <option value="" disabled selected></option>
-                                        <option value="yes, medicated">Medicated</option>
-                                        <option value="yes, NOT medicated">Unmedicated</option>
-                                        <option value="no">No</option>
                                     </select>
                                 </div>
                             </label>
@@ -303,7 +310,6 @@
 - Mouth opening: {{mouth-opening}} cm
 - Thyromental distance: {{tmd}} cm
 - Neck ROM: {{neckrom}}
-- GORD: {{gord}}
 - Bearded: {{beard}}
 - Jaw protrusion: {{jaw-protrusion}}
 - Dentition: {{teeth}}
@@ -335,7 +341,7 @@
                         </label>
                         <label>
                             HbA1c
-                            <input type="text" paas-parameter="hba1c" autocomplete="off">
+                            <input type="number" min="4" max="20" step="0.1" paas-parameter="hba1c" autocomplete="off">
                         </label>
                     </div>
                     <div class="hstack">
