@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PAAS Helper</title>
+    <link rel="stylesheet" href="/main.css">
+    <!-- <link rel="manifest" href="/manifest.json"> -->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <header>
+        <div>
+            <h1 id="site-title" class="mr-auto">🤖 <span id="patient-details">PAAS Helper</span></h2>
+                <a aria-disabled="true" deeplink="bossnet">BOSSNet</a>
+                <a aria-disabled="true" deeplink="ereferrals">eReferrals</a>
+                <a aria-disabled="true" deeplink="inteleconnect">IntelleConnect</a>
+                <a aria-disabled="true" deeplink="nacs">NaCS</a>
+                <button id="download">Download</button>
+            </div>
+        </header>
+        <main class="wrapped">
+            <h2>Patient Details</h2>
+            <section>
+                <div class="vstack">
+                    <div class="hstack">
+                        <label class="triple">Full Name<input type="text" id="name" autocomplete="off" paas-parameter="fullname"></label>
+                        <label>UMRN <input paas-autocaps type="text" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-parameter="umrn"></label>
+                        <label>
+                            Mode
+                            <div class="selectbox">
+                                <select id="mode" paas-parameter="mode">
+                                    <option value="face-to-face">F2F</option>
+                                    <option value="telephone">TPC</option>
+                                </select>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="hstack">
+                        <label>Age<input type="number" id="" paas-parameter="age" min="0" max="125" step="1" autocomplete="off"></label>
+                        <label>
+                            Sex
+                            <div class="selectbox">
+                                <select id="anthropometry-sex" paas-parameter="sex" autocomplete="off">
+                                    <option disabled selected value=""></option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                </select>
+                            </div>
+                        </label>
+                        <label>Height (cm)<input type="number" step="0.1" min="0" max="300" id="height" paas-parameter="height" autocomplete="off"></label>
+                        <label>Weight (kg)<input type="number" step="0.1"  min="0" max="400" id="weight" paas-parameter="weight" autocomplete="off"></label>
+                        <label>BMI (auto)<input type="text" id="bmi" readonly autocomplete="off" paas-parameter="bmi"></label>
+                    </div>
+                    <div class="hstack">
+                        <label>
+                            Operation
+                            <input type="text" id="" paas-parameter="operation" autocomplete="off">
+                        </label>
+                    </div>
+                </div>
+                <div class="output visually-hidden">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Patient Details
+- Name: {{fullname}}
+- UMRN: {{umrn}}
+- Age: {{age}}
+- Sex: {{sex}}
+- Appointment type: {{mode}}
+- Height: {{height}}
+- Weight: {{weight}}
+- BMI: {{bmi}}
+- Operation: {{operation}}</template>
+                </div>
+            </section>
+            <h2>Medical History</h2>
+            <section>
+                <div class="vstack">
+                    <label>
+                        PMHx
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="pmhx" class="bigbox"></textarea>
+                    </label>
+                    <label>
+                        Smoking
+                        <div class="hstack">
+                            <div class="selectbox">
+                                <select paas-parameter="smoking" autocomplete="off">
+                                    <option value="" selected disabled></option>
+                                    <option value="active smoker">Active smoker</option>
+                                    <option value="ex-smoker">Ex-smoker</option>
+                                    <option value="never smoked">Never smoked</option>
+                                </select>
+                            </div>
+                            <input type="text" placeholder="Details" autocomplete="off" paas-parameter="smoking-details">
+                        </div>
+                    </label>
+                    <div class="hstack">
+                        <label>
+                            Alcohol
+                            <input type="text" autocomplete="off" paas-parameter="etoh">
+                        </label>
+                        <label>
+                            Drugs
+                            <input type="text" autocomplete="off" paas-parameter="drugs">
+                        </label>
+                    </div>
+                    <div class="hstack">
+                        <label>
+                            Occupation
+                            <input type="text" autocomplete="off" paas-parameter="occupation">
+                        </label>
+                        <label>
+                            Functioning
+                            <input type="text" autocomplete="off" paas-parameter="functional-status">
+                        </label>
+                    </div>
+                    <label>
+                        Other
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="shx" class="bigbox tiny" placeholder=""></textarea>
+                    </label>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># PMHx
+{{pmhx}}
+
+# SHx
+- Smoking: {{smoking}}
+--&gt; {{smoking-details}}
+- etOH: {{etoh}}
+- Illicit drugs: {{drugs}}
+- Occupation: {{occupation}}
+- Functional status: {{functional-status}}
+{{shx}}</template>
+                </div>
+            </section>
+            <section>
+                <div class="vstack">
+                    <label>
+                        Medications
+                        <textarea autocomplete="off" autocapitalize="off" paas-parameter="rx" class="bigbox short"></textarea>
+                    </label>
+                    <label>
+                        Adverse Drug Reactions
+                        <textarea autocomplete="off" autocapitalize="off" paas-parameter="allergies" class="bigbox tiny"></textarea>
+                    </label>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Medications
+{{rx}}
+
+# Allergies
+{{allergies}}</template>
+                </div>
+            </section>
+
+            <h2>Anaesthetic History</h2>
+            <section>
+                <div class="vstack">
+                    <label>
+                        Previous Anaesthesia
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="pahx" class="bigbox short"></textarea>
+                    </label>
+                    <label>
+                        METs
+                        <div class="hstack">
+                            <div class="selectbox">
+                                <select paas-parameter="mets">
+                                    <option value="" disabled selected></option>
+                                    <option value="less than 4">&lt; 4</option>
+                                    <option value="more than 4">≥ 4</option>
+                                </select>
+                            </div>
+                            <input type="text" paas-parameter="mets-details" placeholder="Details">
+                        </div>
+                    </label>
+                    <div class="vstack">
+                        <div class="hstack">
+                            <label>
+                                Mallampati
+                                <div class="selectbox">
+                                    <select paas-parameter="mallampati" autocomplete="off">
+                                        <option value="" disabled selected></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label>
+                                MO
+                                <input type="number" min="0" max="7" step="1" paas-parameter="mouth-opening" autocomplete="off">
+                            </label>
+                            <label>
+                                TMD
+                                <input type="number" min="0" max="12" step="1" paas-parameter="tmd" autocomplete="off">
+                            </label>
+                            <label>
+                                Neck ROM
+                                <div class="selectbox">
+                                    <select paas-parameter="neckrom" autocomplete="off">
+                                        <option value="" disabled selected></option>
+                                        <option value="normal">Normal</option>
+                                        <option value="mildly limited">Mildly limited</option>
+                                        <option value="moderately limited">Moderately limited</option>
+                                        <option value="severely limited">Severely limited</option>
+                                        <option value="immobile">Immobile</option>
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="hstack">
+                            <label>
+                                Beard
+                                <div class="selectbox">
+                                    <select paas-parameter="beard" autocomplete="off">
+                                        <option value="" disabled selected></option>
+                                        <option value="YES, will trim">Will trim</option>
+                                        <option value="YES, won't trim">Won't trim</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label>
+                                Jaw
+                                <div class="selectbox">
+                                    <select paas-parameter="jaw-protrusion" autocomplete="off">
+                                        <option value="" disabled selected></option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>No
+                                        <option value="C">C</option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label>
+                                Dentition
+                                <input type="text" paas-parameter="teeth" autocomplete="off">
+                            </label>
+                            <label>
+                                Veins
+                                <div class="selectbox">
+                                    <select paas-parameter="veins" autocomplete="off">
+                                        <option value="" disabled selected></option>
+                                        <option value="good">Good</option>
+                                        <option value="fair">Fair</option>
+                                        <option value="poor">Poor</option>
+                                        <option value="very poor">Very poor</option>
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="hstack">
+                            <label>
+                                Heart
+                                <input type="text" paas-parameter="heart" autocomplete="off">
+                            </label>
+                            <label>
+                                Lungs
+                                <input type="text" paas-parameter="lung" autocomplete="off">
+                            </label>
+                        </div>
+                        <label>
+                            Other
+                            <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" paas-parameter="other-examination" class="bigbox tiny"></textarea>
+                        </label>
+                    </div>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Previous Anaesthesia
+{{pahx}}
+
+# Physical Fitness
+- METs: {{mets}}
+--&gt; {{mets-details}}
+
+# Airway Assessment
+- Mallampati: {{mallampati}}
+- Mouth opening: {{mouth-opening}} cm
+- Thyromental distance: {{tmd}} cm
+- Neck ROM: {{neckrom}}
+- Bearded: {{beard}}
+- Jaw protrusion: {{jaw-protrusion}}
+- Dentition: {{teeth}}
+- Vein quality: {{veins}}
+
+# General Assessment
+- Heart sounds: {{heart}}
+- Lung sounds: {{lung}}
+{{other-examination}}</template>
+                </div>
+            </section>
+            <h2>Investigations</h2>
+            <section>
+                <div class="vstack">
+                    <div class="hstack">
+                        <label>
+                            FBC
+                            <input type="text" paas-parameter="fbc" autocomplete="off">
+                        </label>
+                        <label>
+                            UEC
+                            <input type="text" paas-parameter="uec" autocomplete="off">
+                        </label>
+                    </div>
+                    <div class="hstack">
+                        <label>
+                            LFT
+                            <input type="text" paas-parameter="lft" autocomplete="off">
+                        </label>
+                        <label>
+                            HbA1c
+                            <input type="text" paas-parameter="hba1c" autocomplete="off">
+                        </label>
+                    </div>
+                    <div class="hstack">
+                        <label>
+                            Iron Studies
+                            <input type="text" paas-parameter="iron" autocomplete="off">
+                        </label>
+                        <label>
+                            Coags
+                            <input type="text" paas-parameter="coags" autocomplete="off">
+                        </label>
+                    </div>
+                    <label>
+                        ECG
+                        <input type="text" paas-parameter="ecg" autocomplete="off">
+                    </label>
+                    <div class="vstack">
+                        <label>
+                            Other
+                            <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="other-ix" class="bigbox tiny" placeholder=""></textarea></label>
+                    </div>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Investigations
+- FBC: {{fbc}}
+- UEC: {{uec}}
+- LFT: {{lft}}
+- HbA1c: {{hba1c}}%
+- Iron studies: {{iron}}
+- Coags: {{coags}}
+- ECG: {{ecg}}
+{{other-ix}}</template>
+                </div>
+            </section>
+
+            <h2>Risk Assessment</h2>
+            <section>
+                <div class="vstack">
+                    <div class="hstack">
+                        <label>
+                            STOP-BANG
+                            <div paas-calculator>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="snorer">Snorer</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="daytime-tiredness">Tiredness</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="observed-apnoea">Observed apnoea</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="hypertensive">Hypertensive</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="stopbang-bmi-35" id="stopbang-bmi">BMI > 35</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="stopbang-age" id="stopbang-age">Age > 50</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="stopbang-neck">Neck ≥ 40cm</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="stopbang-sex" id="stopbang-sex">Male</label>
+                                <input type="text" paas-calculator-output paas-parameter="stopbang-score" class="visually-hidden">
+                            </div>
+                        </label>
+                        <label paas-calculator>
+                            RCRI
+                            <div>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="rcri-risky" autocomplete="off" id="">Elevated Risk*</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="rcri-ihd" autocomplete="off">IHD</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="rcri-ccf" autocomplete="off">CCF</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="rcri-cva" autocomplete="off">CVA</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="rcri-insulin" autocomplete="off">On insulin</label>
+                                <label><input type="checkbox" tabindex=0 paas-parameter="rcri-creatinine" autocomplete="off">Cr > 176.8 µmol/L</label>
+                                <aside><small>* Intraperitoneal, intrathoracic, or suprainguinal vascular surgery</small></aside>
+                                <input type="text" paas-calculator-output paas-parameter="rcri-score" class="visually-hidden">
+                            </div>
+                        </label>
+                    </div>
+                    <div class="hstack">
+                        <label paas-calculator>
+                            Apfel
+                            <div>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="apfel-sex" id="apfel-sex">Female</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="apfel-smoking" id="apfel-smoking" checked>Non-smoker</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="apfel-ponv">Prior PONV</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="apfel-opioids">Postop opioids</label>
+                                <input type="text" paas-calculator-output paas-parameter="apfel-score" class="visually-hidden">
+                            </div>
+                        </label>
+                        <label>
+                            ASA
+                            <div class="selectbox">
+                                <select paas-parameter="asa" sort-parameter="asa" paas-sync="asa" required autocomplete="off">
+                                    <option value="" disabled selected></option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
+                            </div>
+                        </label>
+                    </div>
+                    <h4>SORT Score</h4>
+                        <div class="vstack" id="sort-container">
+                            <!-- <form action="/search" method="POST" id="sort-search">
+                                <label>
+                                    Operation Search ✨
+                                    <div class="hstack">
+                                        <input type="search" name="embed">
+                                        <input type="submit" value="Search">
+                                    </div>
+                                </label>
+                            </form> -->
+                            <label>
+                                Group
+                                <div class="selectbox">
+                                    <select id="sort-maingroup">
+                                        <option value="" selected disabled></option>
+                                        <option value="Abdomen (excluding urinary and reproductive organs)">Abdomen (excluding urinary and reproductive organs)</option>
+                                        <option value="Bones, joints and connective tissue/tendon muscle">Bones, joints and connective tissue/tendon muscle</option>
+                                        <option value="Breast">Breast</option>
+                                        <option value="Ear, nose and throat">Ear, nose and throat</option>
+                                        <option value="Endoscopic gastrointestinal procedures">Endoscopic gastrointestinal procedures</option>
+                                        <option value="Eye and orbital contents">Eye and orbital contents</option>
+                                        <option value="Face, mouth, salivary and thyroid">Face, mouth, salivary and thyroid</option>
+                                        <option value="Female reproductive organs">Female reproductive organs</option>
+                                        <option value="Interventional Radiology">Interventional Radiology</option>
+                                        <option value="Neurosurgery (Brain, cranium and intracranial organs)">Neurosurgery (Brain, cranium and intracranial organs)</option>
+                                        <option value="Obstetrics (Pregnancy and confinement)">Obstetrics (Pregnancy and confinement)</option>
+                                        <option value="Skin and subcutaneous tissue">Skin and subcutaneous tissue</option>
+                                        <option value="Spine">Spine</option>
+                                        <option value="Thorax and intra-thoracic organs">Thorax and intra-thoracic organs</option>
+                                        <option value="Urinary system and male reproductive organs">Urinary system and male reproductive organs</option>
+                                        <option value="Vascular System">Vascular System</option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label>
+                                Sub-Group
+                                <div class="selectbox">
+                                    <select id="sort-subgroup">
+                                        <option value="" selected disabled></option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label>
+                                Operation
+                                <div class="selectbox">
+                                    <select id="sort-operation" paas-parameter="operation" required>
+                                        <option value="" selected disabled></option>
+                                    </select>
+                                </div>
+                            </label>
+                            <div class="hstack">
+                                <label>Age<input type="number" paas-parameter="age" id="sort-age" min="0" max="125" step="1" required autocomplete="off"></label>
+                                <label>
+                                    ASA
+                                    <div class="selectbox">
+                                        <select paas-parameter="asa" paas-sync="asa" autocomplete="off">
+                                            <option value="" disabled selected></option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select>
+                                    </div>
+                                </label>
+                                <label>
+                                    Ugency
+                                    <div class="selectbox">
+                                        <select paas-parameter="urgency" required>
+                                            <option value="Elective" selected>Elective</option>
+                                            <option value="Expedited">Expedited</option>
+                                            <option value="Urgent">Urgent</option>
+                                            <option value="Immediate">Immediate</option>
+                                        </select>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="hstack">
+                                <label>
+                                    Thoracics, GI, or vascular?
+                                    <div class="selectbox">
+                                        <select paas-parameter="tgv" required>
+                                            <option value="" disabled selected></option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                </label>
+                                <label>
+                                    Malignancy?
+                                    <div class="selectbox">
+                                        <select paas-parameter="malignancy" required>
+                                            <option value="" disabled selected></option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <input type="number" class="visually-hidden" paas-parameter="sort-score">
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Risk Assessment
+- ASA: {{asa}}
+- STOP-BANG: {{stopbang-score}}/8
+- Apfel: {{apfel-score}}/4
+- RCRI: {{rcri-score}}/6
+- SORT: {{sort-score}}% (30 day mortality)</template>
+            </section>
+            <h2>Plan</h2>
+            <section>
+                <div class="vstack">
+                    <label>
+                        Key Issues
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="issues" class="bigbox tiny"></textarea>
+                    </label>
+                    <label>
+                        Anaesthetic Plan
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="plan" class="bigbox tiny"></textarea>
+                    </label>
+                    <label>
+                        Medications and Fasting
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="medication" class="bigbox tiny"></textarea>
+                    </label>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template># Key Issues
+{{issues}}
+
+# Anaesthetic Plan
+{{plan}}
+
+# Medications and Fasting
+{{medication}}</template>
+                </div>
+            </section>
+        </main>
+        <script src="/main.js"></script>
+    </body>
+    </html>

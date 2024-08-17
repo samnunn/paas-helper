@@ -1,0 +1,509 @@
+//    ____                _           _                                            
+//   |  _ \ ___ _ __   __| | ___ _ __(_)_ __   __ _                                
+//   | |_) / _ \ '_ \ / _` |/ _ \ '__| | '_ \ / _` |                               
+//   |  _ <  __/ | | | (_| |  __/ |  | | | | | (_| |                               
+//   |_| \_\___|_| |_|\__,_|\___|_|  |_|_| |_|\__, |                               
+//                                            |___/                                       
+
+function getAnyInputValue(inputElement) {
+    if (inputElement.tagName == 'select' && inputElement.selectedIndex > 0) {
+        return inputElement.value
+    } else if (inputElement.tagName == 'INPUT' && inputElement.getAttribute('type') == 'checkbox') {
+        return inputElement.checked
+    } else {
+        return inputElement.value
+    }
+}
+
+function setAnyInputValue(inputElement, value) {
+    if (inputElement.tagName == 'select' && inputElement.selectedIndex > 0) {
+        inputElement.value = value
+    } else if (inputElement.tagName == 'INPUT' && inputElement.getAttribute('type') == 'checkbox') {
+        inputElement.checked = value
+    } else {
+        inputElement.value = value
+    }
+}
+
+// RENDER TEXT ON INPUT
+let sections = document.querySelectorAll('section')
+for (let s of sections) {
+    s.template = s.querySelector('template')?.content.textContent
+    s.outputBox = s.querySelector('.rendered-template')
+
+    s.addEventListener('input', (e) => {
+        let inputs = s.querySelectorAll('[paas-parameter]')
+        let output = s.template
+
+        // abort is ther is no template
+        if (!output) {
+            return
+        }
+
+        // populate template with values from the <input> elements
+        for (let i of inputs) {
+            // printed value depends on <input> type
+            let value = getAnyInputValue(i)
+
+            // skip blank ones
+            // it'll leave the template behind
+            // which will (along with the entire line) be cleaned up later
+            if (value == "") {
+                continue
+            }
+
+            // replace in template (first instance only)
+            output = output.replace(`{{${i.getAttribute('paas-parameter')}}}`, value)
+        }
+
+        // remove lines containing un-replaced templates
+        let conditionalFinder = /^.*({{.*?}}).*$\n?/gm
+        for (let c of output.matchAll(conditionalFinder)) {
+            let stringtoReplace = c[0]
+            output = output.replace(stringtoReplace, "")
+        }
+
+        s.outputBox.innerText = output
+    })
+}
+
+// CALCULATORS
+let allCalculators = document.querySelectorAll('[paas-calculator]')
+for (let c of allCalculators) {
+    c.output = c.querySelector('[paas-calculator-output]')
+    c.checkboxes = c.querySelectorAll('input[type="checkbox"]')
+    c.addEventListener('input', (e) => {
+        let score = 0
+        for (let b of c.checkboxes) {
+            score += b.checked ? 1 : 0
+        }
+        if (c.output) {
+            c.output.value = score
+        }
+    })
+}
+
+
+
+//    _____         _     _____    _ _ _   _                                       
+//   |_   _|____  _| |_  | ____|__| (_) |_(_)_ __   __ _                           
+//     | |/ _ \ \/ / __| |  _| / _` | | __| | '_ \ / _` |                          
+//     | |  __/>  <| |_  | |__| (_| | | |_| | | | | (_| |                          
+//     |_|\___/_/\_\\__| |_____\__,_|_|\__|_|_| |_|\__, |                          
+//                                                 |___/                           
+
+// AUTO DOT POINTS
+let allTextAreas = document.querySelectorAll('textarea.bigbox')
+for (let a of allTextAreas) {
+    a.addEventListener('keydown', (e) => {
+        const textarea = e.target
+        const cursorPosition = textarea.selectionStart
+        const currentLine = textarea.value.substring(0, cursorPosition).split('\n').pop()
+    
+        if (e.key == 'Enter' && currentLine.trim().startsWith('- ')) {
+            const newLineText = '\n- '
+            textarea.value = textarea.value.substring(0, cursorPosition) + newLineText + textarea.value.substring(cursorPosition)
+            textarea.selectionStart = cursorPosition + newLineText.length
+            textarea.selectionEnd = cursorPosition + newLineText.length
+            textarea.closest('section').dispatchEvent(new Event('input'))
+            e.preventDefault()
+        }
+    })
+}
+
+//    ____                    _     _       _                                      
+//   |  _ \  ___  ___ _ __   | |   (_)_ __ | | _____                               
+//   | | | |/ _ \/ _ \ '_ \  | |   | | '_ \| |/ / __|                              
+//   | |_| |  __/  __/ |_) | | |___| | | | |   <\__ \                              
+//   |____/ \___|\___| .__/  |_____|_|_| |_|_|\_\___/                              
+//                   |_|                                                           
+
+let deepLinkTemplates = {
+    'bossnet':         'https://dmr.hdwa.health.wa.gov.au/bossfunctionlauncher/BOSSFunctionLaunch.aspx?appkey=WEBPAS&function=14000&urn=A1234567',
+    'nacs':            'https://nacs.hdwa.health.wa.gov.au/#umrn-A1234567',
+    'ereferrals':      'https://ereferrals.hdwa.health.wa.gov.au/Patient/Overview?umrn=A1234567',
+    'inteleconnect':   'https://inteleconnect.hdwa.health.wa.gov.au/Portal/app#patients/A1234567',
+}
+let umrnInput = document.getElementById('umrn')
+let deeplinksButton = document.querySelector('#deeplinks')
+umrnInput.addEventListener('input', (e) => {
+    let umrnTester = /^[A-Za-z]\d{7}$/
+    let valid = umrnTester.test(e.target.value)
+    if (valid == true) {
+        for (let t in deepLinkTemplates) {
+            let targetLink = document.querySelector(`[deeplink="${t}"]`)
+            let href = deepLinkTemplates[t].replace('A1234567', e.target.value)
+            targetLink.setAttribute('target', "_blank")
+            targetLink.setAttribute('href', href)
+            targetLink.setAttribute('aria-disabled', 'false')
+            targetLink.style = 'pointer-events: auto;'
+        }
+    } else {
+        let deeplinks = document.querySelectorAll('[deeplink]')
+        for (let d of deeplinks) {
+            d.setAttribute('aria-disabled', 'true')
+            d.removeAttribute('href')
+        }
+    }
+})
+
+//    ____                  _       _    ____                                      
+//   / ___| _ __   ___  ___(_) __ _| |  / ___|__ _ ___  ___  ___                   
+//   \___ \| '_ \ / _ \/ __| |/ _` | | | |   / _` / __|/ _ \/ __|                  
+//    ___) | |_) |  __/ (__| | (_| | | | |__| (_| \__ \  __/\__ \                  
+//   |____/| .__/ \___|\___|_|\__,_|_|  \____\__,_|___/\___||___/                  
+//         |_|                                                                     
+
+// BMI CALCULATOR
+let weightInput = document.querySelector('#weight')
+let heightInput = document.querySelector('#height')
+let bmiOutput = document.querySelector('#bmi')
+for (let i of [weightInput, heightInput]) {
+    i.addEventListener('input', (e) => {
+        let w = parseInt(weightInput.value)
+        let h = parseInt(heightInput.value)
+
+        let output
+        if (w == undefined || h == undefined) {
+            output = ''
+        } else {
+            output = w / (h/100)**2
+        }
+
+        if (isNaN(output) == false) {
+            bmiOutput.value = output.toFixed(1)
+        } else {
+            bmiOutput.value = ''
+        }
+
+        // dispatch event to prompt saving to localStorage
+        // bubbles because the relevant event listener is attached to the parent <section>, not the <input>
+        bmiOutput.dispatchEvent(new Event('input', { bubbles: true }))
+        console.log(bmiOutput)
+    })
+}
+
+// BMI -> stopbang
+bmiOutput.addEventListener('input', (e) => {
+    let stopBangBMI = document.querySelector('#stopbang-bmi')
+    if (parseFloat(e.target.value) > 35) {
+        stopBangBMI.checked = true
+    } else {
+        stopBangBMI.checked = false
+    }
+})
+
+// SEX -> apfel, stopbang
+let sexInput = document.querySelector('#anthropometry-sex')
+let apfelSexOutput = document.querySelector('#apfel-sex')
+let stopbangSexOutput = document.querySelector('#stopbang-sex')
+sexInput.addEventListener('input', (e) => {
+    if (sexInput.value == 'm') {
+        apfelSexOutput.checked = false
+        stopbangSexOutput.checked = true
+    } else {
+        apfelSexOutput.checked = true
+        stopbangSexOutput.checked = false
+    }
+    apfelSexOutput.dispatchEvent(new Event('input'))
+    stopbangSexOutput.dispatchEvent(new Event('input'))
+})
+
+// AGE -> stopbang, sort
+let ageInput = document.querySelector('[paas-parameter="age"]')
+let stopbangAgeOutput = document.querySelector('#stopbang-age')
+let sortAgeOutput = document.querySelector('#sort-age')
+ageInput.addEventListener('input', (e) => {
+    sortAgeOutput.value = e.target.value
+
+    if (e.target.value > 50) {
+        stopbangAgeOutput.checked = true
+    } else {
+        stopbangAgeOutput.checked = false
+    }
+})
+
+// SMOKING -> apfel
+let smokingInput = document.querySelector('[paas-parameter="smoking"')
+let apfelSmokingOutput = document.querySelector('#apfel-smoking')
+smokingInput.addEventListener('input', (e) => {
+    if (e.target.value != 'active smoker') {
+        apfelSmokingOutput.checked = true
+    } else {
+        apfelSmokingOutput.checked = false
+    }
+})
+
+//    ____   ___  ____ _____   ____                                                
+//   / ___| / _ \|  _ \_   _| / ___|  ___ ___  _ __ ___                            
+//   \___ \| | | | |_) || |   \___ \ / __/ _ \| '__/ _ \                           
+//    ___) | |_| |  _ < | |    ___) | (_| (_) | | |  __/                           
+//   |____/ \___/|_| \_\|_|   |____/ \___\___/|_|  \___|                           
+                                                                                
+window.addEventListener('load', async (e) => {
+    try {
+        const response = await fetch('/oplist.json')
+        if (!response.ok) {
+            throw new Error(`HTTP error while downloading operation list. Status: ${response.status}`)
+        }
+        window.procedures = await response.json()
+    } catch (error) {
+        console.error('Error while downloading operation list:', error);
+    }
+})
+
+let sortMainGroup = document.querySelector('#sort-maingroup')
+let sortSubGroup = document.querySelector('#sort-subgroup')
+let sortOperation = document.querySelector('#sort-operation')
+
+sortMainGroup.addEventListener('change', (e) => {
+    // filter operations
+    let subGroups = window.procedures.filter((p) => {
+        return p['MainGroup'] ==  e.target.value
+    })
+    subGroups = subGroups.map((g) => g['SubGroup'])
+    subGroups = subGroups.sort()
+    subGroups = new Set(subGroups)
+    
+    // reset sub-group
+    sortSubGroup.innerHTML = ""
+
+    // add non-option
+    let nonOption = document.createElement('option')
+    nonOption.value = ""
+    nonOption.setAttribute('disabled', true)
+    nonOption.setAttribute('selected', true)
+    sortSubGroup.appendChild(nonOption)
+
+    // render an <option> for each of the subgroups
+    for (let g of subGroups) {
+        let optionElement = document.createElement('option')
+        optionElement.value = g
+        optionElement.innerText = g
+        sortSubGroup.appendChild(optionElement)
+    }
+
+    sortSubGroup.dispatchEvent(new Event('change'))
+})
+
+sortSubGroup.addEventListener('change', (e) => {
+    // filter operations
+    let operations = window.procedures.filter((p) => {
+        return p['SubGroup'] ==  e.target.value
+    })
+    operations = operations.map((g) => g['SurgeryProcedure'])
+    operations = operations.sort()
+    operations = new Set(operations)
+    
+    // reset sub-group
+    sortOperation.innerHTML = ""
+
+    // add non-option
+    let nonOption = document.createElement('option')
+    nonOption.value = ""
+    nonOption.setAttribute('disabled', true)
+    nonOption.setAttribute('selected', true)
+    sortOperation.appendChild(nonOption)
+
+    // render an <option> for each of the operations
+    for (let o of operations) {
+        let optionElement = document.createElement('option')
+        optionElement.value = o
+        optionElement.innerText = o
+        sortOperation.appendChild(optionElement)
+    }
+})
+
+function calculateSortScore(data) {
+    // requires: asa urgency tgv severity malignancy age
+    // unless all keys are present, log error and return empty string
+    let requiredKeys = ['asa', 'age', 'urgency', 'tgv', 'operation', 'malignancy']
+    let hasRequiredKeys = requiredKeys.every((i) => { return data.hasOwnProperty(i) })
+    if (hasRequiredKeys == false) {
+        console.debug('SORT not calculated due to incomplete data:', data)
+        return ""
+    } else {
+        console.info(`SORT Calculator started with data: \n${JSON.stringify(data, space="    ")}`)
+    }
+
+    // get operation severity
+    let operationData = window.procedures.filter((p) => { return p['SurgeryProcedure'] == data['operation'] })
+    let severity = operationData[0]['SurgeryProcedureSeverity']
+
+    let sortlogit = (
+        (data['asa'] == "3") * 1.411 +
+        (data['asa'] == "4") * 2.388 +
+        (data['asa'] == "5") * 4.081 +
+        (data['urgency'] == "Expedited") * 1.236 +
+        (data['urgency'] == "Urgent") * 1.657 +
+        (data['urgency'] == "Immediate") * 2.452 +
+        (data['tgv'] == "Yes") * 0.712 +
+        (["Xma", "Com"].includes(severity)) * 0.381 +
+        (data['malignancy'] == "Yes") * 0.667 +
+        (65 <= parseInt(data['age']) <= 79) * 0.777 +
+        (parseInt(data['age']) >= 80) * 1.591 -
+        7.366
+    )
+
+    let sortScore =  100 / (1 + Math.E**(0-sortlogit))
+
+    return sortScore.toFixed(2)
+}
+
+let sortScoreOutput = document.querySelector('[paas-parameter="sort-score"')
+let sortContainer = document.querySelector('#sort-container')
+
+sortContainer?.addEventListener('input', (e) => {
+    let requiredData = {'asa': null, 'age': null, 'urgency': null, 'tgv': null, 'operation': null, 'malignancy': null}
+    for (let k in requiredData) {
+        let targetElement = sortContainer.querySelector(`[paas-parameter="${k}"]`)
+        let value = getAnyInputValue(targetElement)
+        
+        if (value != "") {
+            requiredData[k] = value
+        } else {
+            sortScoreOutput.value = ""
+            return
+        }
+    }
+
+    sortScoreOutput.value = calculateSortScore(requiredData)
+})
+
+//    ____        _          ____               _     _                            
+//   |  _ \  __ _| |_ __ _  |  _ \ ___ _ __ ___(_)___| |_ ___ _ __   ___ ___       
+//   | | | |/ _` | __/ _` | | |_) / _ \ '__/ __| / __| __/ _ \ '_ \ / __/ _ \      
+//   | |_| | (_| | || (_| | |  __/  __/ |  \__ \ \__ \ ||  __/ | | | (_|  __/      
+//   |____/ \__,_|\__\__,_| |_|   \___|_|  |___/_|___/\__\___|_| |_|\___\___|      
+
+// get from localStorage at startup
+let persistentDataStore
+try {
+    persistentDataStore = JSON.parse(localStorage.getItem('paas-data') || '') // JSON parser chokes on empty string if paas-data isn't stored
+} catch {
+    persistentDataStore = {}
+}
+
+// establish proxy
+let persistentDataProxy = new Proxy(persistentDataStore, {
+    get(object, key, receiver) {
+        return object[key]
+    },
+    set(object, key, value) {
+        // Update UI
+
+        // Update data model
+        object[key] = value
+
+        // Emit event
+
+        // Persist data
+        localStorage.setItem('paas-data', JSON.stringify(object))
+    }
+})
+
+// listen for input events on any element with paas-parameter
+document.addEventListener('input', (e) => {
+    if (e.target.hasAttribute('paas-parameter')) {
+        persistentDataProxy[e.target.getAttribute('paas-parameter')] = getAnyInputValue(e.target)
+    }
+})
+
+// TOP BAR
+document.addEventListener('input', (e) => {
+    let name = persistentDataProxy['fullname']
+    let umrn = persistentDataProxy['umrn']
+    let target = e.target.getAttribute('paas-parameter') || ''
+    if (['umrn', 'fullname'].includes(target)) {
+        document.querySelector('#patient-details').innerText = `${name.length > 0 ? name : 'PAAS Helper'} ${umrn.length == 8 ? umrn : ''}`
+    }
+})
+
+let allInputs = document.querySelectorAll('[paas-parameter]')
+for (let i of allInputs) {
+    let parameter = i.getAttribute('paas-parameter')
+    let storedValue = persistentDataProxy[parameter]
+    if (storedValue) {
+        setAnyInputValue(i, storedValue)
+        i.dispatchEvent(new Event('input', {'bubbles': true}))
+    }
+}
+
+let allSections = document.querySelectorAll('section')
+for (let s of allSections) {
+    s.dispatchEvent(new Event('input'))
+}
+
+//    ____                                                                         
+//   / ___| _   _ _ __   ___                                                       
+//   \___ \| | | | '_ \ / __|                                                      
+//    ___) | |_| | | | | (__                                                       
+//   |____/ \__, |_| |_|\___|                                                      
+//          |___/                                                                  
+
+document.addEventListener('input', (e) => {
+    if (e.target.hasAttribute('paas-sync')) {
+        let allTargets = document.querySelectorAll(`[paas-sync="${e.target.getAttribute('paas-sync')}"]`)
+        let value = getAnyInputValue(e.target)
+        for (let t of allTargets) {
+            if (t == e.target) continue
+            setAnyInputValue(t, value)
+        }
+    }
+})
+
+//    ____                      _                 _                                
+//   |  _ \  _____      ___ __ | | ___   __ _  __| | ___ _ __                      
+//   | | | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|                     
+//   | |_| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |                        
+//   |____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|                        
+
+document.querySelector('#download')?.addEventListener('click', (e) => {
+    // JS really needs better date string formatting tools
+    let today = new Date()
+    let year = today.getFullYear()
+    let month = String(today.getMonth() + 1).padStart(2, '0')
+    let day = String(today.getDate()).padStart(2, '0')
+    let formattedDate = `${year}-${month}-${day}`
+
+    // Fabricate a filename (date + UMRN)
+    let filename = `${formattedDate} ${document.querySelector('#umrn').value || 'Anonymous Patient'}.txt`
+    console.log(filename)
+
+    // Create a text dump
+    let textDump = ''
+    for (let o of document.querySelectorAll('div.output')) {
+        textDump += o.innerText + '\n'
+    }
+
+    // Create sham download link
+	let downloadLink = document.createElement('a')
+	downloadLink.setAttribute('href','data:text/plain;charset=utf-8,' + encodeURIComponent(textDump))
+    downloadLink.setAttribute('download', filename)
+	downloadLink.style.display = "none"
+	document.body.appendChild(downloadLink)
+
+    // Pull the lever, Kronk
+	downloadLink.click()
+})
+
+//     ____                    ____        _   _                                   
+//    / ___|___  _ __  _   _  | __ ) _   _| |_| |_ ___  _ __  ___                  
+//   | |   / _ \| '_ \| | | | |  _ \| | | | __| __/ _ \| '_ \/ __|                 
+//   | |__| (_) | |_) | |_| | | |_) | |_| | |_| || (_) | | | \__ \                 
+//    \____\___/| .__/ \__, | |____/ \__,_|\__|\__\___/|_| |_|___/                 
+//              |_|    |___/                                                       
+
+let allOutputs = document.querySelectorAll('.output')
+for (let o of allOutputs) {
+    // prevent copy button rom stealing focus
+    o.querySelector('.copy')?.addEventListener('mousedown', (e) => {
+        e.preventDefault()
+    })
+
+    // copy output text (when output OR button is clicked)
+    o.addEventListener('click', (e) => {
+        console.log('wow')
+        navigator.clipboard.writeText(o.innerText.trim())
+    })
+}
