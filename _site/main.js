@@ -527,3 +527,41 @@ for (let o of allOutputs) {
         navigator.clipboard.writeText(o.innerText.trim())
     })
 }
+
+//     ____                           _                                            
+//    / ___|___  _ __  ___  ___ _ __ | |_                                          
+//   | |   / _ \| '_ \/ __|/ _ \ '_ \| __|                                         
+//   | |__| (_) | | | \__ \  __/ | | | |_                                          
+//    \____\___/|_| |_|___/\___|_| |_|\__|                                         
+                                 
+
+const consentSnippets = {
+    'consent-ga': `Discussed risks and benefits of GA by prevalence.  
+
+- VERY COMMON: sore throat (45% ETT, 20% LMA), PONV
+- COMMON: minor lip/tongue injury (1 in 100)
+- RARE: damage to teeth, severe allergy, nerve damage
+- VERY RARE: awareness, death (1 in 100,000 ASA 1, 1 in 50,000 for all ASAs)
+
+Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.`,
+    'consent-sedation': `Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.`,
+    'consent-regional': `Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions.`,
+    'consent-neuraxial': `Discussed risks and benefits of spinal anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.`,
+    'consent-blood': `Consented to blood products.`,
+}
+let consentSwitchBox = document.querySelector('div#consent')
+let consentSwitches = consentSwitchBox.querySelectorAll('input[type="checkbox"]')
+let consentOutput = consentSwitchBox.querySelector('[paas-parameter="consent-output"]')
+consentSwitchBox.addEventListener('input', (e) => {
+    output = ""
+    for (let s of consentSwitches) {
+        if (s.checked == true) {
+            let consentType = s.getAttribute('paas-parameter')
+            let consentSnippet = consentSnippets[consentType]
+            output += consentSnippet.trim()
+            output += '\n\n'
+        }
+    }
+    consentOutput.value = output
+    consentOutput.dispatchEvent(new Event('input'))
+})

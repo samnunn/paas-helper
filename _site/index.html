@@ -378,6 +378,25 @@
 {{other-ix}}</template>
                 </div>
             </section>
+            <h2>Consent</h2>
+            <section>
+                <div id="consent">
+                    <label><input type="checkbox" tabindex=0 paas-parameter="consent-ga">General Anaesthesia</label>
+                    <label><input type="checkbox" tabindex=0 paas-parameter="consent-sedation">Sedation</label>
+                    <label><input type="checkbox" tabindex=0 paas-parameter="consent-regional">Regional</label>
+                    <label><input type="checkbox" tabindex=0 paas-parameter="consent-neuraxial">Neuraxial</label>
+                    <label><input type="checkbox" tabindex=0 paas-parameter="consent-blood">Blood Products</label>
+                    <textarea type="text" paas-parameter="consent-output" class="visually-hidden"></textarea>
+                </div>
+                <div class="output">
+                    <input class="copy" value="Copy" type="button">
+                    <div class="rendered-template"></div>
+                    <template>
+{{consent-output}}
+                    </template>
+                </div>
+
+            </section>
 
             <h2>Risk Assessment</h2>
             <section>
@@ -550,6 +569,7 @@
 - Apfel: {{apfel-score}}/4
 - RCRI: {{rcri-score}}/6
 - SORT: {{sort-score}}% (30 day mortality)</template>
+                </div>
             </section>
             <h2>Plan</h2>
             <section>
