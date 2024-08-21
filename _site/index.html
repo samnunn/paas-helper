@@ -12,6 +12,7 @@
     <header>
         <div>
             <h1 id="site-title" class="mr-auto">🤖 <span id="patient-details">PAAS Helper</span></h1>
+            <button id="download">Download</button>
             <select id="deeplinks">
                 <option selected disabled>Deep Links</option>
                 <option deeplink="bossnet" disabled>BOSSNet</option>
@@ -19,7 +20,6 @@
                 <option deeplink="inteleconnect" disabled>IntelleConnect</option>
                 <option deeplink="nacs" disabled>NaCS</option>
             </select>
-            <button id="download">Download</button>
             <button id="reset">Reset</button>
             </div>
         </header>
@@ -185,9 +185,9 @@
                         Previous Anaesthesia
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="pahx" class="bigbox short"></textarea>
                     </label>
-                    <label>
-                        METs
-                        <div class="hstack">
+                    <div class="hstack">
+                        <label>
+                            METs
                             <div class="selectbox">
                                 <select paas-parameter="mets">
                                     <option value="" disabled selected></option>
@@ -195,11 +195,29 @@
                                     <option value="more than 4">≥ 4</option>
                                 </select>
                             </div>
-                            <input type="text" paas-parameter="mets-details" placeholder="Details">
-                        </div>
+                        </label>
+                        <label>
+                            Can Lay Flat
+                            <div class="selectbox">
+                                <select paas-parameter="flat">
+                                    <option value="" disabled selected></option>
+                                    <option value="NOT able to lay flat">No</option>
+                                    <option value="Able to lay flat">Yes</option>
+                                </select>
+                            </div>
+                        </label>
+                    </div>
+                    <label>
+                        Fitness Details
+                        <input type="text" paas-parameter="mets-details" placeholder="">
                     </label>
+                    <hr>
                     <div class="vstack">
                         <div class="hstack">
+                            <label>
+                                Dentition
+                                <input type="text" paas-parameter="teeth" autocomplete="off">
+                            </label>
                             <label>
                                 Mallampati
                                 <div class="selectbox">
@@ -212,15 +230,28 @@
                                     </select>
                                 </div>
                             </label>
+                        </div>
+                        <div class="hstack">
                             <label>
                                 Mouth Opening
                                 <input type="number" min="0" max="7" step="1" paas-parameter="mouth-opening" autocomplete="off">
                             </label>
-                        </div>
-                        <div class="hstack">
                             <label>
                                 TMD
                                 <input type="number" min="0" max="12" step="1" paas-parameter="tmd" autocomplete="off">
+                            </label>
+                        </div>
+                        <div class="hstack">
+                            <label>
+                                Jaw Protrusion
+                                <div class="selectbox">
+                                    <select paas-parameter="jaw-protrusion" autocomplete="off">
+                                        <option value="" disabled selected></option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>No
+                                        <option value="C">C</option>
+                                    </select>
+                                </div>
                             </label>
                             <label>
                                 Neck ROM
@@ -249,24 +280,6 @@
                                 </div>
                             </label>
                             <label>
-                                Jaw Protrusion
-                                <div class="selectbox">
-                                    <select paas-parameter="jaw-protrusion" autocomplete="off">
-                                        <option value="" disabled selected></option>
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>No
-                                        <option value="C">C</option>
-                                    </select>
-                                </div>
-                            </label>
-
-                        </div>
-                        <div class="hstack">
-                            <label>
-                                Dentition
-                                <input type="text" paas-parameter="teeth" autocomplete="off">
-                            </label>
-                            <label>
                                 Vein Quality
                                 <div class="selectbox">
                                     <select paas-parameter="veins" autocomplete="off">
@@ -279,6 +292,7 @@
                                 </div>
                             </label>
                         </div>
+                        <hr>
                         <div class="hstack">
                             <label>
                                 Heart
@@ -301,9 +315,10 @@
                     <template># Previous Anaesthesia
 {{pahx}}
 <br>
-# Physical Fitness
+# Cardiorespiratory Fitness
+- {{flat}}
 - METs: {{mets}}
---&gt; {{mets-details}}
+- {{mets-details}}
 <br>
 # Airway Assessment
 - Mallampati: {{mallampati}}
@@ -355,14 +370,17 @@
                         </label>
                     </div>
                     <label>
+                        Source
+                        <input type="text" paas-parameter="bloods-source" autocomplete="off" placeholder="When and where were these done?">
+                    </label>
+                    <label>
                         ECG
                         <input type="text" paas-parameter="ecg" autocomplete="off">
                     </label>
-                    <div class="vstack">
-                        <label>
-                            Other
-                            <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="other-ix" class="bigbox tiny" placeholder=""></textarea></label>
-                    </div>
+                    <label>
+                        Other
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" paas-parameter="other-ix" class="bigbox short" placeholder=""></textarea>
+                    </label>
                 </div>
                 <div class="output">
                     <input class="copy" value="Copy" type="button">
@@ -385,6 +403,8 @@
                     <label><input type="checkbox" tabindex=0 paas-parameter="consent-sedation">Sedation</label>
                     <label><input type="checkbox" tabindex=0 paas-parameter="consent-regional">Regional</label>
                     <label><input type="checkbox" tabindex=0 paas-parameter="consent-neuraxial">Neuraxial</label>
+                    <label><input type="checkbox" tabindex=0 paas-parameter="consent-artline">Arterial Line</label>
+                    <label><input type="checkbox" tabindex=0 paas-parameter="consent-cvc">Central Venous Access</label>
                     <label><input type="checkbox" tabindex=0 paas-parameter="consent-blood">Blood Products</label>
                     <textarea type="text" paas-parameter="consent-output" class="visually-hidden"></textarea>
                 </div>
@@ -441,18 +461,16 @@
                                 <input type="text" paas-calculator-output paas-parameter="apfel-score" class="visually-hidden">
                             </div>
                         </label>
-                        <label>
-                            ASA
-                            <div class="selectbox">
-                                <select paas-parameter="asa" sort-parameter="asa" paas-sync="asa" required autocomplete="off">
-                                    <option value="" disabled selected></option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                </select>
+                        <label paas-calculator>
+                            OS-MRS
+                            <div>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="osmrs-bmi">BMI ≥50</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="osmrs-sex">Male</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="osmrs-htn">Hypertension</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="osmrs-vte">PE Risk Factors*</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" paas-parameter="osmrs-age">Age ≥ 45</label>
+                                <aside><small>OHS, venous stasis ulcers, previous PE, and/or previous IVC filter</small></aside>
+                                <input type="text" paas-calculator-output paas-parameter="osmrs-score" class="visually-hidden">
                             </div>
                         </label>
                     </div>
@@ -568,6 +586,7 @@
 - STOP-BANG: {{stopbang-score}}/8
 - Apfel: {{apfel-score}}/4
 - RCRI: {{rcri-score}}/6
+- OS-MRS: {{osmrs-score}}/5
 - SORT: {{sort-score}}% (30 day mortality)</template>
                 </div>
             </section>

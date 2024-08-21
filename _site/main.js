@@ -63,7 +63,7 @@ for (let s of sections) {
             output = output.replace(stringtoReplace, "")
         }
 
-        s.outputBox.innerText = output
+        s.outputBox.innerText = output.trim()
     })
 }
 
@@ -82,8 +82,6 @@ for (let c of allCalculators) {
         }
     })
 }
-
-
 
 //    _____         _     _____    _ _ _   _                                       
 //   |_   _|____  _| |_  | ____|__| (_) |_(_)_ __   __ _                           
@@ -187,43 +185,70 @@ for (let i of [weightInput, heightInput]) {
 }
 
 // BMI -> stopbang
+let stopBangBMI = document.querySelector('#stopbang-bmi')
+let osmrsBMI = document.querySelector('[paas-parameter="osmrs-bmi"]')
 bmiOutput.addEventListener('input', (e) => {
-    let stopBangBMI = document.querySelector('#stopbang-bmi')
-    if (parseFloat(e.target.value) > 35) {
+    let bmi = parseFloat(e.target.value)
+    if (bmi > 35) {
         stopBangBMI.checked = true
     } else {
         stopBangBMI.checked = false
     }
+
+    if (bmi >= 50) {
+        osmrsBMI.checked = true
+    } else {
+        osmrsBMI.checked = false
+    }
+
+    stopBangBMI.dispatchEvent(new Event('input', {'bubbles': true}))
+    osmrsBMI.dispatchEvent(new Event('input', {'bubbles': true}))
 })
 
 // SEX -> apfel, stopbang
 let sexInput = document.querySelector('#anthropometry-sex')
 let apfelSexOutput = document.querySelector('#apfel-sex')
 let stopbangSexOutput = document.querySelector('#stopbang-sex')
+let osmrsSex = document.querySelector('[paas-parameter="osmrs-sex"]')
 sexInput.addEventListener('input', (e) => {
     if (sexInput.value == 'M') {
         apfelSexOutput.checked = false
         stopbangSexOutput.checked = true
+        osmrsSex.checked = true
     } else {
         apfelSexOutput.checked = true
         stopbangSexOutput.checked = false
+        osmrsSex.checked = false
     }
-    apfelSexOutput.dispatchEvent(new Event('input'))
-    stopbangSexOutput.dispatchEvent(new Event('input'))
+    apfelSexOutput.dispatchEvent(new Event('input', {'bubbles': true}))
+    stopbangSexOutput.dispatchEvent(new Event('input', {'bubbles': true}))
+    osmrsSex.dispatchEvent(new Event('input', {'bubbles': true}))
 })
 
 // AGE -> stopbang, sort
 let ageInput = document.querySelector('[paas-parameter="age"]')
 let stopbangAgeOutput = document.querySelector('#stopbang-age')
 let sortAgeOutput = document.querySelector('#sort-age')
+let osmrsAge = document.querySelector('[paas-parameter="osmrs-age"]')
 ageInput.addEventListener('input', (e) => {
     sortAgeOutput.value = e.target.value
+    let age = e.target.value
 
-    if (e.target.value > 50) {
+    if (age > 50) {
         stopbangAgeOutput.checked = true
     } else {
         stopbangAgeOutput.checked = false
     }
+    stopbangAgeOutput.dispatchEvent(new Event('input', {'bubbles': true}))
+
+    if (age >= 45) {
+        osmrsAge.checked = true
+    } else {
+        osmrsAge.checked = false
+    }
+    osmrsAge.dispatchEvent(new Event('input', {'bubbles': true}))
+
+
 })
 
 // SMOKING -> apfel
@@ -423,16 +448,6 @@ document.addEventListener('input', (e) => {
     }
 })
 
-let allInputs = document.querySelectorAll('[paas-parameter]')
-for (let i of allInputs) {
-    let parameter = i.getAttribute('paas-parameter')
-    let storedValue = persistentDataProxy[parameter]
-    if (storedValue) {
-        setAnyInputValue(i, storedValue)
-        i.dispatchEvent(new Event('input', {'bubbles': true}))
-    }
-}
-
 let allSections = document.querySelectorAll('section')
 for (let s of allSections) {
     s.dispatchEvent(new Event('input'))
@@ -500,9 +515,7 @@ document.querySelector('#download')?.addEventListener('click', (e) => {
 // RESET
 document.querySelector('#reset')?.addEventListener('click', (e) => {
     if (confirm('Are you sure you want to reset the page?')) {
-        if (confirm('Do you want to download a copy first?')) {
-            downloadDocument()
-        }
+        downloadDocument()
         localStorage.setItem('paas-data', '{}')
         window.location.reload()
     }
@@ -546,22 +559,38 @@ const consentSnippets = {
 Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.`,
     'consent-sedation': `Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.`,
     'consent-regional': `Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions.`,
-    'consent-neuraxial': `Discussed risks and benefits of spinal anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.`,
+    'consent-neuraxial': `Discussed risks and benefits of neuraxial anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.`,
     'consent-blood': `Consented to blood products.`,
+    'consent-artline': `Consented to arterial line placement. Risks discussed include infection, bleeding, nerve damage (parasthesia and/or paralysis, damage to surrounding structures, adverse drug reactions, compartment syndrome, distal ischaemia.`,
+    'consent-cvc': `Consented to central line placement. Risks discussed include infection, bleeding, arterial puncture, pneumothorax, thrombosis, air embolism, pain, vessel damage, arrhythmia.`,
 }
 let consentSwitchBox = document.querySelector('div#consent')
 let consentSwitches = consentSwitchBox.querySelectorAll('input[type="checkbox"]')
 let consentOutput = consentSwitchBox.querySelector('[paas-parameter="consent-output"]')
 consentSwitchBox.addEventListener('input', (e) => {
-    output = ""
+    output = ''
     for (let s of consentSwitches) {
         if (s.checked == true) {
             let consentType = s.getAttribute('paas-parameter')
             let consentSnippet = consentSnippets[consentType]
-            output += consentSnippet.trim()
+            output += consentSnippet
             output += '\n\n'
         }
     }
     consentOutput.value = output
     consentOutput.dispatchEvent(new Event('input'))
 })
+
+// INIT
+
+let allInputs = document.querySelectorAll('[paas-parameter]')
+for (let i of allInputs) {
+    // apply any stored values
+    let parameter = i.getAttribute('paas-parameter')
+    let storedValue = persistentDataProxy[parameter]
+    if (storedValue) {
+        setAnyInputValue(i, storedValue)
+    }
+    // dispatch input event
+    i.dispatchEvent(new Event('input', {'bubbles': true}))
+}
