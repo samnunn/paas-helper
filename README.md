@@ -10,14 +10,14 @@ This is a little web app to help perioperative residents get through their clini
 - **Archiving functionality** to download a nice little markdown summary of your appointment
 - **Deep links** to commonly-used clinical applications (UMRN required)
 
-There are also some smarts about piping demographic and athropometric data into score calculators automatically. Everything is done locally, on-device.
+There are also some smarts about piping demographic and anthropometric data into score calculators automatically. Everything is done locally, on-device.
 
 Static HTML and JavaScript is served with [Cloudflare Pages](https://pages.cloudflare.com).
 
 ## SORT Score
 My department makes heavy use of the [SORT Score](http://sortsurgery.com) for decision-making about perioperative management. The official site is rather clunky, and its server-side component (on which it is totally dependent) is, as far as I can tell, written in awfully-slow R.
 
-To speed things along, I re-implemented the score to run inside the browser tab (along with a few other conventiences, like alphabetising the options). It's lighting fast now. Many thanks to SORT Score contributor [Dr Danny J. Wong](https://dannyjnwong.github.io/about/) for publishing their original [R implementation](https://github.com/dannyjnwong/SORTWebCalc_dev).
+To speed things along, I re-implemented the score to run inside the browser tab (along with a few other conveniences, like alphabetising the options). It's lighting fast now. Many thanks to SORT Score contributor [Dr Danny J. Wong](https://dannyjnwong.github.io/about/) for publishing their original [R implementation](https://github.com/dannyjnwong/SORTWebCalc_dev).
 
 ## Experiments with Embeddings
 Searching manually by category and then sub-category is a pain and frequently leads to dead ends. In `/api-server` you'll find the remnants of some experiments where I used [embeddings](https://www.cloudflare.com/en-gb/learning/ai/what-are-embeddings/) (weighted according to operation frequency) to pick operations from the list. That necessitated running servers and was proving to be not-all-that-useful, so I scrapped it.
