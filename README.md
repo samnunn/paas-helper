@@ -1,4 +1,4 @@
-# [Gas Notes: Clinic](https://clinic.gasnotes.net) 😴
+# [Gas Notes: Clinic Helper](https://clinic.gasnotes.net) 😴
 This is a little web app to help perioperative doctors get through their clinic days. The key features are:
 
 - **Structured data entry** to make sure you get everything you need
