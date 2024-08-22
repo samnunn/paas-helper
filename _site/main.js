@@ -443,7 +443,7 @@ document.addEventListener('input', (e) => {
     let target = e.target.getAttribute('paas-parameter') || ''
     if (['umrn', 'fullname'].includes(target)) {
 
-        document.querySelector('#patient-details').innerText = `${name.length > 0 ? name : 'Gas Notes'} ${name.length > 0 && umrn.length == 8 ? umrn : ''}`
+        document.querySelector('#patient-details').innerText = `${name.length > 0 ? name : 'Clinic Helper'} ${name.length > 0 && umrn.length == 8 ? umrn : ''}`
     }
 })
 
