@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PAAS Helper</title>
+    <title>Clinic – Gas Notes</title>
     <link rel="stylesheet" href="/main.css">
     <link rel="manifest" href="/manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#222f3e" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#222f3e" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#3498db" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#3498db" media="(prefers-color-scheme: light)">
 </head>
 <body>
     <header>
         <div>
-            <h1 id="site-title" class="mr-auto">🤖 <span id="patient-details">PAAS Helper</span></h1>
+            <h1 id="site-title" class="mr-auto">😴 <span id="patient-details">Clinic</span></h1>
             <button id="download">Download</button>
-            <select id="deeplinks">
+            <!-- <select id="deeplinks">
                 <option selected disabled>Deep Links</option>
                 <option deeplink="bossnet" disabled>BOSSNet</option>
                 <option deeplink="ereferrals" disabled>eReferrals</option>
                 <option deeplink="inteleconnect" disabled>IntelleConnect</option>
                 <option deeplink="nacs" disabled>NaCS</option>
-            </select>
+            </select> -->
             <button id="reset">Reset</button>
             </div>
         </header>
@@ -29,7 +29,7 @@
                 <div class="vstack">
                     <div class="hstack">
                         <label class="triple">Full Name<input type="text" id="name" autocomplete="off" paas-parameter="fullname"></label>
-                        <label>UMRN <input paas-autocaps type="text" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-parameter="umrn"></label>
+                        <label>Patient ID <input paas-autocaps type="text" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" paas-parameter="umrn"></label>
                         <label>
                             Mode
                             <div class="selectbox">
@@ -91,7 +91,7 @@
                             <div class="selectbox">
                                 <select paas-parameter="gord">
                                     <option value="" disabled selected></option>
-                                    <option value="no symptoms">No symptoms</option>
+                                    <option value="none">No symptoms</option>
                                     <option value="yes, medicated">Yes, on medication</option>
                                     <option value="yes, NOT medicated">Yes, off medication</option>
                                 </select>
@@ -191,7 +191,7 @@
                             <div class="selectbox">
                                 <select paas-parameter="mets">
                                     <option value="" disabled selected></option>
-                                    <option value="less than 4">&lt; 4</option>
+                                    <option value="LESS than 4">&lt; 4</option>
                                     <option value="more than 4">≥ 4</option>
                                 </select>
                             </div>
@@ -213,11 +213,11 @@
                     </label>
                     <hr>
                     <div class="vstack">
+                        <label>
+                            Dentition
+                            <input type="text" paas-parameter="teeth" autocomplete="off">
+                        </label>
                         <div class="hstack">
-                            <label>
-                                Dentition
-                                <input type="text" paas-parameter="teeth" autocomplete="off">
-                            </label>
                             <label>
                                 Mallampati
                                 <div class="selectbox">
@@ -230,15 +230,27 @@
                                     </select>
                                 </div>
                             </label>
-                        </div>
-                        <div class="hstack">
                             <label>
                                 Mouth Opening
                                 <input type="number" min="0" max="7" step="1" paas-parameter="mouth-opening" autocomplete="off">
                             </label>
+                        </div>
+                        <div class="hstack">
                             <label>
                                 TMD
                                 <input type="number" min="0" max="12" step="1" paas-parameter="tmd" autocomplete="off">
+                            </label>
+                            <label>
+                                Cricothyroid
+                                <div class="selectbox">
+                                    <select paas-parameter="cricothyroid" autocomplete="off">
+                                        <option value="" disabled selected></option>
+                                        <option value="easily palpable">Easily palpable</option>
+                                        <option value="intermediate">Intermidate</option>
+                                        <option value="difficult">Difficult to locate</option>
+                                        <option value="IMPALPABLE">Impalpable</option>
+                                    </select>
+                                </div>
                             </label>
                         </div>
                         <div class="hstack">
@@ -316,14 +328,15 @@
 {{pahx}}
 <br>
 # Cardiorespiratory Fitness
-- {{flat}}
 - METs: {{mets}}
+- {{flat}}
 - {{mets-details}}
 <br>
 # Airway Assessment
 - Mallampati: {{mallampati}}
 - Mouth opening: {{mouth-opening}} cm
 - Thyromental distance: {{tmd}} cm
+- Cricothyroid: {{cricothyroid}}
 - Neck ROM: {{neckrom}}
 - Bearded: {{beard}}
 - Jaw protrusion: {{jaw-protrusion}}
@@ -633,9 +646,9 @@
 {{medication}}</template>
                 </div>
             </section>
-            <div>
-                <p><a href="https://github.com/samnunn/paas-helper">Source</a></p>
-            </div>
+            <footer>
+                <p>© Gas Notes. Check out the source code <a href="https://github.com/samnunn/paas-helper">on GitHub.</a></p>
+            </footer>
         </main>
         <script src="/main.js"></script>
     </body>

@@ -1,6 +1,7 @@
 {
-  "theme_color": "#222f3e",
-  "background_color": "#222f3e",
+  "name": "Gas Notes Clinic",
+  "theme_color": "#3498db",
+  "background_color": "#3498db",
   "display": "standalone",
   "scope": "/",
   "start_url": "/"
