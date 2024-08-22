@@ -1,5 +1,5 @@
-# [PAAS Helper](https://paas.nunn.io) 🤖
-This is a little web app to help perioperative residents get through their clinic days. The key features are:
+# [Gas Notes: Clinic](https://clinic.gasnotes.net) 😴
+This is a little web app to help perioperative doctors get through their clinic days. The key features are:
 
 - **Structured data entry** to make sure you get everything you need
 - **Embedded calculators** for a few risk scoring tools
@@ -15,14 +15,25 @@ There are also some smarts about piping demographic and anthropometric data into
 Static HTML and JavaScript is served with [Cloudflare Pages](https://pages.cloudflare.com).
 
 ## SORT Score
-My department makes heavy use of the [SORT Score](http://sortsurgery.com) for decision-making about perioperative management. The official site is rather clunky, and its server-side component (on which it is totally dependent) is, as far as I can tell, written in awfully-slow R.
+Many perioperative doctors use the [SORT Score](http://sortsurgery.com) for decision-making about perioperative management. The official site is rather clunky, and its server-side component (on which it is totally dependent) is, as far as I can tell, written in awfully-slow R.
 
 To speed things along, I re-implemented the score to run inside the browser tab (along with a few other conveniences, like alphabetising the options). It's lighting fast now. Many thanks to SORT Score contributor [Dr Danny J. Wong](https://dannyjnwong.github.io/about/) for publishing their original [R implementation](https://github.com/dannyjnwong/SORTWebCalc_dev).
 
-## Experiments with Embeddings
-Searching manually by category and then sub-category is a pain and frequently leads to dead ends. In `/api-server` you'll find the remnants of some experiments where I used [embeddings](https://www.cloudflare.com/en-gb/learning/ai/what-are-embeddings/) (weighted according to operation frequency) to pick operations from the list. That necessitated running servers and was proving to be not-all-that-useful, so I scrapped it.
-
-For now.
-
 ## References
 - [Protopapa KL, Simpson JC, Smith NC, Moonesinghe SR. Development and validation of the Surgical Outcome Risk Tool (SORT). Br J Surg. 2014 Dec;101(13):1774-83. doi: 10.1002/bjs.9638. PMID: 25388883; PMCID: PMC4240514.](https://doi.org/10.1002/bjs.9638)
+
+## Open Source
+Gas Notes Clinic is released under the [MIT License](LICENSE.txt). This software makes use of these open source projects:
+
+- [Flask][flask] (BSD-3-Clause License)
+- [SORTWebCalc_dev](https://github.com/dannyjnwong/SORTWebCalc_dev) (MIT License)
+- [pyenv](https://github.com/pyenv/pyenv) (MIT License)
+- [pipenv](https://github.com/pypa/pipenv) (MIT License)
+- [Homebrew](https://github.com/Homebrew/brew) (BSD-2-Clause License)
+- [Twemoji](https://github.com/twitter/twemoji) for the pager (📟) favicon (CC-BY 4.0 License)
+    - Converted to .ico via [favicon.io](https://favicon.io/)
+
+And these closed-source ones:
+
+- [Monodraw](https://monodraw.helftone.com/) for the ASCII art
+- [Flat UI Colors 2](https://flatuicolors.com/)
