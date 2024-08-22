@@ -30,10 +30,9 @@ Gas Notes Clinic is released under the [MIT License](LICENSE.txt). This software
 - [pyenv](https://github.com/pyenv/pyenv) (MIT License)
 - [pipenv](https://github.com/pypa/pipenv) (MIT License)
 - [Homebrew](https://github.com/Homebrew/brew) (BSD-2-Clause License)
-- [Twemoji](https://github.com/twitter/twemoji) for the pager (📟) favicon (CC-BY 4.0 License)
-    - Converted to .ico via [favicon.io](https://favicon.io/)
 
 And these closed-source ones:
 
 - [Monodraw](https://monodraw.helftone.com/) for the ASCII art
 - [Flat UI Colors 2](https://flatuicolors.com/)
+- [favicon.io](https://favicon.io/) for formatting the favicon
