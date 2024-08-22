@@ -25,7 +25,7 @@ To speed things along, I re-implemented the score to run inside the browser tab 
 ## Open Source
 Gas Notes Clinic is released under the [MIT License](LICENSE.txt). This software makes use of these open source projects:
 
-- [Flask][flask] (BSD-3-Clause License)
+- [Flask](https://flask.palletsprojects.com) (BSD-3-Clause License)
 - [SORTWebCalc_dev](https://github.com/dannyjnwong/SORTWebCalc_dev) (MIT License)
 - [pyenv](https://github.com/pyenv/pyenv) (MIT License)
 - [pipenv](https://github.com/pypa/pipenv) (MIT License)
