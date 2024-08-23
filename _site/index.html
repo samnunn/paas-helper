@@ -353,6 +353,10 @@
             <h2>Investigations</h2>
             <section>
                 <div class="vstack">
+                    <label>
+                        Source
+                        <input type="text" paas-parameter="bloods-source" autocomplete="off" placeholder="When and where were these done?">
+                    </label>
                     <div class="hstack">
                         <label>
                             FBC
@@ -384,10 +388,6 @@
                         </label>
                     </div>
                     <label>
-                        Source
-                        <input type="text" paas-parameter="bloods-source" autocomplete="off" placeholder="When and where were these done?">
-                    </label>
-                    <label>
                         ECG
                         <input type="text" paas-parameter="ecg" autocomplete="off">
                     </label>
@@ -400,6 +400,7 @@
                     <input class="copy" value="Copy" type="button">
                     <div class="rendered-template"></div>
                     <template># Investigations
+- {{bloods-source}}
 - FBC: {{fbc}}
 - UEC: {{uec}}
 - LFT: {{lft}}
