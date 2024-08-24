@@ -1,4 +1,4 @@
-let version = "1"
+let version = "2"
 
 let cacheName = `v${version}_data`
 
@@ -15,35 +15,31 @@ let cachedAssetPaths = [
 // install (pre-activation) event
     // waitUntil() accepts a Promise and *waits* for it to resolve
     // alt title: waitForResolutionOfThisPromise(<Promise>)
-self.addEventListener('install', event => {
-    self.skipWaiting()
-    event.waitUntil(install())
-})
-
 async function install() {
-    console.log(`SW ${version}: installing`)
+    console.debug(`SW ${version}: installing`)
 
     let cache = await caches.open(cacheName)
 
     for (let p of cachedAssetPaths) {
         try {
             await cache.add(p)
-            console.log(`SW ${version}: pre-downloaded asset @ ${p}`)
+            console.debug(`SW ${version}: pre-downloaded asset @ ${p}`)
         } catch ({name, message}) {
             console.error(`SW ${version}: failed to pre-download asset @ ${p}`)
         } finally {
             continue
         }
     }
-}
 
-// activation (post-installation) event
-self.addEventListener('activate', (e) => {
-    e.waitUntil(activate())
+    self.skipWaiting()
+}
+self.addEventListener('install', event => {
+    event.waitUntil(install())
 })
 
+// activation (post-installation) event
 async function activate() {
-    console.log(`SW ${version}: activating`)
+    console.debug(`SW ${version}: activating`)
     let allCaches = await caches.keys()
     let badCaches = allCaches.filter((key) => { return key != cacheName })
     for (let c of badCaches) {
@@ -51,6 +47,9 @@ async function activate() {
     }
     await self.clients.claim()
 }
+self.addEventListener('activate', (e) => {
+    e.waitUntil(activate())
+})
 
 // fetch (every request)
 self.addEventListener('fetch', async (e) => {
@@ -63,15 +62,15 @@ self.addEventListener('fetch', async (e) => {
 
 // matching methods
 async function cacheBeforeNetwork(request) {
-    console.log(`SW ${version}: running cacheBeforeNetwork for ${request.url}`)
+    console.debug(`SW ${version}: running cacheBeforeNetwork for ${request.url}`)
 
     // match and return
     let match = await caches.match(request)
     if (match) {
-        console.log(`SW ${version}: ${request.url} served from cache 💾`)
+        console.debug(`SW ${version}: ${request.url} served from cache 💾`)
         return match
     }
     // fall back to network
-    console.log(`SW ${version}: ${request.url} served from network 🛜`)
+    console.debug(`SW ${version}: ${request.url} served from network 🛜`)
     return await fetch(request)
 }
