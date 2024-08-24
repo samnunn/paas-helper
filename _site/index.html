@@ -653,5 +653,10 @@
             </footer>
         </main>
         <script src="/main.js"></script>
+        <script>
+            if ("serviceWorker" in navigator) {
+                const registration = navigator.serviceWorker.register("/sw.js")
+            }
+        </script>
     </body>
     </html>
