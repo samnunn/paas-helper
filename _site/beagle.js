@@ -52,6 +52,7 @@ let warningStrings = {
     ihd: "IHD",
     ccf: "Heart failure",
     insulin: "On insulin",
+    flozin: "On SGLT2i",
 }
 
 let warningHeuristics = {
@@ -75,6 +76,7 @@ let warningHeuristics = {
         (element) => { return element.value.match(/pril|sartan|ipine/i) ? warningStrings['htn'] : null },
         (element) => { return element.value.match(/xab|atran|warf|couma|eliq|xera/i) ? warningStrings['thinners'] : null },
         (element) => { return element.value.match(/morph|trama|tapen|lexi|bupr|adone|oxyc/i) ? warningStrings['opioids'] : null },
+        (element) => { return element.value.match(/floz|xig|jardia/i) ? warningStrings['flozin'] : null },
     ],
     'smoking': [
         (element) => { return element.value.match(/active/i) ? warningStrings['smoker'] : null },
