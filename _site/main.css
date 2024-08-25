@@ -51,7 +51,7 @@ section {
 
     & > div.output {
         background-color: #ecf0f1;
-        margin-top: 1.25rem;
+        margin-top: 1.4rem;
         border-radius: 0.5rem;
         padding: 1rem;
         position: relative;
@@ -115,7 +115,7 @@ section {
 }
 
 /* INPUTS */
-label {
+.label-ish, label {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -144,7 +144,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
         border: none;
         font-size: 1rem;
 
-        padding: 0.5rem 1rem 0.5rem 0.5rem;
+        padding: 0.5rem 2rem 0.5rem 0.5rem;
     
         background-image: var(--chevron);
         background-color: transparent;
@@ -263,4 +263,54 @@ footer {
 
 #umrn {
     text-transform: uppercase;
+}
+
+#issues:has(ul:empty) {
+    display: none;
+}
+
+#warnings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: row;
+    gap: 0.5rem;
+
+    margin: 0;
+    padding: 0;
+
+    & li {
+        list-style-type: none;
+        background-color: #ecf0f1;
+        border: 2px solid lightgray;
+        margin: 0;
+        padding: 0.4rem 0.5rem;
+        border-radius: 0.5rem;
+        color: black;
+
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem;
+
+        transition: all 200ms ease;
+
+        &:hover {
+            background-color: color-mix(in srgb, #ecf0f1, white 40%);
+        }
+        &:hover:active {
+            border-color: color-mix(in srgb, lightgray, black 10%);
+        }
+
+        button {
+            justify-self: right;
+            align-self: center;
+        }
+    }
+
+    & li.added {
+        opacity: 0.4;
+    }
+
+    & >li::before {
+        content: attr(warning);
+    }
 }

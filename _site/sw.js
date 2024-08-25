@@ -1,4 +1,4 @@
-let version = "2"
+let version = "5"
 
 let cacheName = `v${version}_data`
 
@@ -10,6 +10,7 @@ let cachedAssetPaths = [
     'chevrons-down.svg',
     'oplist.json',
     'favicon.ico',
+    'beagle.js',
 ]
 
 // install (pre-activation) event

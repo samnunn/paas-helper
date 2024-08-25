@@ -1,5 +1,43 @@
+//    ____                   _                                                     
+//   | __ )  ___  __ _  __ _| | ___     ***           ****                         
+//   |  _ \ / _ \/ _` |/ _` | |/ _ \   *   ***********    *                        
+//   | |_) |  __/ (_| | (_| | |  __/   ***               *                         
+//   |____/ \___|\__,_|\__, |_|\___|  *    ***********    *                        
+//                     |___/           ****           ****                         
 
 let beagle = new Worker("/beagle.js")
+let warningList = document.querySelector('#warnings')
+beagle.addEventListener('message', (m) => {
+    // activeWarnings = m.data
+    // console.log('kill', warningsToKill)
+    // console.log('keep', activeWarnings)
+    console.info(m.data['type'], m.data['warnings'])
+    if (m.data['type'] == 'beagle-kill') {
+        for (let k of m.data['warnings']) {
+            let toKill = document.querySelector(`[warning="${k}"]`)
+            toKill.remove()
+        }
+    }
+
+    if (m.data['type'] == 'beagle-add') {
+        for (let a of m.data['warnings']) {
+            let toAdd = document.createElement('li')
+            toAdd.setAttribute('warning', a)
+            toAdd.innerHTML = `<button>Add</button>`
+            warningList.appendChild(toAdd)
+        }
+    }
+})
+
+let clinicIssues = document.querySelector('[clinic-parameter="issues"]')
+document.querySelector('#issues')?.addEventListener('click', (e) => {
+    let target = e.target
+    let li = e.target.closest('li')
+    // if (li.classList.contains('added')) return
+    li.classList.add('added')
+    clinicIssues.value = clinicIssues.value == "" ? `- ${li.getAttribute('warning')}` : `${clinicIssues.value}\n- ${li.getAttribute('warning')}`
+    clinicIssues.dispatchEvent(new Event('input', {bubbles: true}))
+})
 
 //    ____                _           _                                            
 //   |  _ \ ___ _ __   __| | ___ _ __(_)_ __   __ _                                
@@ -38,7 +76,7 @@ for (let s of sections) {
         let inputs = s.querySelectorAll('[clinic-parameter]')
         let output = s.template
 
-        // abort is ther is no template
+        // abort if there is no template or [clinic-parameter] inputs
         if (!output) return
         if (inputs.length == 0) return
 
@@ -47,14 +85,10 @@ for (let s of sections) {
             // printed value depends on <input> type
             let value = getAnyInputValue(i)
 
-            // skip blank ones
-            // it'll leave the template behind
-            // which will (along with the entire line) be cleaned up later
-            if (value == "") {
-                continue
-            }
+            // skip blank values and leave the template behind (will be cleaned up later)
+            if (value == "") continue
 
-            // replace in template (first instance only)
+            // replace in template (first instance only, you glutton)
             output = output.replace(`{{${i.getAttribute('clinic-parameter')}}}`, value)
         }
 
@@ -67,6 +101,8 @@ for (let s of sections) {
 
         s.outputBox.innerText = output.trim()
 
+        // send to Beagle for analysis
+        // console.log(e.target.getAttribute('clinic-parameter') || e.target.tagName)
         beagle.postMessage({
             parameter: e.target.getAttribute('clinic-parameter'),
             value: getAnyInputValue(e.target),
@@ -80,12 +116,17 @@ for (let c of allCalculators) {
     c.output = c.querySelector('[clinic-calculator-output]')
     c.checkboxes = c.querySelectorAll('input[type="checkbox"]')
     c.addEventListener('input', (e) => {
+        // prevent autophagy
+        if (e.target.matches('[clinic-calculator-output]')) return
+
         let score = 0
         for (let b of c.checkboxes) {
             score += b.checked ? 1 : 0
         }
         if (c.output) {
             c.output.value = score
+            // this event allows Beagle to interpret the final score
+            c.output.dispatchEvent(new Event('input', {bubbles: true}))
         }
     })
 }
@@ -402,6 +443,7 @@ sortContainer?.addEventListener('input', (e) => {
     }
 
     sortScoreOutput.value = calculateSortScore(requiredData)
+    sortScoreOutput.dispatchEvent(new Event('input', {bubbles: true}))
 })
 
 //    ____        _          ____               _     _                            
