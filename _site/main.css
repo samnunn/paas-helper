@@ -265,8 +265,12 @@ footer {
     text-transform: uppercase;
 }
 
-#issues:has(ul:empty) {
+/* verbose because `issues:has(ul:empty)` doesn't work in Safari */
+#issues {
     display: none;
+}
+#issues:has(li) {
+    display: unset;
 }
 
 #warnings {
@@ -312,5 +316,12 @@ footer {
 
     & >li::before {
         content: attr(warning);
+    }
+
+    @supports (-moz-appearance: none) {
+        & >li::before {
+            position: relative;
+            top: 4px;
+        }
     }
 }
