@@ -1,4 +1,4 @@
-let version = "5"
+let version = "6.1"
 
 let cacheName = `v${version}_data`
 
@@ -11,6 +11,8 @@ let cachedAssetPaths = [
     'oplist.json',
     'favicon.ico',
     'beagle.js',
+    'brightspot.js',
+    'fuzzysort.min.js',
 ]
 
 // install (pre-activation) event

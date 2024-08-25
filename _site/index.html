@@ -13,7 +13,7 @@
     <header>
         <div>
             <h1 id="site-title" class="mr-auto">😴 <span id="patient-details">Clinic Helper</span></h1>
-            <button href="/letter" onclick="
+            <!-- <button href="/letter" onclick="
                 window.open('/letter','targetWindow',
                     `toolbar=no,
                     location=no,
@@ -26,7 +26,7 @@
                 return false;
             ">
             Letters
-            </button>
+            </button> -->
             <button id="download">Download</button>
             <!-- <select id="deeplinks">
                 <option selected disabled>Deep Links</option>
@@ -437,7 +437,7 @@
                     <label><input type="checkbox" tabindex=0 clinic-parameter="consent-blood">Blood Products</label>
                     <textarea type="text" clinic-parameter="consent-output" class="visually-hidden"></textarea>
                 </div>
-                <div class="output">
+                <div class="output" style="margin-top: 0;">
                     <input class="copy" tabindex="1" value="Copy" type="button">
                     <div class="rendered-template"></div>
                     <template># Informed Consent
@@ -457,7 +457,7 @@
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="snorer">Snorer</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="daytime-tiredness">Tiredness</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="observed-apnoea">Observed apnoea</label>
-                                <label><input type="checkbox" tabindex=0 clinic-parameter="hypertensive">Hypertensive</label>
+                                <label><input type="checkbox" tabindex=0 clinic-parameter="hypertensive" clinic-sync="htn">Hypertensive</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-bmi-35" id="stopbang-bmi">BMI > 35</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-age" id="stopbang-age">Age > 50</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-neck">Neck ≥ 40cm</label>
@@ -495,7 +495,7 @@
                             <div>
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-bmi">BMI ≥50</label>
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-sex">Male</label>
-                                <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-htn">Hypertension</label>
+                                <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-htn" clinic-sync="htn">Hypertension</label>
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-vte">PE Risk Factors*</label>
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-age">Age ≥ 45</label>
                                 <aside><small>OHS, venous stasis ulcers, previous PE, and/or previous IVC filter</small></aside>
@@ -505,15 +505,16 @@
                     </div>
                     <h4>SORT Score</h4>
                         <div class="vstack" id="sort-container">
-                            <!-- <form action="/search" method="POST" id="sort-search">
+                            <form id="smart-search">
                                 <label>
-                                    Operation Search ✨
+                                    Smart Search ✨
                                     <div class="hstack">
                                         <input type="search" name="embed">
-                                        <input type="submit" value="Search">
+                                        <!-- <button>Search</button> -->
                                     </div>
                                 </label>
-                            </form> -->
+                            </form>
+                            <ul id="smart-results" class="pill-list"></ul>
                             <label>
                                 Group
                                 <div class="selectbox">
@@ -607,7 +608,7 @@
                         </div>
                         <input type="number" class="visually-hidden" clinic-parameter="sort-score">
                 </div>
-                <div class="output">
+                <div class="output" style="margin-top: 0;">
                     <input class="copy" tabindex="1" value="Copy" type="button">
                     <div class="rendered-template"></div>
                     <template># Risk Assessment
@@ -627,8 +628,8 @@
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="issues" class="bigbox tiny"></textarea>
                     </label>
                     <div class="label-ish" id="issues">
-                        Suggested Issues
-                        <ul id="warnings"></ul>
+                        Suggested Issues ✨
+                        <ul id="warnings" class="pill-list"></ul>
                     </div>
                 </div>
                 <div class="output">
@@ -670,6 +671,7 @@
                 <p>© Gas Notes. Check out the source code <a href="https://github.com/samnunn/gasnotes-clinic">on GitHub.</a></p>
             </footer>
         </main>
+        
         <script src="/main.js"></script>
         <script>
             if ("serviceWorker" in navigator) {

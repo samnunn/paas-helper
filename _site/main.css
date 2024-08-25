@@ -162,21 +162,7 @@ label:has(>input[type="checkbox"]) {
     align-items: center;
     color: black;
 }
-div:has(>input[type='search'] + input[type='submit']) {
-    display: flex;
 
-    & input[type='search'] {
-        flex-grow: 2;
-    }
-    & input[type='submit'] {
-        appearance: none;
-        border: none;
-        outline: none;
-        padding: 0 0.5rem;
-        border-radius: 0.5rem;
-        flex-grow: 0;
-    }
-}
 
 /* Wrapper */
 
@@ -270,10 +256,10 @@ footer {
     display: none;
 }
 #issues:has(li) {
-    display: unset;
+    display: flex;
 }
 
-#warnings {
+.pill-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-auto-flow: row;
@@ -310,14 +296,6 @@ footer {
         }
     }
 
-    & li.added {
-        opacity: 0.4;
-    }
-
-    & >li::before {
-        content: attr(warning);
-    }
-
     @supports (-moz-appearance: none) {
         & >li::before {
             position: relative;
@@ -325,3 +303,30 @@ footer {
         }
     }
 }
+
+#warnings {
+    & li.added {
+        opacity: 0.4;
+    }
+
+    & >li::before {
+        content: attr(warning);
+    }
+}
+
+#smart-results {
+    grid-template-columns: 1fr;
+}
+#smart-results {
+    display: none;
+}
+#smart-search:has(input:focus) + #smart-results {
+    display: grid;
+}
+
+/* #smart-results {
+    display: none;
+}
+#smart-results:has(li) {
+    display: grid;
+} */

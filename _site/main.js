@@ -1,3 +1,144 @@
+//    ____   ___  ____ _____   ____                                                
+//   / ___| / _ \|  _ \_   _| / ___|  ___ ___  _ __ ___                            
+//   \___ \| | | | |_) || |   \___ \ / __/ _ \| '__/ _ \                           
+//    ___) | |_| |  _ < | |    ___) | (_| (_) | | |  __/                           
+//   |____/ \___/|_| \_\|_|   |____/ \___\___/|_|  \___|                           
+                                                                                
+window.addEventListener('load', async (e) => {
+    try {
+        const response = await fetch('/oplist.json')
+        if (!response.ok) {
+            throw new Error(`HTTP error while downloading operation list. Status: ${response.status}`)
+        }
+        window.procedures = await response.json()
+        brightspot.postMessage({
+            'type': 'data_in',
+            'procedures': window.procedures,
+        })
+    } catch (error) {
+        console.error('Error while downloading operation list:', error);
+    }
+})
+
+let sortMainGroup = document.querySelector('#sort-maingroup')
+let sortSubGroup = document.querySelector('#sort-subgroup')
+let sortOperation = document.querySelector('#sort-operation')
+
+sortMainGroup.addEventListener('change', (e) => {
+    // filter operations
+    let subGroups = window.procedures.filter((p) => {
+        return p['MainGroup'] ==  e.target.value
+    })
+    subGroups = subGroups.map((g) => g['SubGroup'])
+    subGroups = subGroups.sort()
+    subGroups = new Set(subGroups)
+    
+    // reset sub-group
+    sortSubGroup.innerHTML = ""
+
+    // add non-option
+    let nonOption = document.createElement('option')
+    nonOption.value = ""
+    nonOption.setAttribute('disabled', true)
+    nonOption.setAttribute('selected', true)
+    sortSubGroup.appendChild(nonOption)
+
+    // render an <option> for each of the subgroups
+    for (let g of subGroups) {
+        let optionElement = document.createElement('option')
+        optionElement.value = g
+        optionElement.innerText = g
+        sortSubGroup.appendChild(optionElement)
+    }
+
+    sortSubGroup.dispatchEvent(new Event('change'))
+})
+
+sortSubGroup.addEventListener('change', (e) => {
+    // filter operations
+    let operations = window.procedures.filter((p) => {
+        return p['SubGroup'] ==  e.target.value
+    })
+    operations = operations.map((g) => g['SurgeryProcedure'])
+    operations = operations.sort()
+    operations = new Set(operations)
+    
+    // reset sub-group
+    sortOperation.innerHTML = ""
+
+    // add non-option
+    let nonOption = document.createElement('option')
+    nonOption.value = ""
+    nonOption.setAttribute('disabled', true)
+    nonOption.setAttribute('selected', true)
+    sortOperation.appendChild(nonOption)
+
+    // render an <option> for each of the operations
+    for (let o of operations) {
+        let optionElement = document.createElement('option')
+        optionElement.value = o
+        optionElement.innerText = o
+        sortOperation.appendChild(optionElement)
+    }
+})
+
+function calculateSortScore(data) {
+    // requires: asa urgency tgv severity malignancy age
+    // unless all keys are present, log error and return empty string
+    let requiredKeys = ['asa', 'age', 'urgency', 'tgv', 'operation', 'malignancy']
+    let hasRequiredKeys = requiredKeys.every((i) => { return data.hasOwnProperty(i) })
+    if (hasRequiredKeys == false) {
+        console.debug('SORT not calculated due to incomplete data:', data)
+        return ""
+    } else {
+        console.info(`SORT Calculator ran with data: \n${JSON.stringify(data, space="    ")}`)
+    }
+
+    // get operation severity
+    let operationData = window.procedures.filter((p) => { return p['SurgeryProcedure'] == data['operation'] })
+    let severity = operationData[0]['SurgeryProcedureSeverity']
+
+    let sortlogit = (
+        (data['asa'] == "3") * 1.411 +
+        (data['asa'] == "4") * 2.388 +
+        (data['asa'] == "5") * 4.081 +
+        (data['urgency'] == "Expedited") * 1.236 +
+        (data['urgency'] == "Urgent") * 1.657 +
+        (data['urgency'] == "Immediate") * 2.452 +
+        (data['tgv'] == "Yes") * 0.712 +
+        (["Xma", "Com"].includes(severity)) * 0.381 +
+        (data['malignancy'] == "Yes") * 0.667 +
+        (65 <= parseInt(data['age']) <= 79) * 0.777 +
+        (parseInt(data['age']) >= 80) * 1.591 -
+        7.366
+    )
+
+    let sortScore =  100 / (1 + Math.E**(0-sortlogit))
+
+    return sortScore.toFixed(2)
+}
+
+let sortScoreOutput = document.querySelector('[clinic-parameter="sort-score"')
+let sortContainer = document.querySelector('#sort-container')
+
+sortContainer?.addEventListener('input', (e) => {
+    let requiredData = {'asa': null, 'age': null, 'urgency': null, 'tgv': null, 'operation': null, 'malignancy': null}
+    for (let k in requiredData) {
+        let targetElement = sortContainer.querySelector(`[clinic-parameter="${k}"]`)
+        let value = getAnyInputValue(targetElement)
+        
+        if (value != "") {
+            requiredData[k] = value
+        } else {
+            sortScoreOutput.value = ""
+            return
+        }
+    }
+
+    sortScoreOutput.value = calculateSortScore(requiredData)
+    sortScoreOutput.dispatchEvent(new Event('input', {bubbles: true}))
+})
+
 //    ____                   _                                                     
 //   | __ )  ___  __ _  __ _| | ___     ***           ****                         
 //   |  _ \ / _ \/ _` |/ _` | |/ _ \   *   ***********    *                        
@@ -29,22 +170,85 @@ beagle.addEventListener('message', (m) => {
     }
 })
 
-let clinicIssues = document.querySelector('[clinic-parameter="issues"]')
-document.querySelector('#issues')?.addEventListener('click', (e) => {
+let issueInputBox = document.querySelector('[clinic-parameter="issues"]')
+let issueContainer = document.querySelector('#issues')
+issueContainer.addEventListener('mousedown', (e) => { e.preventDefault() }) // prevent stealing focus
+issueContainer.addEventListener('click', (e) => {
     let target = e.target
     let li = e.target.closest('li')
     // if (li.classList.contains('added')) return
     li.classList.add('added')
-    clinicIssues.value = clinicIssues.value == "" ? `- ${li.getAttribute('warning')}` : `${clinicIssues.value}\n- ${li.getAttribute('warning')}`
-    clinicIssues.dispatchEvent(new Event('input', {bubbles: true}))
+    issueInputBox.value = issueInputBox.value == "" ? `- ${li.getAttribute('warning')}` : `${issueInputBox.value}\n- ${li.getAttribute('warning')}`
+    issueInputBox.dispatchEvent(new Event('input', {bubbles: true}))
 })
 
-//    ____                _           _                                            
-//   |  _ \ ___ _ __   __| | ___ _ __(_)_ __   __ _                                
-//   | |_) / _ \ '_ \ / _` |/ _ \ '__| | '_ \ / _` |                               
-//   |  _ <  __/ | | | (_| |  __/ |  | | | | | (_| |                               
-//   |_| \_\___|_| |_|\__,_|\___|_|  |_|_| |_|\__, |                               
-//                                            |___/                                       
+//    ____                      _                                                  
+//   / ___|  ___  __ _ _ __ ___| |__                                               
+//   \___ \ / _ \/ _` | '__/ __| '_ \                                              
+//    ___) |  __/ (_| | | | (__| | | |                                             
+//   |____/ \___|\__,_|_|  \___|_| |_|                                             
+                                                                                
+let brightspot = new Worker('/brightspot.js')
+let searchForm = document.querySelector('#smart-search')
+let searchResults = document.querySelector('#smart-results')
+searchForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    let query = searchForm.querySelector('input[type="search"]')?.value
+    if (!query) return
+    brightspot.postMessage({
+        'type': 'search',
+        'query': query,
+    })
+})
+
+brightspot.addEventListener('message', (m) => {
+    let results = m.data
+
+    if (results.length == 0) {
+        searchResults.innerHTML = '<p style="text-align: center; font-weight: bold;">No results 🥺</p>'
+        return
+    }
+
+    let newHTML = ''
+    for (let r of results) {
+        newHTML += `<li maingroup="${r.obj['MainGroup']}" subgroup="${r.obj['SubGroup']}"><span>${r.obj['SurgeryProcedure']}</span><button>Pick</button></li>\n`
+    }
+    searchResults.innerHTML = newHTML
+})
+searchResults.addEventListener('mousedown', (e) => {
+    e.preventDefault() // stop focus stealing
+})
+searchResults.addEventListener('click', (e) => {
+    let target = e.target.closest('li')
+    if (!target) return
+
+    let mainGroup = target.getAttribute('maingroup')
+    let subGroup = target.getAttribute('subgroup')
+    let operationName = target.querySelector('span')?.innerText
+
+    if (!mainGroup || !subGroup || !operationName) return
+
+    try {
+        sortMainGroup.value = mainGroup
+        sortMainGroup.dispatchEvent(new Event('change'))
+    
+        sortSubGroup.value = subGroup
+        sortSubGroup.dispatchEvent(new Event('change'))
+    
+        sortOperation.value = operationName
+        sortOperation.dispatchEvent(new Event('input', {bubbles: true}))
+    } catch (err) {
+        console.error('failed to set operation using beagle result')
+        console.error(err)
+    }
+})
+
+//    _____                    _       _   _                                       
+//   |_   _|__ _ __ ___  _ __ | | __ _| |_(_)_ __   __ _                           
+//     | |/ _ \ '_ ` _ \| '_ \| |/ _` | __| | '_ \ / _` |                          
+//     | |  __/ | | | | | |_) | | (_| | |_| | | | | (_| |                          
+//     |_|\___|_| |_| |_| .__/|_|\__,_|\__|_|_| |_|\__, |                          
+//                      |_|                        |___/                                     
 
 function getAnyInputValue(inputElement) {
     if (inputElement.tagName == 'select' && inputElement.selectedIndex > 0) {
@@ -110,7 +314,12 @@ for (let s of sections) {
     })
 }
 
-// CALCULATORS
+//     ____      _            _       _                                            
+//    / ___|__ _| | ___ _   _| | __ _| |_ ___  _ __ ___                            
+//   | |   / _` | |/ __| | | | |/ _` | __/ _ \| '__/ __|                           
+//   | |__| (_| | | (__| |_| | | (_| | || (_) | |  \__ \                           
+//    \____\__,_|_|\___|\__,_|_|\__,_|\__\___/|_|  |___/                           
+                                                                                
 let allCalculators = document.querySelectorAll('[clinic-calculator]')
 for (let c of allCalculators) {
     c.output = c.querySelector('[clinic-calculator-output]')
@@ -309,142 +518,6 @@ smokingInput.addEventListener('input', (e) => {
     }
 })
 
-//    ____   ___  ____ _____   ____                                                
-//   / ___| / _ \|  _ \_   _| / ___|  ___ ___  _ __ ___                            
-//   \___ \| | | | |_) || |   \___ \ / __/ _ \| '__/ _ \                           
-//    ___) | |_| |  _ < | |    ___) | (_| (_) | | |  __/                           
-//   |____/ \___/|_| \_\|_|   |____/ \___\___/|_|  \___|                           
-                                                                                
-window.addEventListener('load', async (e) => {
-    try {
-        const response = await fetch('/oplist.json')
-        if (!response.ok) {
-            throw new Error(`HTTP error while downloading operation list. Status: ${response.status}`)
-        }
-        window.procedures = await response.json()
-    } catch (error) {
-        console.error('Error while downloading operation list:', error);
-    }
-})
-
-let sortMainGroup = document.querySelector('#sort-maingroup')
-let sortSubGroup = document.querySelector('#sort-subgroup')
-let sortOperation = document.querySelector('#sort-operation')
-
-sortMainGroup.addEventListener('change', (e) => {
-    // filter operations
-    let subGroups = window.procedures.filter((p) => {
-        return p['MainGroup'] ==  e.target.value
-    })
-    subGroups = subGroups.map((g) => g['SubGroup'])
-    subGroups = subGroups.sort()
-    subGroups = new Set(subGroups)
-    
-    // reset sub-group
-    sortSubGroup.innerHTML = ""
-
-    // add non-option
-    let nonOption = document.createElement('option')
-    nonOption.value = ""
-    nonOption.setAttribute('disabled', true)
-    nonOption.setAttribute('selected', true)
-    sortSubGroup.appendChild(nonOption)
-
-    // render an <option> for each of the subgroups
-    for (let g of subGroups) {
-        let optionElement = document.createElement('option')
-        optionElement.value = g
-        optionElement.innerText = g
-        sortSubGroup.appendChild(optionElement)
-    }
-
-    sortSubGroup.dispatchEvent(new Event('change'))
-})
-
-sortSubGroup.addEventListener('change', (e) => {
-    // filter operations
-    let operations = window.procedures.filter((p) => {
-        return p['SubGroup'] ==  e.target.value
-    })
-    operations = operations.map((g) => g['SurgeryProcedure'])
-    operations = operations.sort()
-    operations = new Set(operations)
-    
-    // reset sub-group
-    sortOperation.innerHTML = ""
-
-    // add non-option
-    let nonOption = document.createElement('option')
-    nonOption.value = ""
-    nonOption.setAttribute('disabled', true)
-    nonOption.setAttribute('selected', true)
-    sortOperation.appendChild(nonOption)
-
-    // render an <option> for each of the operations
-    for (let o of operations) {
-        let optionElement = document.createElement('option')
-        optionElement.value = o
-        optionElement.innerText = o
-        sortOperation.appendChild(optionElement)
-    }
-})
-
-function calculateSortScore(data) {
-    // requires: asa urgency tgv severity malignancy age
-    // unless all keys are present, log error and return empty string
-    let requiredKeys = ['asa', 'age', 'urgency', 'tgv', 'operation', 'malignancy']
-    let hasRequiredKeys = requiredKeys.every((i) => { return data.hasOwnProperty(i) })
-    if (hasRequiredKeys == false) {
-        console.debug('SORT not calculated due to incomplete data:', data)
-        return ""
-    } else {
-        console.info(`SORT Calculator started with data: \n${JSON.stringify(data, space="    ")}`)
-    }
-
-    // get operation severity
-    let operationData = window.procedures.filter((p) => { return p['SurgeryProcedure'] == data['operation'] })
-    let severity = operationData[0]['SurgeryProcedureSeverity']
-
-    let sortlogit = (
-        (data['asa'] == "3") * 1.411 +
-        (data['asa'] == "4") * 2.388 +
-        (data['asa'] == "5") * 4.081 +
-        (data['urgency'] == "Expedited") * 1.236 +
-        (data['urgency'] == "Urgent") * 1.657 +
-        (data['urgency'] == "Immediate") * 2.452 +
-        (data['tgv'] == "Yes") * 0.712 +
-        (["Xma", "Com"].includes(severity)) * 0.381 +
-        (data['malignancy'] == "Yes") * 0.667 +
-        (65 <= parseInt(data['age']) <= 79) * 0.777 +
-        (parseInt(data['age']) >= 80) * 1.591 -
-        7.366
-    )
-
-    let sortScore =  100 / (1 + Math.E**(0-sortlogit))
-
-    return sortScore.toFixed(2)
-}
-
-let sortScoreOutput = document.querySelector('[clinic-parameter="sort-score"')
-let sortContainer = document.querySelector('#sort-container')
-
-sortContainer?.addEventListener('input', (e) => {
-    let requiredData = {'asa': null, 'age': null, 'urgency': null, 'tgv': null, 'operation': null, 'malignancy': null}
-    for (let k in requiredData) {
-        let targetElement = sortContainer.querySelector(`[clinic-parameter="${k}"]`)
-        let value = getAnyInputValue(targetElement)
-        
-        if (value != "") {
-            requiredData[k] = value
-        } else {
-            sortScoreOutput.value = ""
-            return
-        }
-    }
-
-    sortScoreOutput.value = calculateSortScore(requiredData)
-    sortScoreOutput.dispatchEvent(new Event('input', {bubbles: true}))
-})
 
 //    ____        _          ____               _     _                            
 //   |  _ \  __ _| |_ __ _  |  _ \ ___ _ __ ___(_)___| |_ ___ _ __   ___ ___       
@@ -508,18 +581,20 @@ for (let s of allSections) {
 //   |____/ \__, |_| |_|\___|                                                      
 //          |___/                                                                  
 
-document.addEventListener('input', (e) => {
-    if (e.target.hasAttribute('clinic-sync')) {
+let allSyncedParameters = document.querySelectorAll('[clinic-sync]')
+for (let i of allSyncedParameters) {
+    i.addEventListener('input', (e) => {
         let allTargets = document.querySelectorAll(`[clinic-sync="${e.target.getAttribute('clinic-sync')}"]`)
         let value = getAnyInputValue(e.target)
         for (let t of allTargets) {
             if (t == e.target) continue
             setAnyInputValue(t, value)
             // prompt re-render of the enclosing <section>'s template
-            t.closest('section').dispatchEvent(new Event('input'))
+            t.closest('[clinic-calculator]').dispatchEvent(new Event('input')) // update calculators
+            t.closest('section').dispatchEvent(new Event('input')) // render output
         }
-    }
-})
+    })
+}
 
 //    ____                      _                 _                                
 //   |  _ \  _____      ___ __ | | ___   __ _  __| | ___ _ __                      
@@ -641,3 +716,41 @@ for (let i of allInputs) {
     // dispatch input event
     i.dispatchEvent(new Event('input', {'bubbles': true}))
 }
+
+//    _____         _     _____                            _                       
+//   |_   _|____  _| |_  | ____|_  ___ __   __ _ _ __   __| | ___ _ __             
+//     | |/ _ \ \/ / __| |  _| \ \/ / '_ \ / _` | '_ \ / _` |/ _ \ '__|            
+//     | |  __/>  <| |_  | |___ >  <| |_) | (_| | | | | (_| |  __/ |               
+//     |_|\___/_/\_\\__| |_____/_/\_\ .__/ \__,_|_| |_|\__,_|\___|_|               
+//                                  |_|                                            
+
+let shortcuts = [
+    { shortcut: '!app', expansion: 'Withhold mediations as per pharmacy letter' },
+    { shortcut: '!rf', expansion: 'Routine fasting advice provided' },
+    { shortcut: '!htn', expansion: 'Hypertension' },
+    { shortcut: '!lip', expansion: 'Dyslipidaemia' },
+    { shortcut: '!end', expansion: '- Routine fasting advice provided\n- Withhold mediations as per pharmacy letter' },
+]
+
+document.body.addEventListener('input', (e) => {
+    if (e.target.matches('textarea')) {
+        let target = e.target
+        let initialCursorPosition = target.selectionStart
+        let precedingText = target.value.slice(0, initialCursorPosition)
+
+        for (let s of shortcuts) {
+            let shortcut = s['shortcut']
+            let expansion = s['expansion']
+            if (precedingText.endsWith(shortcut)) {
+                // manufacture new string
+                let newText = target.value.slice(0, initialCursorPosition - shortcut.length) + expansion + target.value.slice(initialCursorPosition)
+                // replace old string
+                target.value = newText
+                target.closest('section')?.dispatchEvent(new Event('input'))
+                // fix cursor position
+                let newCursorPosition = initialCursorPosition - shortcut.length + expansion.length
+                target.setSelectionRange(newCursorPosition, newCursorPosition)
+            }
+        }
+    }
+})
