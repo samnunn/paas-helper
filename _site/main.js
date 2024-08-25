@@ -75,9 +75,9 @@ for (let s of sections) {
 }
 
 // CALCULATORS
-let allCalculators = document.querySelectorAll('[paas-calculator]')
+let allCalculators = document.querySelectorAll('[clinic-calculator]')
 for (let c of allCalculators) {
-    c.output = c.querySelector('[paas-calculator-output]')
+    c.output = c.querySelector('[clinic-calculator-output]')
     c.checkboxes = c.querySelectorAll('input[type="checkbox"]')
     c.addEventListener('input', (e) => {
         let score = 0
@@ -413,7 +413,7 @@ sortContainer?.addEventListener('input', (e) => {
 // get from localStorage at startup
 let persistentDataStore
 try {
-    persistentDataStore = JSON.parse(localStorage.getItem('paas-data') || '') // JSON parser chokes on empty string if paas-data isn't stored
+    persistentDataStore = JSON.parse(localStorage.getItem('clinic-data') || '') // JSON parser chokes on empty string if clinic-data isn't stored
 } catch {
     persistentDataStore = {}
 }
@@ -432,7 +432,7 @@ let persistentDataProxy = new Proxy(persistentDataStore, {
         // Emit event
 
         // Persist data
-        localStorage.setItem('paas-data', JSON.stringify(object))
+        localStorage.setItem('clinic-data', JSON.stringify(object))
     }
 })
 
@@ -467,8 +467,8 @@ for (let s of allSections) {
 //          |___/                                                                  
 
 document.addEventListener('input', (e) => {
-    if (e.target.hasAttribute('paas-sync')) {
-        let allTargets = document.querySelectorAll(`[paas-sync="${e.target.getAttribute('paas-sync')}"]`)
+    if (e.target.hasAttribute('clinic-sync')) {
+        let allTargets = document.querySelectorAll(`[clinic-sync="${e.target.getAttribute('clinic-sync')}"]`)
         let value = getAnyInputValue(e.target)
         for (let t of allTargets) {
             if (t == e.target) continue
@@ -521,7 +521,7 @@ document.querySelector('#download')?.addEventListener('click', (e) => {
 document.querySelector('#reset')?.addEventListener('click', (e) => {
     if (confirm('Are you sure you want to reset the page?')) {
         downloadDocument()
-        localStorage.setItem('paas-data', '{}')
+        localStorage.setItem('clinic-data', '{}')
         window.location.reload()
     }
 })
