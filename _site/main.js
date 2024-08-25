@@ -1,3 +1,6 @@
+
+let beagle = new Worker("/beagle.js")
+
 //    ____                _           _                                            
 //   |  _ \ ___ _ __   __| | ___ _ __(_)_ __   __ _                                
 //   | |_) / _ \ '_ \ / _` |/ _ \ '__| | '_ \ / _` |                               
@@ -32,13 +35,12 @@ for (let s of sections) {
     s.outputBox = s.querySelector('.rendered-template')
 
     s.addEventListener('input', (e) => {
-        let inputs = s.querySelectorAll('[paas-parameter]')
+        let inputs = s.querySelectorAll('[clinic-parameter]')
         let output = s.template
 
         // abort is ther is no template
-        if (!output) {
-            return
-        }
+        if (!output) return
+        if (inputs.length == 0) return
 
         // populate template with values from the <input> elements
         for (let i of inputs) {
@@ -53,7 +55,7 @@ for (let s of sections) {
             }
 
             // replace in template (first instance only)
-            output = output.replace(`{{${i.getAttribute('paas-parameter')}}}`, value)
+            output = output.replace(`{{${i.getAttribute('clinic-parameter')}}}`, value)
         }
 
         // remove lines containing un-replaced templates
@@ -64,6 +66,11 @@ for (let s of sections) {
         }
 
         s.outputBox.innerText = output.trim()
+
+        beagle.postMessage({
+            parameter: e.target.getAttribute('clinic-parameter'),
+            value: getAnyInputValue(e.target),
+        })
     })
 }
 
@@ -185,7 +192,7 @@ for (let i of [weightInput, heightInput]) {
 
 // BMI -> stopbang
 let stopBangBMI = document.querySelector('#stopbang-bmi')
-let osmrsBMI = document.querySelector('[paas-parameter="osmrs-bmi"]')
+let osmrsBMI = document.querySelector('[clinic-parameter="osmrs-bmi"]')
 bmiOutput.addEventListener('input', (e) => {
     let bmi = parseFloat(e.target.value)
     if (bmi > 35) {
@@ -208,7 +215,7 @@ bmiOutput.addEventListener('input', (e) => {
 let sexInput = document.querySelector('#anthropometry-sex')
 let apfelSexOutput = document.querySelector('#apfel-sex')
 let stopbangSexOutput = document.querySelector('#stopbang-sex')
-let osmrsSex = document.querySelector('[paas-parameter="osmrs-sex"]')
+let osmrsSex = document.querySelector('[clinic-parameter="osmrs-sex"]')
 sexInput.addEventListener('input', (e) => {
     if (sexInput.value == 'M') {
         apfelSexOutput.checked = false
@@ -225,10 +232,10 @@ sexInput.addEventListener('input', (e) => {
 })
 
 // AGE -> stopbang, sort
-let ageInput = document.querySelector('[paas-parameter="age"]')
+let ageInput = document.querySelector('[clinic-parameter="age"]')
 let stopbangAgeOutput = document.querySelector('#stopbang-age')
 let sortAgeOutput = document.querySelector('#sort-age')
-let osmrsAge = document.querySelector('[paas-parameter="osmrs-age"]')
+let osmrsAge = document.querySelector('[clinic-parameter="osmrs-age"]')
 ageInput.addEventListener('input', (e) => {
     sortAgeOutput.value = e.target.value
     let age = e.target.value
@@ -251,7 +258,7 @@ ageInput.addEventListener('input', (e) => {
 })
 
 // SMOKING -> apfel
-let smokingInput = document.querySelector('[paas-parameter="smoking"')
+let smokingInput = document.querySelector('[clinic-parameter="smoking"')
 let apfelSmokingOutput = document.querySelector('#apfel-smoking')
 smokingInput.addEventListener('input', (e) => {
     if (e.target.value != 'active smoker') {
@@ -377,13 +384,13 @@ function calculateSortScore(data) {
     return sortScore.toFixed(2)
 }
 
-let sortScoreOutput = document.querySelector('[paas-parameter="sort-score"')
+let sortScoreOutput = document.querySelector('[clinic-parameter="sort-score"')
 let sortContainer = document.querySelector('#sort-container')
 
 sortContainer?.addEventListener('input', (e) => {
     let requiredData = {'asa': null, 'age': null, 'urgency': null, 'tgv': null, 'operation': null, 'malignancy': null}
     for (let k in requiredData) {
-        let targetElement = sortContainer.querySelector(`[paas-parameter="${k}"]`)
+        let targetElement = sortContainer.querySelector(`[clinic-parameter="${k}"]`)
         let value = getAnyInputValue(targetElement)
         
         if (value != "") {
@@ -429,10 +436,10 @@ let persistentDataProxy = new Proxy(persistentDataStore, {
     }
 })
 
-// listen for input events on any element with paas-parameter
+// listen for input events on any element with clinic-parameter
 document.addEventListener('input', (e) => {
-    if (e.target.hasAttribute('paas-parameter')) {
-        persistentDataProxy[e.target.getAttribute('paas-parameter')] = getAnyInputValue(e.target)
+    if (e.target.hasAttribute('clinic-parameter')) {
+        persistentDataProxy[e.target.getAttribute('clinic-parameter')] = getAnyInputValue(e.target)
     }
 })
 
@@ -440,7 +447,7 @@ document.addEventListener('input', (e) => {
 document.addEventListener('input', (e) => {
     let name = persistentDataProxy['fullname'] || ''
     let umrn = persistentDataProxy['umrn'] || ''
-    let target = e.target.getAttribute('paas-parameter') || ''
+    let target = e.target.getAttribute('clinic-parameter') || ''
     if (['umrn', 'fullname'].includes(target)) {
 
         document.querySelector('#patient-details').innerText = `${name.length > 0 ? name : 'Clinic Helper'} ${name.length > 0 && umrn.length == 8 ? umrn : ''}`
@@ -564,12 +571,12 @@ Specific risks including aspiration, LRTI, post op confusion, covert CVA with po
 }
 let consentSwitchBox = document.querySelector('div#consent')
 let consentSwitches = consentSwitchBox.querySelectorAll('input[type="checkbox"]')
-let consentOutput = consentSwitchBox.querySelector('[paas-parameter="consent-output"]')
+let consentOutput = consentSwitchBox.querySelector('[clinic-parameter="consent-output"]')
 consentSwitchBox.addEventListener('input', (e) => {
     output = ''
     for (let s of consentSwitches) {
         if (s.checked == true) {
-            let consentType = s.getAttribute('paas-parameter')
+            let consentType = s.getAttribute('clinic-parameter')
             let consentSnippet = consentSnippets[consentType]
             output += consentSnippet
             output += '\n\n'
@@ -581,10 +588,10 @@ consentSwitchBox.addEventListener('input', (e) => {
 
 // INIT
 
-let allInputs = document.querySelectorAll('[paas-parameter]')
+let allInputs = document.querySelectorAll('[clinic-parameter]')
 for (let i of allInputs) {
     // apply any stored values
-    let parameter = i.getAttribute('paas-parameter')
+    let parameter = i.getAttribute('clinic-parameter')
     let storedValue = persistentDataProxy[parameter]
     if (storedValue) {
         setAnyInputValue(i, storedValue)

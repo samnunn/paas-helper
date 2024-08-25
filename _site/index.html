@@ -13,6 +13,20 @@
     <header>
         <div>
             <h1 id="site-title" class="mr-auto">😴 <span id="patient-details">Clinic Helper</span></h1>
+            <button href="/letter" onclick="
+                window.open('/letter','targetWindow',
+                    `toolbar=no,
+                    location=no,
+                    status=no,
+                    menubar=no,
+                    scrollbars=yes,
+                    resizable=no,
+                    width=1500,
+                    height=1570`);
+                return false;
+            ">
+            Letters
+            </button>
             <button id="download">Download</button>
             <!-- <select id="deeplinks">
                 <option selected disabled>Deep Links</option>
