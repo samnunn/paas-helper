@@ -19,6 +19,9 @@ Many perioperative doctors use the [SORT Score](http://sortsurgery.com) for deci
 
 To speed things along, I re-implemented the score to run inside the browser tab (along with a few other conveniences, like alphabetising the options). It's lighting fast now. Many thanks to SORT Score contributor [Dr Danny J. Wong](https://dannyjnwong.github.io/about/) for publishing their original [R implementation](https://github.com/dannyjnwong/SORTWebCalc_dev).
 
+## Beagle
+
+
 ## References
 - [Protopapa KL, Simpson JC, Smith NC, Moonesinghe SR. Development and validation of the Surgical Outcome Risk Tool (SORT). Br J Surg. 2014 Dec;101(13):1774-83. doi: 10.1002/bjs.9638. PMID: 25388883; PMCID: PMC4240514.](https://doi.org/10.1002/bjs.9638)
 
@@ -27,6 +30,7 @@ Gas Notes Clinic is released under the [MIT License](LICENSE.txt). This software
 
 - [Flask](https://flask.palletsprojects.com) (BSD-3-Clause License)
 - [SORTWebCalc_dev](https://github.com/dannyjnwong/SORTWebCalc_dev) (MIT License)
+- [fuzzysort](https://github.com/farzher/fuzzysort?tab=readme-ov-file)
 - [pyenv](https://github.com/pyenv/pyenv) (MIT License)
 - [pipenv](https://github.com/pypa/pipenv) (MIT License)
 - [Homebrew](https://github.com/Homebrew/brew) (BSD-2-Clause License)

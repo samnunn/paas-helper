@@ -324,9 +324,52 @@ footer {
     display: grid;
 }
 
-/* #smart-results {
-    display: none;
+dialog {
+    font-family: "Segoe UI Emoji", "Helvetica", sans-serif;
+    background-color: white;
+    border: none;
+    border-radius: 1rem;
+    width: 900px;
+    max-width: calc(100vw - 2rem);
+    padding: 0;
+
+    h3 {
+        text-align: center;
+        font-size: 1rem;
+        margin: 1rem 0;
+    }
+
+    img {
+        width: 70%;
+        margin: 2rem auto;
+        display: block;
+    }
+
+    > div {
+        padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+
+    > div#top {
+        text-align: center;
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin: 2rem 0 1rem 0;
+        }
+    }
+
+    > div#blurb {
+        margin: 3rem 0;
+    }
+
+    > div#buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 2rem;
+        padding: 1rem 0 2rem 0;
+    }
 }
-#smart-results:has(li) {
-    display: grid;
-} */
+
+::backdrop {
+    background-color: rgba(0,0,0,0.75);
+}

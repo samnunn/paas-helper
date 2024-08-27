@@ -1,3 +1,13 @@
+//    ____                  _           __        __         _                     
+//   / ___|  ___ _ ____   _(_) ___ ___  \ \      / /__  _ __| | _____ _ __         
+//   \___ \ / _ \ '__\ \ / / |/ __/ _ \  \ \ /\ / / _ \| '__| |/ / _ \ '__|        
+//    ___) |  __/ |   \ V /| | (_|  __/   \ V  V / (_) | |  |   <  __/ |           
+//   |____/ \___|_|    \_/ |_|\___\___|    \_/\_/ \___/|_|  |_|\_\___|_|           
+                                                                                
+if ("serviceWorker" in navigator) {
+    const registration = navigator.serviceWorker.register("/sw.js")
+}
+
 //    ____   ___  ____ _____   ____                                                
 //   / ___| / _ \|  _ \_   _| / ___|  ___ ___  _ __ ___                            
 //   \___ \| | | | |_) || |   \___ \ / __/ _ \| '__/ _ \                           
@@ -169,7 +179,6 @@ beagle.addEventListener('message', (m) => {
         }
     }
 })
-
 let issueInputBox = document.querySelector('[clinic-parameter="issues"]')
 let issueContainer = document.querySelector('#issues')
 issueContainer.addEventListener('mousedown', (e) => { e.preventDefault() }) // prevent stealing focus
@@ -753,4 +762,20 @@ document.body.addEventListener('input', (e) => {
             }
         }
     }
+})
+
+//   __        __   _                            _____         _                   
+//   \ \      / /__| | ___ ___  _ __ ___   ___  |_   _|____  _| |_                 
+//    \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \   | |/ _ \ \/ / __|                
+//     \ V  V /  __/ | (_| (_) | | | | | |  __/   | |  __/>  <| |_                 
+//      \_/\_/ \___|_|\___\___/|_| |_| |_|\___|   |_|\___/_/\_\\__|                
+                                                                                
+let welcomeDialog = document.querySelector('#big-welcome')
+window.addEventListener('load', (e) => {
+    let todayDate = new Date().toISOString().slice(0,10)
+    let storedDate = localStorage.getItem('clinic-last-welcome-date') || ''
+    if (todayDate != storedDate) {
+        welcomeDialog.showModal()
+    }
+    localStorage.setItem('clinic-last-welcome-date', todayDate)
 })

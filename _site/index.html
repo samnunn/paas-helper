@@ -668,15 +668,37 @@
                 </div>
             </section>
             <footer>
-                <p>© Gas Notes. Check out the source code <a href="https://github.com/samnunn/gasnotes-clinic">on GitHub.</a></p>
+                <p>© Gas Notes. Check out the source code <a href="https://github.com/samnunn/gasnotes-clinic">on GitHub.</a> By using this software, you accept the <a href="#" onclick="welcomeDialog.showModal()">terms of use</a>.</p>
             </footer>
         </main>
-        
+        <dialog id="big-welcome">
+            <div id="top">
+                <h1>Welcome to Clinic Helper <span id="wave">👋</span></h1>
+                <h3>A little app to help perioperative doctors get through their clinic days.</h3>
+            </div>
+            <div id="blurb">
+                <!-- <h2>Features 🤖</h2>
+                <p>So far eh.</p>
+                <ul>
+                    <li>Deez</li>
+                    <li>Nuts</li>
+                </ul> -->
+                <h2>Security 🔐</h2>
+                <p>The information you add to Clinic Helper never leaves your device. Absolutely no patient data is collected.</p>
+                <img src="/clinic_data_safety.svg" alt="">
+                <p>All computations, scores, and data-processing happen on-device. As long as you use this on a work-approved computer, your data is safe.</p>
+                <h2>Responsiblity ⚖️</h2>
+                <p>All efforts have been made to ensure that Clinic Helper won't steer you wrong, but <strong>you are still the doctor</strong>. You are responsible for double-checking your work and treating your own patients.</p>
+                <p>This software is proudly provided free of charge under the <a href="https://github.com/samnunn/gasnotes-clinic/blob/main/LICENSE.txt">MIT License</a>. By using this software, you accept all such liability disclaimed in that license.</p>
+            </div>
+            <h3>Do you accept these terms?</h3>
+            <div id="buttons">
+                <a href="http://gasnotes.net" onclick="localStorage.setItem('clinic-last-welcome-date', '')"><button>Decline</button></a>
+                <form method="dialog">
+                    <button autofocus>Accept</button>
+                </form>
+            </div>
+        </dialog>
         <script src="/main.js"></script>
-        <script>
-            if ("serviceWorker" in navigator) {
-                const registration = navigator.serviceWorker.register("/sw.js")
-            }
-        </script>
     </body>
     </html>
