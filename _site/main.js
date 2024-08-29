@@ -183,9 +183,7 @@ let issueInputBox = document.querySelector('[clinic-parameter="issues"]')
 let issueContainer = document.querySelector('#issues')
 issueContainer.addEventListener('mousedown', (e) => { e.preventDefault() }) // prevent stealing focus
 issueContainer.addEventListener('click', (e) => {
-    let target = e.target
     let li = e.target.closest('li')
-    // if (li.classList.contains('added')) return
     li.classList.add('added')
     issueInputBox.value = issueInputBox.value == "" ? `- ${li.getAttribute('warning')}` : `${issueInputBox.value}\n- ${li.getAttribute('warning')}`
     issueInputBox.dispatchEvent(new Event('input', {bubbles: true}))
@@ -246,6 +244,8 @@ searchResults.addEventListener('click', (e) => {
     
         sortOperation.value = operationName
         sortOperation.dispatchEvent(new Event('input', {bubbles: true}))
+
+        sortMainGroup.focus()
     } catch (err) {
         console.error('failed to set operation using beagle result')
         console.error(err)

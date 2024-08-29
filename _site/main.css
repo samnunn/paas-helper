@@ -318,7 +318,7 @@ footer {
 #smart-results {
     display: none;
 }
-#smart-search:has(input:focus) + #smart-results {
+#smart-search:has(input:focus) + #smart-results:has(li) {
     display: grid;
 }
 
