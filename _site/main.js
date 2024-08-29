@@ -375,45 +375,6 @@ for (let a of allTextAreas) {
     })
 }
 
-//    ____                    _     _       _                                      
-//   |  _ \  ___  ___ _ __   | |   (_)_ __ | | _____                               
-//   | | | |/ _ \/ _ \ '_ \  | |   | | '_ \| |/ / __|                              
-//   | |_| |  __/  __/ |_) | | |___| | | | |   <\__ \                              
-//   |____/ \___|\___| .__/  |_____|_|_| |_|_|\_\___/                              
-//                   |_|                                                           
-
-// let deepLinkTemplates = {
-//     'bossnet':         'https://dmr.hdwa.health.wa.gov.au/bossfunctionlauncher/BOSSFunctionLaunch.aspx?appkey=WEBPAS&function=14000&urn=A1234567',
-//     'nacs':            'https://nacs.hdwa.health.wa.gov.au/#umrn-A1234567',
-//     'ereferrals':      'https://ereferrals.hdwa.health.wa.gov.au/Patient/Overview?umrn=A1234567',
-//     'inteleconnect':   'https://inteleconnect.hdwa.health.wa.gov.au/Portal/app#patients/A1234567',
-// }
-// let umrnInput = document.getElementById('umrn')
-// umrnInput.addEventListener('input', (e) => {
-//     let umrnTester = /^[A-Za-z]\d{7}$/
-//     let valid = umrnTester.test(e.target.value)
-//     if (valid == true) {
-//         for (let t in deepLinkTemplates) {
-//             let targetLink = document.querySelector(`[deeplink="${t}"]`)
-//             let href = deepLinkTemplates[t].replace('A1234567', e.target.value)
-//             targetLink.setAttribute('value', href)
-//             targetLink.removeAttribute('disabled')
-//         }
-//     } else {
-//         let deeplinks = document.querySelectorAll('[deeplink]')
-//         for (let d of deeplinks) {
-//             d.removeAttribute('value')
-//             d.setAttribute('disabled', 'true')
-//         }
-//     }
-// })
-
-// let deepLinkDropdown = document.querySelector('#deeplinks')
-// deepLinkDropdown.addEventListener('change', (e) => {
-//     window.open(e.target.value, '_blank')
-//     e.target.selectedIndex = 0
-// })
-
 //    ____                  _       _    ____                                      
 //   / ___| _ __   ___  ___(_) __ _| |  / ___|__ _ ___  ___  ___                   
 //   \___ \| '_ \ / _ \/ __| |/ _` | | | |   / _` / __|/ _ \/ __|                  
@@ -567,21 +528,10 @@ document.addEventListener('input', (e) => {
     }
 })
 
-// TOP BAR
-document.addEventListener('input', (e) => {
-    let name = persistentDataProxy['fullname'] || ''
-    let umrn = persistentDataProxy['umrn'] || ''
-    let target = e.target.getAttribute('clinic-parameter') || ''
-    if (['umrn', 'fullname'].includes(target)) {
-
-        document.querySelector('#patient-details').innerText = `${name.length > 0 ? name : 'Clinic Helper'} ${name.length > 0 && umrn.length == 8 ? umrn : ''}`
-    }
-})
-
-let allSections = document.querySelectorAll('section')
-for (let s of allSections) {
-    s.dispatchEvent(new Event('input'))
-}
+// let allSections = document.querySelectorAll('section')
+// for (let s of allSections) {
+//     s.dispatchEvent(new Event('input'))
+// }
 
 //    ____                                                                         
 //   / ___| _   _ _ __   ___                                                       

@@ -13,28 +13,7 @@
     <header>
         <div>
             <h1 id="site-title" class="mr-auto">😴 <span id="patient-details">Clinic Helper</span></h1>
-            <!-- <button href="/letter" onclick="
-                window.open('/letter','targetWindow',
-                    `toolbar=no,
-                    location=no,
-                    status=no,
-                    menubar=no,
-                    scrollbars=yes,
-                    resizable=no,
-                    width=1500,
-                    height=1570`);
-                return false;
-            ">
-            Letters
-            </button> -->
             <button id="download">Download</button>
-            <!-- <select id="deeplinks">
-                <option selected disabled>Deep Links</option>
-                <option deeplink="bossnet" disabled>BOSSNet</option>
-                <option deeplink="ereferrals" disabled>eReferrals</option>
-                <option deeplink="inteleconnect" disabled>IntelleConnect</option>
-                <option deeplink="nacs" disabled>NaCS</option>
-            </select> -->
             <button id="reset">Reset</button>
             </div>
         </header>
@@ -42,19 +21,6 @@
             <h2>Patient Details</h2>
             <section>
                 <div class="vstack">
-                    <div class="hstack">
-                        <label class="triple">Full Name<input type="text" id="name" autocomplete="off" clinic-parameter="fullname"></label>
-                        <label>Patient ID <input clinic-autocaps type="text" id="umrn" pattern="[A-Za-z]\d{7}" maxlength="8" spellcheck="false" autocapitalize="on" autocomplete="off" clinic-parameter="umrn"></label>
-                        <label>
-                            Mode
-                            <div class="selectbox">
-                                <select id="mode" clinic-parameter="mode">
-                                    <option value="face-to-face">F2F</option>
-                                    <option value="telephone">TPC</option>
-                                </select>
-                            </div>
-                        </label>
-                    </div>
                     <div class="hstack">
                         <label>Age<input type="number" id="" clinic-parameter="age" min="0" max="125" step="1" autocomplete="off"></label>
                         <label>
@@ -70,6 +36,15 @@
                         <label>Height (cm)<input type="number" step="0.1" min="0" max="300" id="height" clinic-parameter="height" autocomplete="off"></label>
                         <label>Weight (kg)<input type="number" step="0.1"  min="0" max="400" id="weight" clinic-parameter="weight" autocomplete="off"></label>
                         <label>BMI (auto)<input type="text" id="bmi" readonly autocomplete="off" clinic-parameter="bmi"></label>
+                        <label>
+                            Mode
+                            <div class="selectbox">
+                                <select id="mode" clinic-parameter="mode">
+                                    <option value="face-to-face">F2F</option>
+                                    <option value="telephone">TPC</option>
+                                </select>
+                            </div>
+                        </label>
                     </div>
                     <div class="hstack">
                         <label>
