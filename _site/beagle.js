@@ -63,7 +63,7 @@ let warningHeuristics = {
         (element) => { return element.value.match(/apnoea/i) ? warningStrings['osa'] : null },
         (element) => { return element.value.match(/htn|hypertension/i) ? warningStrings['htn'] : null },
         (element) => { return element.value.match(/hf|hfref|hfpef|heart failure|ccf|chf/i) ? warningStrings['ccf'] : null },
-        (element) => { return element.value.match(/t1dm|iidm/i) ? warningStrings['insulin'] : null },
+        (element) => { return element.value.match(/t1dm|t2dm|iddm/i) ? warningStrings['insulin'] : null },
     ],
     'gord': [
         (element) => { return element.value.match(/yes/i) ? warningStrings['gord'] : null },
