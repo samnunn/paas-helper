@@ -281,8 +281,6 @@ footer {
         grid-template-columns: 1fr auto;
         gap: 0.5rem;
 
-        transition: all 200ms ease;
-
         &:hover {
             background-color: color-mix(in srgb, #ecf0f1, white 40%);
         }
