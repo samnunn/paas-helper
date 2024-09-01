@@ -570,7 +570,7 @@ function downloadDocument() {
     let formattedDate = `${year}-${month}-${day}`
 
     // Fabricate a filename (date + UMRN)
-    let filename = `${formattedDate} ${document.querySelector('#umrn').value || 'Anonymous Patient'}.txt`
+    let filename = `${formattedDate} ${document.querySelector('#umrn')?.value || 'Anonymous Patient'}.txt`
 
     // Create a text dump
     let textDump = ''
