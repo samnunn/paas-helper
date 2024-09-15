@@ -1,3 +1,10 @@
+//    ____                   _                                                     
+//   | __ )  ___  __ _  __ _| | ___     ***           ****                         
+//   |  _ \ / _ \/ _` |/ _` | |/ _ \   *   ***********    *                        
+//   | |_) |  __/ (_| | (_| | |  __/   ***               *                         
+//   |____/ \___|\__,_|\__, |_|\___|  *    ***********    *                        
+//                     |___/           ****           ****                         
+
 let activeWarnings = new Set()
 
 onmessage = (element) => {
@@ -28,7 +35,7 @@ onmessage = (element) => {
 let activeWarningsByParameter = {}
 
 let warningStrings = {
-    airway: "Possible difficult airway",
+    airway: "Potential difficult airway",
     badmouth: "Limited mouth opening",
     anaphylaxis: "Known anaphylaxis",
     abx_allergy: "Antibiotic allergy",
@@ -45,10 +52,10 @@ let warningStrings = {
     beard: "Bearded",
     too_sweet: "Poor glycaemic control",
     noflat: "Unable to lay flat",
-    stopbang_bad: "STOP-BANG ≥ 5",
+    stopbang_bad: "High risk of OSA",
     ponv: "PONV",
     opioids: "Opioid tolerance",
-    sort: "SORT ≥ 0.80",
+    sort: "SORT greater than 0.80",
     ihd: "IHD",
     ccf: "Heart failure",
     insulin: "On insulin",
