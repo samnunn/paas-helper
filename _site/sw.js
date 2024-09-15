@@ -1,4 +1,4 @@
-let version = "6.1"
+let version = "7"
 
 let cacheName = `v${version}_data`
 
