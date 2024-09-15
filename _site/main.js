@@ -729,3 +729,27 @@ window.addEventListener('load', (e) => {
     }
     localStorage.setItem('clinic-last-welcome-date', todayDate)
 })
+
+//     ___        _      _           _       _     _                               
+//    / _ \ _   _(_) ___| | __      / \   __| | __| |                              
+//   | | | | | | | |/ __| |/ /____ / _ \ / _` |/ _` |                              
+//   | |_| | |_| | | (__|   <_____/ ___ \ (_| | (_| |                              
+//    \__\_\\__,_|_|\___|_|\_\   /_/   \_\__,_|\__,_|                              
+        
+let quickAddDialog = document.querySelector('#quick-add')
+document.addEventListener("keydown", (e) => {
+	let key = e.key.toLowerCase()
+    if (key === "b" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        quickAddDialog.showModal()
+
+    }
+    if (key === "enter" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        quickAddDialog.close()
+    }
+
+})
+
+//     ____ __  __ ____        _  __                                               
+})
