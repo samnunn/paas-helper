@@ -312,6 +312,13 @@ for (let s of sections) {
             output = output.replace(stringtoReplace, "")
         }
 
+        // remove headers with nothing under them
+        let pointlessHeaderFinder = /^## .+(?=\n*$)(?!\n[^#\s])\n*/gm
+        for (let c of output.matchAll(pointlessHeaderFinder)) {
+            let stringtoReplace = c[0]
+            output = output.replace(stringtoReplace, "")
+        }
+
         s.outputBox.innerText = output.trim()
 
         // send to Beagle for analysis
@@ -328,10 +335,41 @@ for (let s of sections) {
 //   | |   / _` | |/ __| | | | |/ _` | __/ _ \| '__/ __|                           
 //   | |__| (_| | | (__| |_| | | (_| | || (_) | |  \__ \                           
 //    \____\__,_|_|\___|\__,_|_|\__,_|\__\___/|_|  |___/                           
-                                                                                
+   
+let scoreInterpretationFunctions = {
+    'apfel': (score) => {
+        let risk
+        if (score == 0) risk = '10'
+        if (score == 1) risk = '21'
+        if (score == 2) risk = '39'
+        if (score == 3) risk = '61'
+        if (score == 4) risk = '79'
+        return `${risk}% 24-hour PONV risk`
+    },
+    'rcri': (score) => {
+        let risk
+        if (score == 0) risk = '3.9'
+        if (score == 1) risk = '6.0'
+        if (score == 2) risk = '10.1'
+        if (score >= 3) risk = '15'
+        return `${risk}% 30-day MACE risk`
+    },
+    'stopbang': (score) => {
+        let risk
+        if (score >= 0 && score <=2) risk = 'low'
+        if (score >= 3 && score <=4) risk = 'intermediate'
+        if (score >= 5) risk = 'high'
+        return `${risk} OSA risk`
+    },
+}
+
 let allCalculators = document.querySelectorAll('[clinic-calculator]')
 for (let c of allCalculators) {
     c.output = c.querySelector('[clinic-calculator-output]')
+    let interpreter = c.getAttribute('clinic-interpreter') || false
+    if (interpreter && Object.keys(scoreInterpretationFunctions).includes(interpreter)) {
+        c.interpreter = scoreInterpretationFunctions[interpreter]
+    }
     c.checkboxes = c.querySelectorAll('input[type="checkbox"]')
     c.addEventListener('input', (e) => {
         // prevent autophagy
@@ -342,12 +380,30 @@ for (let c of allCalculators) {
             score += b.checked ? 1 : 0
         }
         if (c.output) {
-            c.output.value = score
+            c.output.value = `${score} ${c.interpreter ? '(' + c.interpreter(score) + ')' : ''}`
             // this event allows Beagle to interpret the final score
             c.output.dispatchEvent(new Event('input', {bubbles: true}))
         }
     })
 }
+
+// customElements.define('sim-readout', class extends HTMLElement {
+//     constructor () {
+//         super()
+//         // listen for changes
+//         self.inputs = self.querySelector('input')
+
+//         // update score
+//     }
+
+//     attributeChangedCallback (name, oldValue, newValue) {
+
+//     }
+    
+//     static get observedAttributes () {
+//         return []
+//     }
+// })
 
 //    _____         _     _____    _ _ _   _                                       
 //   |_   _|____  _| |_  | ____|__| (_) |_(_)_ __   __ _                           
@@ -357,20 +413,30 @@ for (let c of allCalculators) {
 //                                                 |___/                           
 
 // AUTO DOT POINTS
+let validDotPoints = ['- ', '--> ']
 let allTextAreas = document.querySelectorAll('textarea.bigbox')
 for (let a of allTextAreas) {
     a.addEventListener('keydown', (e) => {
-        const textarea = e.target
-        const cursorPosition = textarea.selectionStart
-        const currentLine = textarea.value.substring(0, cursorPosition).split('\n').pop()
-    
-        if (e.key == 'Enter' && currentLine.trim().startsWith('- ')) {
-            const newLineText = '\n- '
-            textarea.value = textarea.value.substring(0, cursorPosition) + newLineText + textarea.value.substring(cursorPosition)
-            textarea.selectionStart = cursorPosition + newLineText.length
-            textarea.selectionEnd = cursorPosition + newLineText.length
-            textarea.closest('section').dispatchEvent(new Event('input'))
-            e.preventDefault()
+        if (e.key == 'Enter') {
+            let textarea = e.target
+            let cursorPosition = textarea.selectionStart
+            let currentLine = textarea.value.substring(0, cursorPosition).split('\n').pop().trim()
+            let dotPoint
+            for (let d of validDotPoints) {
+                if (currentLine.startsWith(d)) {
+                    dotPoint = d
+                    break
+                }
+            }
+        
+            if (dotPoint) {
+                let newLineText = `\n${dotPoint}`
+                textarea.value = textarea.value.substring(0, cursorPosition) + newLineText + textarea.value.substring(cursorPosition)
+                textarea.selectionStart = cursorPosition + newLineText.length
+                textarea.selectionEnd = cursorPosition + newLineText.length
+                textarea.closest('section')?.dispatchEvent(new Event('input'))
+                e.preventDefault()
+            }
         }
     })
 }
@@ -412,7 +478,7 @@ for (let i of [weightInput, heightInput]) {
 
 // BMI -> stopbang
 let stopBangBMI = document.querySelector('#stopbang-bmi')
-let osmrsBMI = document.querySelector('[clinic-parameter="osmrs-bmi"]')
+// let osmrsBMI = document.querySelector('[clinic-parameter="osmrs-bmi"]')
 bmiOutput.addEventListener('input', (e) => {
     let bmi = parseFloat(e.target.value)
     if (bmi > 35) {
@@ -421,41 +487,41 @@ bmiOutput.addEventListener('input', (e) => {
         stopBangBMI.checked = false
     }
 
-    if (bmi >= 50) {
-        osmrsBMI.checked = true
-    } else {
-        osmrsBMI.checked = false
-    }
+    // if (bmi >= 50) {
+    //     osmrsBMI.checked = true
+    // } else {
+    //     osmrsBMI.checked = false
+    // }
 
     stopBangBMI.dispatchEvent(new Event('input', {'bubbles': true}))
-    osmrsBMI.dispatchEvent(new Event('input', {'bubbles': true}))
+    // osmrsBMI.dispatchEvent(new Event('input', {'bubbles': true}))
 })
 
 // SEX -> apfel, stopbang
 let sexInput = document.querySelector('#anthropometry-sex')
 let apfelSexOutput = document.querySelector('#apfel-sex')
 let stopbangSexOutput = document.querySelector('#stopbang-sex')
-let osmrsSex = document.querySelector('[clinic-parameter="osmrs-sex"]')
+// let osmrsSex = document.querySelector('[clinic-parameter="osmrs-sex"]')
 sexInput.addEventListener('input', (e) => {
     if (sexInput.value == 'M') {
         apfelSexOutput.checked = false
         stopbangSexOutput.checked = true
-        osmrsSex.checked = true
+        // osmrsSex.checked = true
     } else {
         apfelSexOutput.checked = true
         stopbangSexOutput.checked = false
-        osmrsSex.checked = false
+        // osmrsSex.checked = false
     }
     apfelSexOutput.dispatchEvent(new Event('input', {'bubbles': true}))
     stopbangSexOutput.dispatchEvent(new Event('input', {'bubbles': true}))
-    osmrsSex.dispatchEvent(new Event('input', {'bubbles': true}))
+    // osmrsSex.dispatchEvent(new Event('input', {'bubbles': true}))
 })
 
 // AGE -> stopbang, sort
 let ageInput = document.querySelector('[clinic-parameter="age"]')
 let stopbangAgeOutput = document.querySelector('#stopbang-age')
 let sortAgeOutput = document.querySelector('#sort-age')
-let osmrsAge = document.querySelector('[clinic-parameter="osmrs-age"]')
+// let osmrsAge = document.querySelector('[clinic-parameter="osmrs-age"]')
 ageInput.addEventListener('input', (e) => {
     sortAgeOutput.value = e.target.value
     let age = e.target.value
@@ -467,12 +533,12 @@ ageInput.addEventListener('input', (e) => {
     }
     stopbangAgeOutput.dispatchEvent(new Event('input', {'bubbles': true}))
 
-    if (age >= 45) {
-        osmrsAge.checked = true
-    } else {
-        osmrsAge.checked = false
-    }
-    osmrsAge.dispatchEvent(new Event('input', {'bubbles': true}))
+    // if (age >= 45) {
+    //     osmrsAge.checked = true
+    // } else {
+    //     osmrsAge.checked = false
+    // }
+    // osmrsAge.dispatchEvent(new Event('input', {'bubbles': true}))
 
 
 })
@@ -549,8 +615,8 @@ for (let i of allSyncedParameters) {
             if (t == e.target) continue
             setAnyInputValue(t, value)
             // prompt re-render of the enclosing <section>'s template
-            t.closest('[clinic-calculator]').dispatchEvent(new Event('input')) // update calculators
-            t.closest('section').dispatchEvent(new Event('input')) // render output
+            t.closest('[clinic-calculator]')?.dispatchEvent(new Event('input')) // update calculators
+            t.closest('section')?.dispatchEvent(new Event('input')) // render output
         }
     })
 }
@@ -684,27 +750,30 @@ for (let i of allInputs) {
 //                                  |_|                                            
 
 let shortcuts = [
-    { shortcut: '!app', expansion: 'Withhold mediations as per pharmacy letter' },
+    { shortcut: '!rx', expansion: 'Withhold mediations as per pharmacy letter' },
     { shortcut: '!rf', expansion: 'Routine fasting advice provided' },
     { shortcut: '!htn', expansion: 'Hypertension' },
     { shortcut: '!lip', expansion: 'Dyslipidaemia' },
     { shortcut: '!end', expansion: '- Routine fasting advice provided\n- Withhold mediations as per pharmacy letter' },
+    { shortcut: '!ok', expansion: 'no issues with anaesthesia (CICO, FHx, unplanned ICU admission, etc.)'}
 ]
 
 document.body.addEventListener('input', (e) => {
-    if (e.target.matches('textarea')) {
+    if (e.target.matches('textarea, input')) {
         let target = e.target
         let initialCursorPosition = target.selectionStart
         let precedingText = target.value.slice(0, initialCursorPosition)
 
         for (let s of shortcuts) {
             let shortcut = s['shortcut']
-            let expansion = s['expansion']
             if (precedingText.endsWith(shortcut)) {
+                // get expansion
+                let expansion = s['expansion']
                 // manufacture new string
                 let newText = target.value.slice(0, initialCursorPosition - shortcut.length) + expansion + target.value.slice(initialCursorPosition)
                 // replace old string
                 target.value = newText
+                // fire input event
                 target.closest('section')?.dispatchEvent(new Event('input'))
                 // fix cursor position
                 let newCursorPosition = initialCursorPosition - shortcut.length + expansion.length
@@ -752,4 +821,38 @@ document.addEventListener("keydown", (e) => {
 })
 
 //     ____ __  __ ____        _  __                                               
+//    / ___|  \/  |  _ \      | |/ /                                               
+//   | |   | |\/| | | | |_____| ' /                                                
+//   | |___| |  | | |_| |_____| . \                                                
+//    \____|_|  |_|____/      |_|\_\                                               
+
+window.addEventListener('DOMContentLoaded', (e) => {
+    let allInputs = document.querySelectorAll('[clinic-parameter]')
+    document.allInputs = []
+    for (let i of allInputs) {
+        let bestName = i.closest('label')?.innerText || i.getAttribute('clinic-parameter')
+        document.allInputs.push({
+            'name': bestName,
+            'element': i,
+        })
+    }
+})
+
+let quickFindDialog = document.querySelector('#quick-find')
+let quickFindSearch = document.querySelector('#quick-find-input')
+let quickFindResults = document.querySelector('#quick-find-results')
+document.addEventListener("keydown", (e) => {
+	let key = e.key.toLowerCase()
+    if (key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        quickFindDialog.showModal()
+    }
+})
+quickFindSearch.addEventListener('input', (e) => {
+    let results = fuzzysort.go(e.target.value, document.allInputs, {key: 'name', limit: 5})
+    let html = ''
+    for (let r of results) {
+        html += `<li>${r.obj['name']}</li>`
+    }
+    quickFindResults.innerHTML = html
 })

@@ -20,9 +20,9 @@
         <main class="wrapped">
             <h2>Patient Details</h2>
             <section>
-                <div class="vstack">
+                <div class="input vstack">
                     <div class="hstack">
-                        <label>Age<input type="number" id="" clinic-parameter="age" min="0" max="125" step="1" autocomplete="off"></label>
+                        <label>Age<input type="number" id="" clinic-parameter="age" min="0" max="125" step="1" autocomplete="off" autofocus></label>
                         <label>
                             Sex
                             <div class="selectbox">
@@ -39,9 +39,10 @@
                         <label>
                             Mode
                             <div class="selectbox">
-                                <select id="mode" clinic-parameter="mode">
-                                    <option value="face-to-face">F2F</option>
-                                    <option value="telephone">TPC</option>
+                                <select id="mode" clinic-parameter="mode" clinic-sync="mode">
+                                    <option value="" disabled selected></option>
+                                    <option value="">Face-to-face</option>
+                                    <option value="** TELEPHONE ASSESSMENT ONLY **">Telephone</option>
                                 </select>
                             </div>
                         </label>
@@ -70,7 +71,7 @@
             </section>
             <h2>Medical History</h2>
             <section>
-                <div class="vstack">
+                <div class="input vstack">
                     <label>
                         PMHx
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" clinic-parameter="pmhx" class="bigbox"></textarea>
@@ -147,10 +148,14 @@
                 </div>
             </section>
             <section>
-                <div class="vstack">
+                <div class="input vstack">
                     <label>
                         Medications
-                        <textarea autocomplete="off" autocapitalize="off" clinic-parameter="rx" class="bigbox short"></textarea>
+                        <textarea autocomplete="off" autocapitalize="off" clinic-parameter="rx" class="bigbox "></textarea>
+                    </label>
+                    <label>
+                        Supplements
+                        <textarea autocomplete="off" autocapitalize="off" clinic-parameter="herbs" class="bigbox short"></textarea>
                     </label>
                     <label>
                         Adverse Drug Reactions
@@ -163,6 +168,9 @@
                     <template># Medications
 {{rx}}
 <br>
+# Supplements
+{{herbs}}
+<br>
 # Allergies
 {{allergies}}</template>
                 </div>
@@ -170,38 +178,44 @@
 
             <h2>Anaesthetic History</h2>
             <section>
-                <div class="vstack">
+                <div class="input vstack">
                     <label>
-                        Previous Surgery and Anaesthesia
+                        Previous Surgery
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="pahx" class="bigbox short"></textarea>
                     </label>
+                    <h4>Anaesthesia Summary</h4>
                     <div class="hstack">
-                        <label>
-                            METs
-                            <div class="selectbox">
-                                <select clinic-parameter="mets">
-                                    <option value="" disabled selected></option>
-                                    <option value="LESS than 4">&lt; 4</option>
-                                    <option value="more than 4">≥ 4</option>
-                                </select>
-                            </div>
-                        </label>
-                        <label>
-                            Can Lay Flat
-                            <div class="selectbox">
-                                <select clinic-parameter="flat">
-                                    <option value="" disabled selected></option>
-                                    <option value="NOT able to lay flat">No</option>
-                                    <option value="Able to lay flat">Yes</option>
-                                </select>
-                            </div>
-                        </label>
+                        <div class="vstack">
+                            <label>
+                                BVM
+                                <input type="text" clinic-parameter="bvm" autocomplete="off" placeholder="Difficulty, adjuncts">
+                            </label>
+                            <label>
+                                LMA
+                                <input type="text" clinic-parameter="lma" autocomplete="off" placeholder="Type, size">
+                            </label>
+                            <label>
+                                ETT
+                                <input type="text" clinic-parameter="ett" autocomplete="off" placeholder="Scope, view, BURP">
+                            </label>
+                        </div>
+                        <div class="vstack">
+                            <label>
+                                Agents Used
+                                <input type="text" clinic-parameter="agents" autocomplete="off">
+                            </label>
+                            <label>
+                                Haemodynamics
+                                <input type="text" clinic-parameter="haemodynamics" autocomplete="off">
+                            </label>
+                            <label>
+                                Complications
+                                <input type="text" clinic-parameter="gas-issues" autocomplete="off">
+                            </label>
+                        </div>
+
                     </div>
-                    <label>
-                        Exercise Tolerance
-                        <input type="text" clinic-parameter="mets-details" placeholder="">
-                    </label>
-                    <hr>
+                    <h4>Airway Assessment</h4>
                     <div class="vstack">
                         <label>
                             Dentition
@@ -294,7 +308,34 @@
                                 </div>
                             </label>
                         </div>
-                        <hr>
+                        <h4>Cardiorespiratory Fitness</h4>
+                        <div class="hstack">
+                            <label>
+                                METs
+                                <div class="selectbox">
+                                    <select clinic-parameter="mets">
+                                        <option value="" disabled selected></option>
+                                        <option value="LESS than 4">&lt; 4</option>
+                                        <option value="more than 4">≥ 4</option>
+                                    </select>
+                                </div>
+                            </label>
+                            <label>
+                                Can Lay Flat
+                                <div class="selectbox">
+                                    <select clinic-parameter="flat">
+                                        <option value="" disabled selected></option>
+                                        <option value="NOT able to lay flat">No</option>
+                                        <option value="Able to lay flat">Yes</option>
+                                    </select>
+                                </div>
+                            </label>
+                        </div>
+                        <label>
+                            Exercise Tolerance
+                            <input type="text" clinic-parameter="mets-details" placeholder="">
+                        </label>
+                        <h4>Other Findings</h4>
                         <div class="hstack">
                             <label>
                                 Heart
@@ -310,19 +351,24 @@
                             <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" id="" clinic-parameter="other-examination" class="bigbox tiny"></textarea>
                         </label>
                     </div>
+                    <input type="text" clinic-sync="mode" clinic-parameter="mode" class="visually-hidden">
                 </div>
                 <div class="output">
                     <input class="copy" tabindex="1" value="Copy" type="button">
                     <div class="rendered-template"></div>
-                    <template># Previous Anaesthesia
+                    <template># Previous Surgery
 {{pahx}}
 <br>
-# Cardiorespiratory Fitness
-- METs: {{mets}}
-- Supine: {{flat}}
-- Exercise: {{mets-details}}
+## Anaesthesia Summary
+- BVM: {{bvm}}
+- LMA: {{lma}}
+- ETT: {{ett}}
+- Agents used: {{agents}}
+- Haemodynamics: {{haemodynamics}}
+- Complications: {{gas-issues}}
 <br>
 # Airway Assessment
+- Dentition: {{teeth}}
 - Mallampati: {{mallampati}}
 - Mouth opening: {{mouth-opening}} cm
 - Thyromental distance: {{tmd}} cm
@@ -330,66 +376,74 @@
 - Neck ROM: {{neckrom}}
 - Bearded: {{beard}}
 - Jaw protrusion: {{jaw-protrusion}}
-- Dentition: {{teeth}}
 - Vein quality: {{veins}}
+<br>
+## Cardiorespiratory Fitness
+- METs: {{mets}}
+- Supine: {{flat}}
+- Exercise: {{mets-details}}
 <br>
 # Other Findings
 - Heart sounds: {{heart}}
 - Lung sounds: {{lung}}
-{{other-examination}}</template>
+{{other-examination}}
+
+{{mode}}</template>
                 </div>
             </section>
             <h2>Investigations</h2>
             <section>
-                <div class="vstack">
-                    <label>
-                        Source
-                        <input type="text" clinic-parameter="bloods-source" autocomplete="off" placeholder="When and where were these done?">
-                    </label>
-                    <div class="hstack">
+                <div class="input">
+                    <div class="vstack">
                         <label>
-                            FBC
-                            <input type="text" clinic-parameter="fbc" autocomplete="off">
+                            Source
+                            <input type="text" clinic-parameter="bloods-source" autocomplete="off" placeholder="When were these done?">
+                        </label>
+                        <div class="hstack">
+                            <label>
+                                FBC
+                                <input type="text" clinic-parameter="fbc" autocomplete="off">
+                            </label>
+                            <label>
+                                UEC
+                                <input type="text" clinic-parameter="uec" autocomplete="off">
+                            </label>
+                        </div>
+                        <div class="hstack">
+                            <label>
+                                LFT
+                                <input type="text" clinic-parameter="lft" autocomplete="off">
+                            </label>
+                            <label>
+                                HbA1c
+                                <input type="number" min="4" max="20" step="0.1" clinic-parameter="hba1c" autocomplete="off">
+                            </label>
+                        </div>
+                        <div class="hstack">
+                            <label>
+                                Iron Studies
+                                <input type="text" clinic-parameter="iron" autocomplete="off">
+                            </label>
+                            <label>
+                                Coags
+                                <input type="text" clinic-parameter="coags" autocomplete="off">
+                            </label>
+                        </div>
+                        <label>
+                            ECG
+                            <input type="text" clinic-parameter="ecg" autocomplete="off">
                         </label>
                         <label>
-                            UEC
-                            <input type="text" clinic-parameter="uec" autocomplete="off">
+                            Other
+                            <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="other-ix" class="bigbox short" placeholder=""></textarea>
                         </label>
                     </div>
-                    <div class="hstack">
-                        <label>
-                            LFT
-                            <input type="text" clinic-parameter="lft" autocomplete="off">
-                        </label>
-                        <label>
-                            HbA1c
-                            <input type="number" min="4" max="20" step="0.1" clinic-parameter="hba1c" autocomplete="off">
-                        </label>
-                    </div>
-                    <div class="hstack">
-                        <label>
-                            Iron Studies
-                            <input type="text" clinic-parameter="iron" autocomplete="off">
-                        </label>
-                        <label>
-                            Coags
-                            <input type="text" clinic-parameter="coags" autocomplete="off">
-                        </label>
-                    </div>
-                    <label>
-                        ECG
-                        <input type="text" clinic-parameter="ecg" autocomplete="off">
-                    </label>
-                    <label>
-                        Other
-                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="other-ix" class="bigbox short" placeholder=""></textarea>
-                    </label>
                 </div>
                 <div class="output">
                     <input class="copy" tabindex="1" value="Copy" type="button">
                     <div class="rendered-template"></div>
                     <template># Investigations
-- {{bloods-source}}
+- Source: {{bloods-source}}
 - FBC: {{fbc}}
 - UEC: {{uec}}
 - LFT: {{lft}}
@@ -402,7 +456,7 @@
             </section>
             <h2>Consent</h2>
             <section>
-                <div id="consent">
+                <div class="input" id="consent">
                     <label><input type="checkbox" tabindex=0 clinic-parameter="consent-ga">General Anaesthesia</label>
                     <label><input type="checkbox" tabindex=0 clinic-parameter="consent-sedation">Sedation</label>
                     <label><input type="checkbox" tabindex=0 clinic-parameter="consent-regional">Regional</label>
@@ -424,11 +478,11 @@
 
             <h2>Risk Assessment</h2>
             <section>
-                <div class="vstack">
+                <div class="input">
                     <div class="hstack">
                         <label>
                             STOP-BANG
-                            <div clinic-calculator>
+                            <div clinic-calculator clinic-interpreter="stopbang">
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="snorer">Snorer</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="daytime-tiredness">Tiredness</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="observed-apnoea">Observed apnoea</label>
@@ -437,170 +491,162 @@
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-age" id="stopbang-age">Age > 50</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-neck">Neck ≥ 40cm</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-sex" id="stopbang-sex">Male</label>
-                                <input type="text" clinic-calculator-output clinic-parameter="stopbang-score" class="visually-hidden">
+                                <input type="text" clinic-calculator-output clinic-parameter="stopbang-score" clinic-sync="stopbang-score" class="visually-hidden">
                             </div>
                         </label>
-                        <label clinic-calculator>
+                        <label>
                             RCRI
-                            <div>
+                            <div clinic-calculator clinic-interpreter="rcri">
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-risky" autocomplete="off" id="">Elevated Risk*</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-ihd" autocomplete="off">IHD</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-ccf" autocomplete="off">CCF</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-cva" autocomplete="off">CVA</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-insulin" autocomplete="off">On insulin</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-creatinine" autocomplete="off">Cr > 176.8 µmol/L</label>
-                                <aside><small>* Intraperitoneal, intrathoracic, or suprainguinal vascular surgery</small></aside>
-                                <input type="text" clinic-calculator-output clinic-parameter="rcri-score" class="visually-hidden">
+                                <aside><small>* Intra-peritoneal, intra-thoracic, or supra-inguinal vascular surgery</small></aside>
+                                <input type="text" clinic-calculator-output clinic-parameter="rcri-score" clinic-sync="rcri-score" class="visually-hidden">
                             </div>
                         </label>
-                    </div>
-                    <div class="hstack">
-                        <label clinic-calculator>
+                        <label>
                             Apfel
-                            <div>
+                            <div clinic-calculator clinic-interpreter="apfel">
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-sex" id="apfel-sex">Female</label>
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-smoking" id="apfel-smoking" checked>Non-smoker</label>
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-ponv">Prior PONV</label>
                                 <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-opioids">Postop opioids</label>
-                                <input type="text" clinic-calculator-output clinic-parameter="apfel-score" class="visually-hidden">
-                            </div>
-                        </label>
-                        <label clinic-calculator>
-                            OS-MRS
-                            <div>
-                                <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-bmi">BMI ≥50</label>
-                                <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-sex">Male</label>
-                                <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-htn" clinic-sync="htn">Hypertension</label>
-                                <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-vte">PE Risk Factors*</label>
-                                <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="osmrs-age">Age ≥ 45</label>
-                                <aside><small>OHS, venous stasis ulcers, previous PE, and/or previous IVC filter</small></aside>
-                                <input type="text" clinic-calculator-output clinic-parameter="osmrs-score" class="visually-hidden">
+                                <input type="text" clinic-calculator-output clinic-parameter="apfel-score" clinic-sync="apfel-score" class="visually-hidden">
                             </div>
                         </label>
                     </div>
-                    <h4>SORT Score</h4>
-                        <div class="vstack" id="sort-container">
-                            <form id="smart-search">
+                    <input type="text" clinic-sync="stopbang-score" clinic-parameter="stopbang-score" class="visually-hidden">
+                    <input type="text" clinic-sync="rcri-score" clinic-parameter="rcri-score" class="visually-hidden">
+                    <input type="text" clinic-sync="apfel-score" clinic-parameter="apfel-score" class="visually-hidden">
+                    <input type="text" clinic-sync="osmrs-score" clinic-parameter="osmrs-score" class="visually-hidden">
+                    <div class="vstack">
+                        <h4>SORT Score</h4>
+                            <div class="vstack" id="sort-container">
+                                <form id="smart-search">
+                                    <label>
+                                        Smart Search ✨
+                                        <div class="hstack">
+                                            <input type="search" name="embed">
+                                            <!-- <button>Search</button> -->
+                                        </div>
+                                    </label>
+                                </form>
+                                <ul id="smart-results" class="pill-list"></ul>
                                 <label>
-                                    Smart Search ✨
-                                    <div class="hstack">
-                                        <input type="search" name="embed">
-                                        <!-- <button>Search</button> -->
-                                    </div>
-                                </label>
-                            </form>
-                            <ul id="smart-results" class="pill-list"></ul>
-                            <label>
-                                Group
-                                <div class="selectbox">
-                                    <select id="sort-maingroup">
-                                        <option value="" selected disabled></option>
-                                        <option value="Abdomen (excluding urinary and reproductive organs)">Abdomen (excluding urinary and reproductive organs)</option>
-                                        <option value="Bones, joints and connective tissue/tendon muscle">Bones, joints and connective tissue/tendon muscle</option>
-                                        <option value="Breast">Breast</option>
-                                        <option value="Ear, nose and throat">Ear, nose and throat</option>
-                                        <option value="Endoscopic gastrointestinal procedures">Endoscopic gastrointestinal procedures</option>
-                                        <option value="Eye and orbital contents">Eye and orbital contents</option>
-                                        <option value="Face, mouth, salivary and thyroid">Face, mouth, salivary and thyroid</option>
-                                        <option value="Female reproductive organs">Female reproductive organs</option>
-                                        <option value="Interventional Radiology">Interventional Radiology</option>
-                                        <option value="Neurosurgery (Brain, cranium and intracranial organs)">Neurosurgery (Brain, cranium and intracranial organs)</option>
-                                        <option value="Obstetrics (Pregnancy and confinement)">Obstetrics (Pregnancy and confinement)</option>
-                                        <option value="Skin and subcutaneous tissue">Skin and subcutaneous tissue</option>
-                                        <option value="Spine">Spine</option>
-                                        <option value="Thorax and intra-thoracic organs">Thorax and intra-thoracic organs</option>
-                                        <option value="Urinary system and male reproductive organs">Urinary system and male reproductive organs</option>
-                                        <option value="Vascular System">Vascular System</option>
-                                    </select>
-                                </div>
-                            </label>
-                            <label>
-                                Sub-Group
-                                <div class="selectbox">
-                                    <select id="sort-subgroup">
-                                        <option value="" selected disabled></option>
-                                    </select>
-                                </div>
-                            </label>
-                            <label>
-                                Operation
-                                <div class="selectbox">
-                                    <select id="sort-operation" clinic-parameter="operation" required>
-                                        <option value="" selected disabled></option>
-                                    </select>
-                                </div>
-                            </label>
-                            <div class="hstack">
-                                <label>Age<input type="number" clinic-parameter="age" id="sort-age" min="0" max="125" step="1" required autocomplete="off"></label>
-                                <label>
-                                    ASA
+                                    Group
                                     <div class="selectbox">
-                                        <select clinic-parameter="asa" clinic-sync="asa" autocomplete="off">
-                                            <option value="" disabled selected></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
+                                        <select id="sort-maingroup">
+                                            <option value="" selected disabled></option>
+                                            <option value="Abdomen (excluding urinary and reproductive organs)">Abdomen (excluding urinary and reproductive organs)</option>
+                                            <option value="Bones, joints and connective tissue/tendon muscle">Bones, joints and connective tissue/tendon muscle</option>
+                                            <option value="Breast">Breast</option>
+                                            <option value="Ear, nose and throat">Ear, nose and throat</option>
+                                            <option value="Endoscopic gastrointestinal procedures">Endoscopic gastrointestinal procedures</option>
+                                            <option value="Eye and orbital contents">Eye and orbital contents</option>
+                                            <option value="Face, mouth, salivary and thyroid">Face, mouth, salivary and thyroid</option>
+                                            <option value="Female reproductive organs">Female reproductive organs</option>
+                                            <option value="Interventional Radiology">Interventional Radiology</option>
+                                            <option value="Neurosurgery (Brain, cranium and intracranial organs)">Neurosurgery (Brain, cranium and intracranial organs)</option>
+                                            <option value="Obstetrics (Pregnancy and confinement)">Obstetrics (Pregnancy and confinement)</option>
+                                            <option value="Skin and subcutaneous tissue">Skin and subcutaneous tissue</option>
+                                            <option value="Spine">Spine</option>
+                                            <option value="Thorax and intra-thoracic organs">Thorax and intra-thoracic organs</option>
+                                            <option value="Urinary system and male reproductive organs">Urinary system and male reproductive organs</option>
+                                            <option value="Vascular System">Vascular System</option>
                                         </select>
                                     </div>
                                 </label>
                                 <label>
-                                    Ugency
+                                    Sub-Group
                                     <div class="selectbox">
-                                        <select clinic-parameter="urgency" required>
-                                            <option value="Elective" selected>Elective</option>
-                                            <option value="Expedited">Expedited</option>
-                                            <option value="Urgent">Urgent</option>
-                                            <option value="Immediate">Immediate</option>
+                                        <select id="sort-subgroup">
+                                            <option value="" selected disabled></option>
                                         </select>
                                     </div>
                                 </label>
+                                <label>
+                                    Operation
+                                    <div class="selectbox">
+                                        <select id="sort-operation" clinic-parameter="operation" required>
+                                            <option value="" selected disabled></option>
+                                        </select>
+                                    </div>
+                                </label>
+                                <div class="hstack">
+                                    <label>Age<input type="number" clinic-parameter="age" id="sort-age" min="0" max="125" step="1" required autocomplete="off"></label>
+                                    <label>
+                                        ASA
+                                        <div class="selectbox">
+                                            <select clinic-parameter="asa" clinic-sync="asa" autocomplete="off">
+                                                <option value="" disabled selected></option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                            </select>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        Ugency
+                                        <div class="selectbox">
+                                            <select clinic-parameter="urgency" required>
+                                                <option value="Elective" selected>Elective</option>
+                                                <option value="Expedited">Expedited</option>
+                                                <option value="Urgent">Urgent</option>
+                                                <option value="Immediate">Immediate</option>
+                                            </select>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="hstack">
+                                    <label>
+                                        Thoracics, GI, or vascular?
+                                        <div class="selectbox">
+                                            <select clinic-parameter="tgv" required>
+                                                <option value="" disabled selected></option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        Malignancy?
+                                        <div class="selectbox">
+                                            <select clinic-parameter="malignancy" required>
+                                                <option value="" disabled selected></option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="hstack">
-                                <label>
-                                    Thoracics, GI, or vascular?
-                                    <div class="selectbox">
-                                        <select clinic-parameter="tgv" required>
-                                            <option value="" disabled selected></option>
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
-                                        </select>
-                                    </div>
-                                </label>
-                                <label>
-                                    Malignancy?
-                                    <div class="selectbox">
-                                        <select clinic-parameter="malignancy" required>
-                                            <option value="" disabled selected></option>
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
-                                        </select>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        <input type="number" class="visually-hidden" clinic-parameter="sort-score">
+                            <input type="number" class="visually-hidden" clinic-parameter="sort-score">
+                    </div>
+
                 </div>
                 <div class="output" style="margin-top: 0;">
                     <input class="copy" tabindex="1" value="Copy" type="button">
                     <div class="rendered-template"></div>
                     <template># Risk Assessment
 - ASA: {{asa}}
-- STOP-BANG: {{stopbang-score}}/8
-- Apfel: {{apfel-score}}/4
-- RCRI: {{rcri-score}}/6
-- OS-MRS: {{osmrs-score}}/5
+- STOP-BANG: {{stopbang-score}}
+- Apfel: {{apfel-score}}
+- RCRI: {{rcri-score}}
 - SORT: {{sort-score}}% (30 day mortality)</template>
                 </div>
             </section>
             <h2>Plan</h2>
             <section>
-                <div class="vstack">
+                <div class="input vstack">
                     <label>
                         Key Issues
-                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="issues" class="bigbox tiny"></textarea>
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="issues" clinic-sync="issues" class="bigbox tiny"></textarea>
                     </label>
                     <div class="label-ish" id="issues">
                         Suggested Issues ✨
@@ -615,10 +661,10 @@
                 </div>
             </section>
             <section>
-                <div class="vstack">
+                <div class="input vstack">
                     <label>
                         Anaesthetic Plan
-                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="plan" class="bigbox tiny"></textarea>
+                        <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="plan" clinic-sync="plan" class="bigbox tiny"></textarea>
                     </label>
                 </div>
                 <div class="output">
@@ -629,7 +675,7 @@
                 </div>
             </section>
             <section>
-                <div class="vstack">
+                <div class="input vstack">
                     <label>
                         Medications and Fasting
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="medication" class="bigbox tiny"></textarea>
@@ -674,6 +720,31 @@
                 </form>
             </div>
         </dialog>
+        <dialog id="quick-add">
+            <div class="hstack">
+                <label>
+                    Key Issues
+                    <textarea onfocus="this.selectionStart = this.selectionEnd = this.value.length" autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="issues" clinic-sync="issues" class="bigbox"></textarea>
+                </label>
+                <label>
+                    Anaesthetic Plan
+                    <textarea onfocus="this.selectionStart = this.selectionEnd = this.value.length" autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="plan" clinic-sync="plan" class="bigbox"></textarea>
+                </label>
+            </div>
+            <form method="dialog" style="margin: 1rem 0 0 0; float: right;">
+                <button>Done</button>
+            </form>
+
+        </dialog>
+        <dialog id="quick-find">
+            <input type="search" id="quick-find-input">
+            <ul id="quick-find-results"></ul>
+            <form method="dialog" style="margin: 1rem 0 0 0; float: right;">
+                <button>Done</button>
+            </form>
+
+        </dialog>
+        <script src="/fuzzysort.min.js"></script>
         <script src="/main.js"></script>
     </body>
     </html>
