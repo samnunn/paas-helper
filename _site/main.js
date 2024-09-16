@@ -815,7 +815,7 @@ document.addEventListener("keydown", (e) => {
     }
     if (key === "enter" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        quickAddDialog.close()
+        document.querySelector('dialog[open]').close()
     }
 
 })
@@ -827,12 +827,11 @@ document.addEventListener("keydown", (e) => {
 //    \____|_|  |_|____/      |_|\_\                                               
 
 window.addEventListener('DOMContentLoaded', (e) => {
-    let allInputs = document.querySelectorAll('[clinic-parameter]')
+    let allInputs = document.querySelectorAll('[clinic-search]')
     document.allInputs = []
     for (let i of allInputs) {
-        let bestName = i.closest('label')?.innerText || i.getAttribute('clinic-parameter')
         document.allInputs.push({
-            'name': bestName,
+            'name': i.getAttribute('clinic-search') || 'Unknown Parameter',
             'element': i,
         })
     }
@@ -843,16 +842,34 @@ let quickFindSearch = document.querySelector('#quick-find-input')
 let quickFindResults = document.querySelector('#quick-find-results')
 document.addEventListener("keydown", (e) => {
 	let key = e.key.toLowerCase()
-    if (key === "k" && (e.metaKey || e.ctrlKey)) {
+    if ((key === "k" && (e.metaKey || e.ctrlKey)) || key == "esc") {
         e.preventDefault()
         quickFindDialog.showModal()
     }
 })
 quickFindSearch.addEventListener('input', (e) => {
     let results = fuzzysort.go(e.target.value, document.allInputs, {key: 'name', limit: 5})
-    let html = ''
+    quickFindResults.innerHTML = ''
     for (let r of results) {
-        html += `<li>${r.obj['name']}</li>`
+        let li = document.createElement('li')
+        li.innerHTML = `${r.obj['name']}<button tabindex="2">Go</button>`
+        li.onclick = (e) => {
+            // scroll into view and focus
+            // setTimeout() seems to be required here
+            r.obj['element'].scrollIntoView({ block: "center", inline: "nearest"})
+            setTimeout(() => { r.obj['element'].focus() }, 0)
+            // be gone
+            quickFindDialog.close()
+            // reset
+            quickFindSearch.value = ''
+            quickFindResults.innerHTML = ''
+        }
+        quickFindResults.appendChild(li)
     }
-    quickFindResults.innerHTML = html
+})
+quickFindSearch.addEventListener("keydown", (e) => {
+    if (e.key == "Enter") {
+        quickFindResults.querySelector('li')?.click()
+    }
+
 })

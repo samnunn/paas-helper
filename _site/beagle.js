@@ -66,11 +66,11 @@ let warningHeuristics = {
     // MEDICAL HISTORY
     'pmhx': [
         (element) => { return element.value.match(/G[OE]RD/i) ? warningStrings['gord'] : null },
-        (element) => { return element.value.match(/OSA/i) ? warningStrings['osa'] : null },
+        (element) => { return element.value.match(/OSA|apnoea/i) ? warningStrings['osa'] : null },
         (element) => { return element.value.match(/apnoea/i) ? warningStrings['osa'] : null },
         (element) => { return element.value.match(/htn|hypertension/i) ? warningStrings['htn'] : null },
         (element) => { return element.value.match(/hf|hfref|hfpef|heart failure|ccf|chf/i) ? warningStrings['ccf'] : null },
-        (element) => { return element.value.match(/t1dm|t2dm|iddm/i) ? warningStrings['insulin'] : null },
+        (element) => { return element.value.match(/t1dm|t2dm|iddm|diabet/i) ? warningStrings['insulin'] : null },
     ],
     'gord': [
         (element) => { return element.value.match(/yes/i) ? warningStrings['gord'] : null },
