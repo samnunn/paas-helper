@@ -174,7 +174,7 @@ beagle.addEventListener('message', (m) => {
         for (let a of m.data['warnings']) {
             let toAdd = document.createElement('li')
             toAdd.setAttribute('warning', a)
-            toAdd.innerHTML = `<button>Add</button>`
+            toAdd.innerHTML = `<button tabindex="0">Add</button>`
             warningList.appendChild(toAdd)
         }
     }
@@ -523,7 +523,6 @@ let stopbangAgeOutput = document.querySelector('#stopbang-age')
 let sortAgeOutput = document.querySelector('#sort-age')
 // let osmrsAge = document.querySelector('[clinic-parameter="osmrs-age"]')
 ageInput.addEventListener('input', (e) => {
-    sortAgeOutput.value = e.target.value
     let age = e.target.value
 
     if (age > 50) {
@@ -755,7 +754,7 @@ let shortcuts = [
     { shortcut: '!htn', expansion: 'Hypertension' },
     { shortcut: '!lip', expansion: 'Dyslipidaemia' },
     { shortcut: '!end', expansion: '- Routine fasting advice provided\n- Withhold mediations as per pharmacy letter' },
-    { shortcut: '!ok', expansion: 'no issues with anaesthesia (CICO, FHx, unplanned ICU admission, etc.)'}
+    { shortcut: '!ok', expansion: 'no issues with anaesthesia (PONV, FHx, airway disater, unplanned ICU admission, etc.)'}
 ]
 
 document.body.addEventListener('input', (e) => {
@@ -817,7 +816,12 @@ document.addEventListener("keydown", (e) => {
         e.preventDefault()
         document.querySelector('dialog[open]').close()
     }
-
+})
+quickAddDialog.addEventListener('keydown', (e) => {
+    if (e.key == "Tab") {
+        e.preventDefault()
+        quickAddDialog.querySelector('textarea:not(:focus)')?.focus()
+    }
 })
 
 //     ____ __  __ ____        _  __                                               
@@ -865,11 +869,51 @@ quickFindSearch.addEventListener('input', (e) => {
             quickFindResults.innerHTML = ''
         }
         quickFindResults.appendChild(li)
+        quickFindResults.firstChild.setAttribute('aria-selected', 'true')
     }
 })
 quickFindSearch.addEventListener("keydown", (e) => {
     if (e.key == "Enter") {
-        quickFindResults.querySelector('li')?.click()
+        quickFindResults.querySelector('[aria-selected]')?.click()
     }
+    if (e.key == "ArrowDown") {
+        e.preventDefault()
+        let currentlySelected = quickFindResults.querySelector('[aria-selected]')
+        let nextElement = currentlySelected.nextElementSibling
+        currentlySelected.removeAttribute('aria-selected')
+        if (nextElement) {
+            // go to next
+            nextElement.setAttribute('aria-selected', 'true')
+        } else {
+            // go to top
+            quickFindResults.firstElementChild.setAttribute('aria-selected', 'true')
+        }
+    }
+    if (e.key == "ArrowUp") {
+        e.preventDefault()
+        let currentlySelected = quickFindResults.querySelector('[aria-selected]')
+        let previousElement = currentlySelected.previousElementSibling
+        currentlySelected.removeAttribute('aria-selected')
+        if (previousElement) {
+            // go to next
+            previousElement.setAttribute('aria-selected', 'true')
+        } else {
+            // go to top
+            quickFindResults.lastElementChild.setAttribute('aria-selected', 'true')
+        }
+    }
+})
 
+let shortcutsMenu = document.querySelector('#shortcuts-menu')
+shortcutsMenu.addEventListener('change', (e) => {
+    let option = e.target.options[e.target.selectedIndex]
+    option.click()
+    e.target.value = 'initial'
+})
+
+document.querySelector('#quick-find-button')?.addEventListener('click', (e) => {
+    quickFindDialog.showModal()
+})
+document.querySelector('#quick-add-button')?.addEventListener('click', (e) => {
+    quickAddDialog.showModal()
 })

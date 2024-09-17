@@ -13,6 +13,11 @@
     <header>
         <div>
             <h1 id="site-title" class="mr-auto">😴 <span id="patient-details">Clinic Helper</span></h1>
+            <select id="shortcuts-menu">
+                <option value="initial" selected disabled>Shortcuts</option>
+                <option id="quick-find-button">Quick Find (⌘K)</option>
+                <option id="quick-add-button">Quick Add (⌘B)</option>
+            </select>
             <button id="download">Download</button>
             <button id="reset">Reset</button>
             </div>
@@ -22,7 +27,7 @@
             <section>
                 <div class="input vstack">
                     <div class="hstack">
-                        <label>Age<input type="number" id="" clinic-parameter="age" clinic-search="Age" min="0" max="125" step="1" autocomplete="off" autofocus></label>
+                        <label>Age<input type="number" id="" clinic-parameter="age" clinic-sync="age" clinic-search="Age" min="0" max="125" step="1" autocomplete="off" autofocus></label>
                         <label>
                             Sex
                             <div class="selectbox">
@@ -76,6 +81,20 @@
                         PMHx
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" clinic-search="Past Medical History (PMHx)" id="" clinic-parameter="pmhx" class="bigbox"></textarea>
                     </label>
+                    <h4>Systems Review</h4>
+                    <label>
+                        Recent Illness
+                        <div class="hstack">
+                            <div class="selectbox">
+                                <select clinic-parameter="recently-ill" clinic-search="Recent Illness" autocomplete="off">
+                                    <option value="" selected disabled></option>
+                                    <option value="YES">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <input type="text" placeholder="Details" autocomplete="off" clinic-parameter="recently-ill-details">
+                        </div>
+                    </label>
                     <label>
                         GORD
                         <div class="hstack">
@@ -90,6 +109,33 @@
                             <input type="text" clinic-parameter="gord-details" placeholder="Details">
                         </div>
                     </label>
+                    <div class="hstack">
+                        <label>
+                            METs
+                            <div class="selectbox">
+                                <select clinic-parameter="mets" clinic-search="Metabolic Equivalents (METs)">
+                                    <option value="" disabled selected></option>
+                                    <option value="LESS than 4">&lt; 4</option>
+                                    <option value="more than 4">≥ 4</option>
+                                </select>
+                            </div>
+                        </label>
+                        <label>
+                            Can Lay Flat
+                            <div class="selectbox">
+                                <select clinic-parameter="flat" clinic-search="Able to Lay Flat">
+                                    <option value="" disabled selected></option>
+                                    <option value="NOT able to lay flat">No</option>
+                                    <option value="Able to lay flat">Yes</option>
+                                </select>
+                            </div>
+                        </label>
+                    </div>
+                    <label>
+                        Exercise Tolerance
+                        <input type="text" clinic-parameter="mets-details" clinic-search="Exercise Tolerance" placeholder="">
+                    </label>
+                    <h4>Social History</h4>
                     <label>
                         Smoking
                         <div class="hstack">
@@ -134,8 +180,15 @@
                     <div class="rendered-template"></div>
                     <template># PMHx
 {{pmhx}}
+<br>
+# Systems Review
+- Recent illness: {{recently-ill}}
+--&gt; {{recently-ill-details}}
 - GORD: {{gord}}
 --&gt; {{gord-details}}
+- METs: {{mets}}
+- Supine: {{flat}}
+- Exercise: {{mets-details}}
 <br>
 # SHx
 - Smoking: {{smoking}}
@@ -308,33 +361,6 @@
                                 </div>
                             </label>
                         </div>
-                        <h4>Cardiorespiratory Fitness</h4>
-                        <div class="hstack">
-                            <label>
-                                METs
-                                <div class="selectbox">
-                                    <select clinic-parameter="mets" clinic-search="Metabolic Equivalents (METs)">
-                                        <option value="" disabled selected></option>
-                                        <option value="LESS than 4">&lt; 4</option>
-                                        <option value="more than 4">≥ 4</option>
-                                    </select>
-                                </div>
-                            </label>
-                            <label>
-                                Can Lay Flat
-                                <div class="selectbox">
-                                    <select clinic-parameter="flat" clinic-search="Able to Lay Flat">
-                                        <option value="" disabled selected></option>
-                                        <option value="NOT able to lay flat">No</option>
-                                        <option value="Able to lay flat">Yes</option>
-                                    </select>
-                                </div>
-                            </label>
-                        </div>
-                        <label>
-                            Exercise Tolerance
-                            <input type="text" clinic-parameter="mets-details" clinic-search="Exercise Tolerance" placeholder="">
-                        </label>
                         <h4>Other Findings</h4>
                         <div class="hstack">
                             <label>
@@ -377,11 +403,6 @@
 - Bearded: {{beard}}
 - Jaw protrusion: {{jaw-protrusion}}
 - Vein quality: {{veins}}
-<br>
-## Cardiorespiratory Fitness
-- METs: {{mets}}
-- Supine: {{flat}}
-- Exercise: {{mets-details}}
 <br>
 # Other Findings
 - Heart sounds: {{heart}}
@@ -576,7 +597,7 @@
                                     </div>
                                 </label>
                                 <div class="hstack">
-                                    <label>Age<input type="number" clinic-parameter="age" id="sort-age" min="0" max="125" step="1" required autocomplete="off"></label>
+                                    <label>Age<input type="number" clinic-parameter="age" clinic-sync="age" id="sort-age" min="0" max="125" step="1" required autocomplete="off"></label>
                                     <label>
                                         ASA-PS
                                         <div class="selectbox">
@@ -732,18 +753,17 @@
                 </label>
             </div>
             <form method="dialog" style="margin: 1rem 0 0 0; float: right;">
-                <!-- <p> ↳ Esc to exit</p> -->
-                <p></p>
-                <button>Done</button>
+                <div class="popup-info"><span class="key">tab</span> to switch  <span class="key">esc</span> to close</div>
+                <button>Save and Close</button>
             </form>
         </dialog>
         <dialog id="quick-find">
             <input type="text" id="quick-find-input" autocomplete="off" autocapitalize="off" tabindex="2" placeholder="Search ✨" autofocus>
             <ul id="quick-find-results" class="pill-list"></ul>
             <form method="dialog" style="margin: 1rem 0 0 0; float: right;">
-                <button>Done</button>
+                <div class="popup-info"><span class="key">⬆</span><span class="key">⬇</span> to navigate  <span class="key">⏎</span> to go  <span class="key">esc</span> to close</div>
+                <button>Close</button>
             </form>
-
         </dialog>
         <script src="/fuzzysort.min.js"></script>
         <script src="/main.js"></script>
