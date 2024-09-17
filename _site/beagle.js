@@ -35,14 +35,14 @@ onmessage = (element) => {
 let activeWarningsByParameter = {}
 
 let warningStrings = {
-    airway: "Potential difficult airway",
+    airway: "Potentially challenging airway",
     badmouth: "Limited mouth opening",
     anaphylaxis: "Known anaphylaxis",
     abx_allergy: "Antibiotic allergy",
     obesity: "Obesity",
     gord: "GORD",
     osa: "OSA",
-    ckd: "Renal impairment",
+    ckd: "Abnormal renal function",
     smoker: "Active smoker",
     htn: "Hypertension",
     thinners: "Anticoagulated",
@@ -52,14 +52,15 @@ let warningStrings = {
     beard: "Bearded",
     too_sweet: "Poor glycaemic control",
     noflat: "Unable to lay flat",
-    stopbang_bad: "High risk of OSA",
+    stopbang_bad: "High OSA risk",
     ponv: "PONV",
     opioids: "Opioid tolerance",
     sort: "SORT greater than 0.80",
     ihd: "IHD",
     ccf: "Heart failure",
     insulin: "On insulin",
-    flozin: "On SGLT2i",
+    flozin: "On SGLT2 inhibitor",
+    recently_ill: "Recent illness",
 }
 
 let warningHeuristics = {
@@ -129,6 +130,15 @@ let warningHeuristics = {
     'beard': [
         (element) => { return element.value.match(/won't/i) ? warningStrings['beard'] : null },
     ],
+    'bvm': [
+        (element) => { return element.value.match(/diff|2|two|gued|opa|npa|naso|oro|fail/i) ? warningStrings['airway'] : null },
+    ],
+    'lma': [
+        (element) => { return element.value.match(/diff|seal|poor|fail/i) ? warningStrings['airway'] : null },
+    ],
+    'ett': [
+        (element) => { return element.value.match(/diff|3|4|AFO|CICO|FONA|fail/i) ? warningStrings['airway'] : null },
+    ],
     // FITNESS
     'mets': [
         (element) => { return element.value.match(/less/i) ? warningStrings['mets'] : null },
@@ -141,6 +151,9 @@ let warningHeuristics = {
     ],
     'flat': [
         (element) => { return element.value.match(/not/i) ? warningStrings['noflat'] : null },
+    ],
+    'recently-ill': [
+        (element) => { return element.value.match(/yes/i) ? warningStrings['recently_ill'] : null },
     ],
     // SCORES
     'stopbang-score': [
