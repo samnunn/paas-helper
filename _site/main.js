@@ -118,10 +118,23 @@ function calculateSortScore(data) {
         (data['tgv'] == "Yes") * 0.712 +
         (["Xma", "Com"].includes(severity)) * 0.381 +
         (data['malignancy'] == "Yes") * 0.667 +
-        (65 <= parseInt(data['age']) <= 79) * 0.777 +
+        (parseInt(data['age']) >= 65 && parseInt(data['age']) <= 79) * 0.777 +
         (parseInt(data['age']) >= 80) * 1.591 -
         7.366
     )
+
+    // if (data['asa'] == "3") console.debug('asa 3 -> 1.411')
+    // if (data['asa'] == "4") console.debug('asa 4 -> 2.388')
+    // if (data['asa'] == "5") console.debug('asa 5 -> 4.081')
+    // if (data['urgency'] == "Expedited") console.debug('expedited -> 1.236')
+    // if (data['urgency'] == "Urgent") console.debug('urgent -> 1.657')
+    // if (data['urgency'] == "Immediate") console.debug('immediate -> 2.452')
+    // if (data['tgv'] == "Yes") console.debug('tgv -> 0.712')
+    // if (["Xma", "Com"].includes(severity)) console.debug('xmaj/complex -> 0.381')
+    // if (data['malignancy'] == "Yes") console.debug('malignancy -> 0.667')
+    // if (parseInt(data['age']) >= 65 && parseInt(data['age']) <= 79) console.debug('age 65-79 -> 0.777')
+    // if (parseInt(data['age']) >= 80) console.debug('age ≤ 80 -> 1.591')
+    // console.debug('-7.366')
 
     let sortScore =  100 / (1 + Math.E**(0-sortlogit))
 
