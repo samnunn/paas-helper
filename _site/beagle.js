@@ -58,7 +58,7 @@ let warningStrings = {
     sort: "SORT greater than 0.80",
     ihd: "IHD",
     ccf: "Heart failure",
-    insulin: "On insulin",
+    insulin: "Diabetic",
     flozin: "On SGLT2 inhibitor",
     recently_ill: "Recent illness",
 }
