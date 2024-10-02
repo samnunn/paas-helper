@@ -175,9 +175,13 @@ let suggestionsList = document.querySelector('#management-suggestions')
 suggestionsList.currentSuggestions = {}
 
 beagle.addEventListener('message', (m) => {
-    console.info(m.data['type'], m.data)
+    // console.info(m.data['type'], m.data)
     
+    // add bones
     if (m.data['type'] == 'beagle-bone-add') {
+        
+        if (m.data.name == "anonymous") return
+
         let toAdd = document.createElement('li')
         toAdd.setAttribute('beagle-bone-name', m.data.name)
         toAdd.setAttribute('clinic-text', m.data.name)
@@ -185,11 +189,13 @@ beagle.addEventListener('message', (m) => {
         boneList.appendChild(toAdd)
     }
     
+    // delete bones
     if (m.data['type'] == 'beagle-bone-delete') {
         let staleIssue = document.querySelector(`[beagle-bone-name="${m.data.name}"]`)
         staleIssue?.remove()
     }
     
+    // add suggestions
     if (m.data['type'] == 'beagle-suggestion-add') {
         let toAdd = document.createElement('li')
         toAdd.setAttribute('beagle-suggestion-name', m.data.suggestion)
@@ -198,6 +204,7 @@ beagle.addEventListener('message', (m) => {
         suggestionsList.appendChild(toAdd)
     }
     
+    // add suggestions
     if (m.data['type'] == 'beagle-suggestion-delete') {
         let staleSuggestion = document.querySelector(`[beagle-suggestion-name="${m.data.suggestion}"]`)
         staleSuggestion?.remove()
@@ -939,6 +946,12 @@ quickFindSearch.addEventListener("keydown", (e) => {
     }
 })
 
+//    ____  _                _             _                                       
+//   / ___|| |__   ___  _ __| |_ ___ _   _| |_ ___                                 
+//   \___ \| '_ \ / _ \| '__| __/ __| | | | __/ __|                                
+//    ___) | | | | (_) | |  | || (__| |_| | |_\__ \                                
+//   |____/|_| |_|\___/|_|   \__\___|\__,_|\__|___/                                
+                                                                                
 let shortcutsMenu = document.querySelector('#shortcuts-menu')
 shortcutsMenu.addEventListener('change', (e) => {
     let option = e.target.options[e.target.selectedIndex]

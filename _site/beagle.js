@@ -69,7 +69,7 @@ function getBones(inputData) {
         let boneDoesMatch = b.test(inputData)
         if (boneDoesMatch == true) {
             let conditionalSuggestions = b.getConditionalSuggestions(inputData)
-            let allSuggestions = b.defaultSuggestions.concat(conditionalSuggestions?.suggestions || [])
+            let allSuggestions = b.defaultSuggestions.concat(conditionalSuggestions)
             let foundBone = {
                 name: b.name,
                 citation: b.citation,
@@ -125,22 +125,59 @@ class Bone {
     }
     
     getConditionalSuggestions(inputData) {
+        let conditionalSuggestions = []
         for (let conditionalGroup of this.conditionalSuggestions) {
             if (conditionalGroup?.matchStrategy == "all") {
-                if (conditionalGroup.matchRules.every( (r) => runRule(r, inputData) )) return {
-                    suggestions: conditionalGroup.suggestions,
+                if (conditionalGroup.matchRules.every( (r) => runRule(r, inputData) )) {
+                    conditionalSuggestions = conditionalSuggestions.concat(conditionalGroup.suggestions)
                 }
             } else {
-                if (conditionalGroup.matchRules.some( (r) => runRule(r, inputData) )) return {
-                    suggestions: conditionalGroup.suggestions,
+                if (conditionalGroup.matchRules.some( (r) => runRule(r, inputData) )) {
+                    conditionalSuggestions = conditionalSuggestions.concat(conditionalGroup.suggestions)
                 }
             }
         }
-        return null
+        return conditionalSuggestions
     }
 }
 
 let boneData = [
+    {
+        name: "anonymous",
+        citation: "",
+        matchStrategy: "any",
+        matchRules: [
+            (inputData) => true,
+        ],
+        defaultSuggestions: [
+            // "foobar",
+        ],
+        conditionalSuggestions: [
+            {
+                matchStrategy: "any",
+                matchRules: [
+                    (inputData) => parseFloat(inputData['sort-score']) > 1.5,
+                ],
+                suggestions: [
+                    "Admit to HDU/ICU bed",
+                ],
+            },
+            {
+                matchStrategy: "any",
+                matchRules: [
+                    (inputData) => {
+                        let sort = parseFloat(inputData['sort-score'])
+                        if (0.80 <= sort && sort <= 1.5) return true
+                    },
+                ],
+                suggestions: [
+                    "Admit to monitored bed",
+                ],
+            },
+        ],
+        severityGrades: [
+        ],
+    },
     {
         name: "PONV",
         citation: "https://www.ashp.org/-/media/assets/policy-guidelines/docs/endorsed-documents/endorsed-documents-fourth-consensus-guidelines-postop-nausea-vomiting.pdf",
@@ -159,7 +196,6 @@ let boneData = [
                 matchRules: [
                     (inputData) => [1,2].includes(parseInt(inputData['apfel-score'])),
                 ],
-                description: "moderate risk",
                 suggestions: [
                     "Give two anti-emetics",
                 ],
@@ -169,7 +205,6 @@ let boneData = [
                 matchRules: [
                     (inputData) => [3,4].includes(parseInt(inputData['apfel-score'])),
                 ],
-                description: "high risk",
                 suggestions: [
                     "Give 3-4 anti-emetics",
                 ],
@@ -220,7 +255,6 @@ let boneData = [
                 matchRules: [
                     (inputData) => parseFloat(inputData['hba1c']) >= 8,
                 ],
-                description: "poor control",
                 suggestions: [
                     "Advice for poorly-controlled diabetics",
                 ],
