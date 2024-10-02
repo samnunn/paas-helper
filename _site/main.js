@@ -185,7 +185,7 @@ beagle.addEventListener('message', (m) => {
         let toAdd = document.createElement('li')
         toAdd.setAttribute('beagle-bone-name', m.data.name)
         toAdd.setAttribute('clinic-text', m.data.name)
-        toAdd.innerHTML = `<span>${m.data.name}${m.data?.severity == 'default' ? '' : ' (' + m.data?.severity +')' }</span><button tabindex="0">Add</button>`
+        toAdd.innerHTML = `<span>${m.data.name}</span><button tabindex="0">Add</button>`
         boneList.appendChild(toAdd)
     }
     
