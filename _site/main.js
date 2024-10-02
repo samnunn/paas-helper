@@ -170,37 +170,54 @@ sortContainer?.addEventListener('input', (e) => {
 //                     |___/           ****           ****                         
 
 let beagle = new Worker("/beagle.js")
-let warningList = document.querySelector('#warnings')
-beagle.addEventListener('message', (m) => {
-    // activeWarnings = m.data
-    // console.log('kill', warningsToKill)
-    // console.log('keep', activeWarnings)
-    console.info(m.data['type'], m.data['warnings'])
-    if (m.data['type'] == 'beagle-kill') {
-        for (let k of m.data['warnings']) {
-            let toKill = document.querySelector(`[warning="${k}"]`)
-            toKill.remove()
-        }
-    }
+let boneList = document.querySelector('#warnings')
+let suggestionsList = document.querySelector('#management-suggestions')
+suggestionsList.currentSuggestions = {}
 
-    if (m.data['type'] == 'beagle-add') {
-        for (let a of m.data['warnings']) {
-            let toAdd = document.createElement('li')
-            toAdd.setAttribute('warning', a)
-            toAdd.innerHTML = `<button tabindex="0">Add</button>`
-            warningList.appendChild(toAdd)
-        }
+beagle.addEventListener('message', (m) => {
+    console.info(m.data['type'], m.data)
+    
+    if (m.data['type'] == 'beagle-bone-add') {
+        let toAdd = document.createElement('li')
+        toAdd.setAttribute('beagle-bone-name', m.data.name)
+        toAdd.setAttribute('clinic-text', m.data.name)
+        toAdd.innerHTML = `<span>${m.data.name}${m.data?.severity == 'default' ? '' : ' (' + m.data?.severity +')' }</span><button tabindex="0">Add</button>`
+        boneList.appendChild(toAdd)
+    }
+    
+    if (m.data['type'] == 'beagle-bone-delete') {
+        let staleIssue = document.querySelector(`[beagle-bone-name="${m.data.name}"]`)
+        staleIssue?.remove()
+    }
+    
+    if (m.data['type'] == 'beagle-suggestion-add') {
+        let toAdd = document.createElement('li')
+        toAdd.setAttribute('beagle-suggestion-name', m.data.suggestion)
+        toAdd.setAttribute('clinic-text', m.data.suggestion)
+        toAdd.innerHTML = `<span>${m.data.suggestion}</span><button tabindex="0">Add</button>`
+        suggestionsList.appendChild(toAdd)
+    }
+    
+    if (m.data['type'] == 'beagle-suggestion-delete') {
+        let staleSuggestion = document.querySelector(`[beagle-suggestion-name="${m.data.suggestion}"]`)
+        staleSuggestion?.remove()
     }
 })
-let issueInputBox = document.querySelector('[clinic-parameter="issues"]')
-let issueContainer = document.querySelector('#issues')
-issueContainer.addEventListener('mousedown', (e) => { e.preventDefault() }) // prevent stealing focus
-issueContainer.addEventListener('click', (e) => {
-    let li = e.target.closest('li')
-    li.classList.add('added')
-    issueInputBox.value = issueInputBox.value == "" ? `- ${li.getAttribute('warning')}` : `${issueInputBox.value}\n- ${li.getAttribute('warning')}`
-    issueInputBox.dispatchEvent(new Event('input', {bubbles: true}))
-})
+
+// SUGGESTIONS BOXES
+
+let suggestionContainers = document.querySelectorAll('[clinic-suggestions-target]:not([clinic-suggestions-target=""])')
+for (let s of suggestionContainers) {
+    s.addEventListener('mousedown', (e) => { e.preventDefault() }) // prevent stealing focus
+    let suggestionTextInput = document.querySelector(`[clinic-parameter="${s.getAttribute('clinic-suggestions-target')}"]`)
+    s.addEventListener('click', (e) => {
+        let li = e.target.closest('li')
+        if (!li) return
+        li.classList.add('added')
+        suggestionTextInput.value = suggestionTextInput.value == "" ? `- ${li.getAttribute('clinic-text')}` : `${suggestionTextInput.value}\n- ${li.getAttribute('clinic-text')}`
+        suggestionTextInput.dispatchEvent(new Event('input', {bubbles: true}))
+    })
+}
 
 //    ____                      _                                                  
 //   / ___|  ___  __ _ _ __ ___| |__                                               
@@ -333,13 +350,6 @@ for (let s of sections) {
         }
 
         s.outputBox.innerText = output.trim()
-
-        // send to Beagle for analysis
-        // console.log(e.target.getAttribute('clinic-parameter') || e.target.tagName)
-        beagle.postMessage({
-            parameter: e.target.getAttribute('clinic-parameter'),
-            value: getAnyInputValue(e.target),
-        })
     })
 }
 
@@ -393,7 +403,8 @@ for (let c of allCalculators) {
             score += b.checked ? 1 : 0
         }
         if (c.output) {
-            c.output.value = `${score} ${c.interpreter ? '(' + c.interpreter(score) + ')' : ''}`
+            // c.output.value = `${score} ${c.interpreter ? '(' + c.interpreter(score) + ')' : ''}`
+            c.output.value = `${score}`
             // this event allows Beagle to interpret the final score
             c.output.dispatchEvent(new Event('input', {bubbles: true}))
         }
@@ -596,7 +607,30 @@ let persistentDataProxy = new Proxy(persistentDataStore, {
 
         // Persist data
         localStorage.setItem('clinic-data', JSON.stringify(object))
+
+        // Send to beagle for sniffing
+        beagle.postMessage({
+            inputData: object,
+        })
     }
+})
+
+// display persisted data on load
+let allInputs = document.querySelectorAll('[clinic-parameter]')
+for (let i of allInputs) {
+    // apply any stored values
+    let parameter = i.getAttribute('clinic-parameter')
+    let storedValue = persistentDataProxy[parameter]
+    if (storedValue) {
+        setAnyInputValue(i, storedValue)
+    }
+    // dispatch input event
+    i.dispatchEvent(new Event('input', {'bubbles': true}))
+}
+
+// give Beagle its intial sniff
+beagle.postMessage({
+    inputData: persistentDataStore,
 })
 
 // listen for input events on any element with clinic-parameter
@@ -605,6 +639,8 @@ document.addEventListener('input', (e) => {
         persistentDataProxy[e.target.getAttribute('clinic-parameter')] = getAnyInputValue(e.target)
     }
 })
+
+
 
 // let allSections = document.querySelectorAll('section')
 // for (let s of allSections) {
@@ -739,20 +775,6 @@ consentSwitchBox.addEventListener('input', (e) => {
     consentOutput.value = output
     consentOutput.dispatchEvent(new Event('input'))
 })
-
-// INIT
-
-let allInputs = document.querySelectorAll('[clinic-parameter]')
-for (let i of allInputs) {
-    // apply any stored values
-    let parameter = i.getAttribute('clinic-parameter')
-    let storedValue = persistentDataProxy[parameter]
-    if (storedValue) {
-        setAnyInputValue(i, storedValue)
-    }
-    // dispatch input event
-    i.dispatchEvent(new Event('input', {'bubbles': true}))
-}
 
 //    _____         _     _____                            _                       
 //   |_   _|____  _| |_  | ____|_  ___ __   __ _ _ __   __| | ___ _ __             

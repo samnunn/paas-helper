@@ -266,10 +266,13 @@ footer {
 }
 
 /* verbose because `issues:has(ul:empty)` doesn't work in Safari */
-#issues {
+[clinic-suggestions-target] {
     display: none;
+    & li.added {
+        opacity: 0.4;
+    }
 }
-#issues:has(li) {
+[clinic-suggestions-target]:has(li) {
     display: flex;
 }
 
@@ -313,16 +316,6 @@ footer {
             position: relative;
             top: 4px;
         }
-    }
-}
-
-#warnings {
-    & li.added {
-        opacity: 0.4;
-    }
-
-    & >li::before {
-        content: attr(warning);
     }
 }
 

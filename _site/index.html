@@ -669,7 +669,7 @@
                         Key Issues
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="issues" clinic-search="Key Issues" clinic-sync="issues" class="bigbox tiny"></textarea>
                     </label>
-                    <div class="label-ish" id="issues">
+                    <div class="label-ish" clinic-suggestions-target="issues">
                         Suggested Issues ✨
                         <ul id="warnings" class="pill-list"></ul>
                     </div>
@@ -687,6 +687,10 @@
                         Anaesthetic Plan
                         <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="plan" clinic-search="Anaesthetic Plan" clinic-sync="plan" class="bigbox tiny"></textarea>
                     </label>
+                    <div class="label-ish" clinic-suggestions-target="plan">
+                        Suggested Management ✨
+                        <ul id="management-suggestions" class="pill-list" style="grid-template-columns: 1fr;"></ul>
+                    </div>
                 </div>
                 <div class="output">
                     <input class="copy" tabindex="1" value="Copy" type="button">
