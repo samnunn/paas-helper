@@ -15,7 +15,9 @@ body {
     padding: 0;
 }
 h2 {
-    margin: 2rem 0 0 0;
+    margin: 1rem 0 0 0;
+    border-bottom: 2px solid lightgrey;
+    padding-bottom: 0.3rem;
 }
 h4 {
     margin: 0.5rem 0 0.25rem 0;
@@ -45,8 +47,8 @@ hr {
 /* LAYOUT */
 section {
     display: grid;
-    /* grid-template-columns: 0.55fr 0.45fr; */
-    grid-template-columns: repeat(auto-fit, minmax(0%, 1fr));
+    grid-template-columns: 0.55fr 0.45fr;
+    /* grid-template-columns: repeat(auto-fit, minmax(0%, 1fr)); */
     grid-template-areas:
         "head head"
         "input output";
@@ -54,6 +56,9 @@ section {
     margin: 0 0 1rem 0;
     width: 100%;
 
+    & > h2 {
+        grid-area: head;
+    }
     & > div.head {
         grid-area: head;
     }
@@ -182,7 +187,7 @@ label:has(>input[type="checkbox"]) {
 
 .wrapped {
     width: calc(100vw - 30px);
-    max-width: 1100px;
+    /* max-width: 1100px; */
     margin: 0 auto;
 }
 
@@ -468,4 +473,91 @@ div[clinic-calculator] {
     font-size: 0.75rem;
     color: grey;
     line-height: 1;
+}
+
+/* TABBED UI */
+#tab-box {
+    display: grid;
+    grid-template-columns: minmax(15rem, auto) 1fr;
+    gap: 1rem;
+}
+
+#tab-picker {
+    position: sticky;
+    top: 0;
+    block-size: min-content;
+
+    ul {
+        padding: 0;
+
+        li {
+            list-style: none;
+            background-color: none;
+            display: flex;
+            align-items: center;
+            vertical-align: baseline;
+            margin-bottom: 0.25rem;
+
+            a {
+                display: block;
+                text-decoration: none;
+                border-radius: 0.5rem;
+                margin: 0;
+                padding: 0.5rem 0.65rem;
+                display: flex;
+                align-items: center;
+                color: black !important;
+                width: 100%;
+                transition: background-color 100ms ease;
+            }
+
+            span.icon {
+                display: flex;
+                align-items: center;
+                margin-right: 0.5rem;
+                img {
+                    height: 1rem;
+                    opacity: 0.5;
+                }
+            }
+
+            span.right {
+                margin-left: auto;
+                color: hsl(0deg, 0%, 50%);
+                font-size: 0.8rem;
+            }
+        }
+        li[aria-selected="true"] a {
+            background-color: #dcdde1;
+        }
+        li:hover:not([aria-selected="true"]) a {
+            background-color: #f0f1f4;
+        }
+        li:active:not([aria-selected="true"]) a {
+            background-color: #dcdde1;
+        }
+    }
+}
+
+.status-dot {
+    --status-background: grey;
+    display: block;
+    background-color: var(--status-background);
+    border: 1px solid color-mix(in srgb, var(--status-background) 70%, black);
+    height: 0.8rem;
+    border-radius: 50% 50%;
+    aspect-ratio: 1;
+
+    &.danger {
+        --status-background: #e74c3c;
+    }
+    &.warning {
+        --status-background: #ff871d;
+    }
+    &.ok {
+        --status-background: #27ae60;
+    }
+    &.blank {
+        --status-background: transparent;
+    }
 }

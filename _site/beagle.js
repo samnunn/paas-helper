@@ -248,15 +248,16 @@ let boneData = [
         ],
         defaultSuggestions: [
             // "Default suggestion for diabetic patients",
+            "BSL on arrival",
         ],
         conditionalSuggestions: [
             {
                 matchStrategy: "any",
                 matchRules: [
-                    (inputData) => parseFloat(inputData['hba1c']) >= 8,
+                    (inputData) => parseFloat(inputData['hba1c']) >= 9.1,
                 ],
                 suggestions: [
-                    "Advice for poorly-controlled diabetics",
+                    "Endocrinology referral for pre-operative optimisation",
                 ],
             },
         ],
@@ -416,6 +417,8 @@ let boneData = [
             (inputData) => /active/i.test(inputData['smoking']),
         ],
         defaultSuggestions: [
+            "Advise to cease smoking before surgery",
+            "Referral for assistance with smoking cessation",
         ],
         conditionalSuggestions: [
         ],

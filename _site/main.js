@@ -953,7 +953,7 @@ quickFindSearch.addEventListener("keydown", (e) => {
 //   |____/|_| |_|\___/|_|   \__\___|\__,_|\__|___/                                
                                                                                 
 let shortcutsMenu = document.querySelector('#shortcuts-menu')
-shortcutsMenu.addEventListener('change', (e) => {
+shortcutsMenu?.addEventListener('change', (e) => {
     let option = e.target.options[e.target.selectedIndex]
     option.click()
     e.target.value = 'initial'
@@ -965,3 +965,69 @@ document.querySelector('#quick-find-button')?.addEventListener('click', (e) => {
 document.querySelector('#quick-add-button')?.addEventListener('click', (e) => {
     quickAddDialog.showModal()
 })
+
+//    ____                 _ _                                                     
+//   / ___|  ___ _ __ ___ | | |___ _ __  _   _                                     
+//   \___ \ / __| '__/ _ \| | / __| '_ \| | | |                                    
+//    ___) | (__| | | (_) | | \__ \ |_) | |_| |                                    
+//   |____/ \___|_|  \___/|_|_|___/ .__/ \__, |                                    
+//                                |_|    |___/                                     
+
+// customElements.define('clinic-scrollspy', class extends HTMLElement {
+//     constructor () {
+//         super()
+//         // listen for changes
+//         self.targetSelector = self.querySelector('target-element-selector')
+//         self.inputs = self.querySelector('input')
+
+//         // update score
+//     }
+
+//     attributeChangedCallback (name, oldValue, newValue) {
+
+//     }
+    
+//     static get observedAttributes () {
+//         return []
+//     }
+// })
+
+let allTabs = document.querySelectorAll('#tab-picker li:has(>a[href^="#"])')
+
+for (let t of allTabs) {
+    t.addEventListener('click', (e) => {
+        let id = e.target.getAttribute('href')?.slice(1)
+        setScrollSpySelection(id)
+    })
+}
+
+function setScrollSpySelection(id) {
+    let buttonToHighlight = document.querySelector(`a[href="#${id}"]`)
+    if (!buttonToHighlight) return
+    for (let t of allTabs) {
+        t.removeAttribute('aria-selected')
+        buttonToHighlight.parentElement.setAttribute('aria-selected', true)
+    }
+
+}
+
+let scrollSpyOptions = {
+    // root: document,
+    // rootMargin: "10px",
+    threshold: 0.8,
+}
+
+let scrollSpyCallback = function(entries, observer) {
+    for (let e of entries) {
+        if (!e.isIntersecting) return
+        
+        let idToHighLight = e.target.getAttribute('id')
+        setScrollSpySelection(idToHighLight)
+    }
+}
+
+let scrollSpyObserver = new IntersectionObserver(scrollSpyCallback, scrollSpyOptions)
+
+for (let s of sections) {
+    scrollSpyObserver.observe(s)
+}
