@@ -28,7 +28,7 @@ onmessage = (m) => {
     for (let b of bonesToDelete) {
         postMessage({
             type: 'beagle-bone-delete',
-            name: newBones[b].name,
+            name: staleBones[b].name,
         })
     }
 

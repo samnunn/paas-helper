@@ -171,8 +171,8 @@ sortContainer?.addEventListener('input', (e) => {
 
 let beagle = new Worker("/beagle.js")
 let boneList = document.querySelector('#warnings')
-let suggestionsList = document.querySelector('#management-suggestions')
-suggestionsList.currentSuggestions = {}
+let planInput = document.querySelector('[clinic-parameter="plan"]')
+let boneInput = document.querySelector('[clinic-parameter="issues"]')
 
 beagle.addEventListener('message', (m) => {
     // console.info(m.data['type'], m.data)
@@ -182,26 +182,45 @@ beagle.addEventListener('message', (m) => {
         
         if (m.data.name == "anonymous") return
 
-        let toAdd = document.createElement('li')
+        let toAdd = document.createElement('ul')
+        toAdd.classList.add('pill-list')
         toAdd.setAttribute('beagle-bone-name', m.data.name)
-        toAdd.setAttribute('clinic-text', m.data.name)
-        toAdd.innerHTML = `<span>${m.data.name}</span><button tabindex="0">Add</button>`
-        boneList.appendChild(toAdd)
+
+        let firstPill = document.createElement('li')
+        firstPill.classList.add('issue-pill')
+        firstPill.innerHTML = `<span>${m.data.name}</span><button tabindex="1">Add</button>`
+        firstPill.addEventListener('click', (e) => {
+            e.target.closest('li').classList.add('added')
+            boneInput.value = boneInput.value == "" ? `- ${m.data.name}` : `${boneInput.value}\n- ${m.data.name}`
+            boneInput.dispatchEvent(new Event('input', {bubbles: true}))
+        })
+
+        toAdd.appendChild(firstPill)
+        toAdd.insertAdjacentHTML('beforeend', '<ul class="pill-list"></ul>')
+
+
+        boneList.insertAdjacentElement("afterbegin", toAdd)
     }
     
     // delete bones
     if (m.data['type'] == 'beagle-bone-delete') {
-        let staleIssue = document.querySelector(`[beagle-bone-name="${m.data.name}"]`)
-        staleIssue?.remove()
+        let staleBone = document.querySelector(`[beagle-bone-name="${m.data.name}"]`)
+        staleBone?.remove()
     }
     
     // add suggestions
     if (m.data['type'] == 'beagle-suggestion-add') {
+        let targetList = document.querySelector(`ul[beagle-bone-name="${m.data.bone}"]`)?.querySelector('ul')
         let toAdd = document.createElement('li')
         toAdd.setAttribute('beagle-suggestion-name', m.data.suggestion)
         toAdd.setAttribute('clinic-text', m.data.suggestion)
-        toAdd.innerHTML = `<span>${m.data.suggestion}</span><button tabindex="0">Add</button>`
-        suggestionsList.appendChild(toAdd)
+        toAdd.innerHTML = `<span>${m.data.suggestion}</span><button tabindex="1">Add</button>`
+        toAdd.addEventListener('click', (e) => {
+            e.target.closest('li').classList.add('added')
+            planInput.value = planInput.value == "" ? `- ${m.data.suggestion}` : `${planInput.value}\n- ${m.data.suggestion}`
+            planInput.dispatchEvent(new Event('input', {bubbles: true}))
+        })
+        targetList.appendChild(toAdd)
     }
     
     // add suggestions
@@ -213,18 +232,18 @@ beagle.addEventListener('message', (m) => {
 
 // SUGGESTIONS BOXES
 
-let suggestionContainers = document.querySelectorAll('[clinic-suggestions-target]:not([clinic-suggestions-target=""])')
-for (let s of suggestionContainers) {
-    s.addEventListener('mousedown', (e) => { e.preventDefault() }) // prevent stealing focus
-    let suggestionTextInput = document.querySelector(`[clinic-parameter="${s.getAttribute('clinic-suggestions-target')}"]`)
-    s.addEventListener('click', (e) => {
-        let li = e.target.closest('li')
-        if (!li) return
-        li.classList.add('added')
-        suggestionTextInput.value = suggestionTextInput.value == "" ? `- ${li.getAttribute('clinic-text')}` : `${suggestionTextInput.value}\n- ${li.getAttribute('clinic-text')}`
-        suggestionTextInput.dispatchEvent(new Event('input', {bubbles: true}))
-    })
-}
+// let suggestionContainers = document.querySelectorAll('[clinic-suggestions-target]:not([clinic-suggestions-target=""])')
+// for (let s of suggestionContainers) {
+//     s.addEventListener('mousedown', (e) => { e.preventDefault() }) // prevent stealing focus
+//     let suggestionTextInput = document.querySelector(`[clinic-parameter="${s.getAttribute('clinic-suggestions-target')}"]`)
+//     s.addEventListener('click', (e) => {
+//         let li = e.target.closest('li')
+//         if (!li) return
+//         li.classList.add('added')
+//         suggestionTextInput.value = suggestionTextInput.value == "" ? `- ${li.getAttribute('clinic-text')}` : `${suggestionTextInput.value}\n- ${li.getAttribute('clinic-text')}`
+//         suggestionTextInput.dispatchEvent(new Event('input', {bubbles: true}))
+//     })
+// }
 
 //    ____                      _                                                  
 //   / ___|  ___  __ _ _ __ ___| |__                                               
@@ -273,9 +292,10 @@ searchResults.addEventListener('click', (e) => {
     if (!mainGroup || !subGroup || !operationName) return
 
     try {
+        
         sortMainGroup.value = mainGroup
         sortMainGroup.dispatchEvent(new Event('change'))
-    
+        // debugger
         sortSubGroup.value = subGroup
         sortSubGroup.dispatchEvent(new Event('change'))
     
@@ -295,6 +315,111 @@ searchResults.addEventListener('click', (e) => {
 //     | |  __/ | | | | | |_) | | (_| | |_| | | | | (_| |                          
 //     |_|\___|_| |_| |_| .__/|_|\__,_|\__|_|_| |_|\__, |                          
 //                      |_|                        |___/                                     
+
+let outputTemplates = {
+'details': `# Patient Details
+- Name: {{fullname}}
+- UMRN: {{umrn}}
+- Age: {{age}}
+- Sex: {{sex}}
+- Appointment type: {{mode}}
+- Height: {{height}}
+- Weight: {{weight}}
+- BMI: {{bmi}}
+- Operation: {{operation}}`,
+
+'medicalhx': `# PMHx
+{{pmhx}}
+
+# Systems Review
+- Recent illness: {{recently-ill}}
+--&gt; {{recently-ill-details}}
+- GORD: {{gord}}
+--&gt; {{gord-details}}
+- METs: {{mets}}
+- Supine: {{flat}}
+- Exercise: {{mets-details}}
+
+# SHx
+- Smoking: {{smoking}}
+--&gt; {{smoking-details}}
+- etOH: {{etoh}}
+- Illicit drugs: {{drugs}}
+- Occupation: {{occupation}}
+- Functional status: {{functional-status}}
+{{shx}}`,
+
+'rx': `# Medications
+{{rx}}
+
+# Supplements
+{{herbs}}
+
+# Allergies
+{{allergies}}`,
+
+'gashx': `# Previous Anaesthesia
+{{pahx}}
+
+## Anaesthesia Summary
+- BVM: {{bvm}}
+- LMA: {{lma}}
+- ETT: {{ett}}
+- Agents used: {{agents}}
+- Haemodynamics: {{haemodynamics}}
+- Complications: {{gas-issues}}
+
+# Airway Assessment
+- Dentition: {{teeth}}
+- Mallampati: {{mallampati}}
+- Mouth opening: {{mouth-opening}} cm
+- Thyromental distance: {{tmd}} cm
+- Cricothyroid: {{cricothyroid}}
+- Neck ROM: {{neckrom}}
+- Bearded: {{beard}}
+- Jaw protrusion: {{jaw-protrusion}}
+- Vein quality: {{veins}}
+
+# Other Findings
+- Heart sounds: {{heart}}
+- Lung sounds: {{lung}}
+{{other-examination}}
+
+{{mode}}`,
+
+'ix': `# Investigations
+- Source: {{bloods-source}}
+- FBC: {{fbc}}
+- UEC: {{uec}}
+- LFT: {{lft}}
+- HbA1c: {{hba1c}}%
+- Iron studies: {{iron}}
+- Coags: {{coags}}
+- ECG: {{ecg}}
+{{other-ix}}`,
+
+'consent': `# Informed Consent
+{{consent-output}}
+
+# Special Notes
+{{consent-notes}}`,
+
+'risk': `# Risk Assessment
+- ASA: {{asa}}
+- STOP-BANG: {{stopbang-score}}
+- Apfel: {{apfel-score}}
+- RCRI: {{rcri-score}}
+- SORT: {{sort-score}}% (30 day mortality)`,
+
+'plan': `# Key Issues
+{{issues}}
+
+# Anaesthetic Plan
+{{plan}}
+
+# Medications and Fasting
+{{medication}}`
+}
 
 function getAnyInputValue(inputElement) {
     if (inputElement.tagName == 'select' && inputElement.selectedIndex > 0) {
@@ -316,48 +441,29 @@ function setAnyInputValue(inputElement, value) {
     }
 }
 
-// RENDER TEXT ON INPUT
-let sections = document.querySelectorAll('section')
-for (let s of sections) {
-    s.template = s.querySelector('template')?.content.textContent
-    s.outputBox = s.querySelector('.rendered-template')
+// RENDER
+function getRenderedSection(id) {
+    let template = outputTemplates[id]
 
-    s.addEventListener('input', (e) => {
-        let inputs = s.querySelectorAll('[clinic-parameter]')
-        let output = s.template
+    // replace known values
+    for (let c of template.matchAll(/\{\{(.*?)\}\}/gmi)) {
+        let stringToReplace = c[0]
+        let dataKey = c[1]
+        let dataValue = persistentDataProxy[dataKey]
+        if (!dataValue) continue
+        template = template.replace(stringToReplace, dataValue)
+    }
 
-        // abort if there is no template or [clinic-parameter] inputs
-        if (!output) return
-        if (inputs.length == 0) return
+    // delete lines containing unreplaced values
+    for (let l of template.matchAll(/^.*({{.*?}}).*$\n?/gm)) {
+        template = template.replace(l[0], '')
+    }
 
-        // populate template with values from the <input> elements
-        for (let i of inputs) {
-            // printed value depends on <input> type
-            let value = getAnyInputValue(i)
-
-            // skip blank values and leave the template behind (will be cleaned up later)
-            if (value == "") continue
-
-            // replace in template (first instance only, you glutton)
-            output = output.replace(`{{${i.getAttribute('clinic-parameter')}}}`, value)
-        }
-
-        // remove lines containing un-replaced templates
-        let conditionalFinder = /^.*({{.*?}}).*$\n?/gm
-        for (let c of output.matchAll(conditionalFinder)) {
-            let stringtoReplace = c[0]
-            output = output.replace(stringtoReplace, "")
-        }
-
-        // remove headers with nothing under them
-        let pointlessHeaderFinder = /^## .+(?=\n*$)(?!\n[^#\s])\n*/gm
-        for (let c of output.matchAll(pointlessHeaderFinder)) {
-            let stringtoReplace = c[0]
-            output = output.replace(stringtoReplace, "")
-        }
-
-        s.outputBox.innerText = output.trim()
-    })
+    // remove ## headers with nothing under them
+    for (let h of template.matchAll(/^#* .+(?=\n*$)(?!\n[^#\s])\n*/gm)) {
+        template = template.replace(h[0], '')
+    }
+    console.log(template)
 }
 
 //     ____      _            _       _                                            
@@ -1014,15 +1120,29 @@ document.body.addEventListener('click', (e) => {
 
         // scroll into view
         targetElement.scrollIntoView({behavior: "instant", block: "center"})
+        // console.log('wow')
     }
 
-    // any clicks on a <section> that don't land on an input should focus() the first input
-    if (e.target.matches('section *:not(input, select, textarea)')) {
-        e.target?.closest('section')?.querySelector('input, select, textarea')?.focus()
+    // any clicks on a <section> that don't land on something focus-able should put focus the first input
+    if (e.target.matches('section, section *:not(:focus, button.section-copy)')) {
+        e.target?.closest('section')?.querySelector('input, select, textarea, label')?.focus({preventScroll: true})
+    }
+})
+
+document.addEventListener('mousedown', (e) => {
+    if (e.target.matches('div.section-topper, div.section-topper *')) {
+        // prevent stealing focus
+        e.preventDefault()
+        
+        // copy contents
+        console.log('copy')
+        getRenderedSection(e.target.closest('section').id)
     }
 })
 
 let allTabs = document.querySelectorAll('#tab-picker li[scroll-target]')
+let allSections = document.querySelectorAll('section')
+
 function setScrollSpySelection(id) {
     let buttonToHighlight = document.querySelector(`li[scroll-target="${id}"]`)
     if (!buttonToHighlight) return
@@ -1050,7 +1170,7 @@ let scrollSpyCallback = function(entries, observer) {
     }
 
     // find most prominent section using Array.reduce()
-    let mostProminentSection = Array.from(sections).reduce((previous, current) => {
+    let mostProminentSection = Array.from(allSections).reduce((previous, current) => {
         if (current.intersectionRatio >= (previous?.intersectionRatio || 0)) {
             return current
         } else {
@@ -1064,12 +1184,12 @@ let scrollSpyCallback = function(entries, observer) {
 
 document.addEventListener('scroll', (e) => {
     if (window.scrollY < 15) {
-        setScrollSpySelection(sections[0].id)
+        setScrollSpySelection(allSections[0].id)
     }
 })
 
 let scrollSpyObserver = new IntersectionObserver(scrollSpyCallback, scrollSpyOptions)
 
-for (let s of sections) {
+for (let s of allSections) {
     scrollSpyObserver.observe(s)
 }
