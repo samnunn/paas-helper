@@ -5,7 +5,7 @@
 //   |____/ \___|_|    \_/ |_|\___\___|    \_/\_/ \___/|_|  |_|\_\___|_|           
                                                                                 
 if ("serviceWorker" in navigator) {
-    const registration = navigator.serviceWorker.register("/sw.js")
+    // const registration = navigator.serviceWorker.register("/sw.js")
 }
 
 //    ____   ___  ____ _____   ____                                                
@@ -992,39 +992,81 @@ document.querySelector('#quick-add-button')?.addEventListener('click', (e) => {
 //     }
 // })
 
-let allTabs = document.querySelectorAll('#tab-picker li:has(>a[href^="#"])')
 
-for (let t of allTabs) {
-    t.addEventListener('click', (e) => {
-        let id = e.target.getAttribute('href')?.slice(1)
-        setScrollSpySelection(id)
-    })
-}
+document.body.addEventListener('click', (e) => {
+    // any click on a tab selector should open that tab
+    // adding a 'click' event listener to the li itself doesn't pick up click that landed on text or icons
+    // hence the fancy selector
+    if (e.target.matches('#tab-picker li[scroll-target], #tab-picker li[scroll-target] *')) {
+        // find target <section>
+        let id = e.target.closest('li').getAttribute('scroll-target')
+        let targetElement = document.querySelector(`#${id}`)
 
+        // die if element doesn't exist
+        if (!targetElement) {
+            console.error(`tab-picker clicked but its target doesn't exist (ID: ${id})`, e.target.closest('li'))
+            return
+        }
+
+        // move focus to first input
+        let firstInput = targetElement.querySelector('input, textarea')
+        firstInput?.focus()
+
+        // scroll into view
+        targetElement.scrollIntoView({behavior: "instant", block: "center"})
+    }
+
+    // any clicks on a <section> that don't land on an input should focus() the first input
+    if (e.target.matches('section *:not(input, select, textarea)')) {
+        e.target?.closest('section')?.querySelector('input, select, textarea')?.focus()
+    }
+})
+
+let allTabs = document.querySelectorAll('#tab-picker li[scroll-target]')
 function setScrollSpySelection(id) {
-    let buttonToHighlight = document.querySelector(`a[href="#${id}"]`)
+    let buttonToHighlight = document.querySelector(`li[scroll-target="${id}"]`)
     if (!buttonToHighlight) return
     for (let t of allTabs) {
         t.removeAttribute('aria-selected')
-        buttonToHighlight.parentElement.setAttribute('aria-selected', true)
+        buttonToHighlight.setAttribute('aria-selected', true)
     }
 
 }
+
+let scrollThreshold = 0.8
 
 let scrollSpyOptions = {
     // root: document,
     // rootMargin: "10px",
-    threshold: 0.8,
+    threshold: scrollThreshold,
 }
 
 let scrollSpyCallback = function(entries, observer) {
+    // awards focus to the current section that has the highest % of its total rect in the viewport
+
+    // record latest-known %visible for each <section>
     for (let e of entries) {
-        if (!e.isIntersecting) return
-        
-        let idToHighLight = e.target.getAttribute('id')
-        setScrollSpySelection(idToHighLight)
+        e.target.intersectionRatio = e.intersectionRatio
     }
+
+    // find most prominent section using Array.reduce()
+    let mostProminentSection = Array.from(sections).reduce((previous, current) => {
+        if (current.intersectionRatio >= (previous?.intersectionRatio || 0)) {
+            return current
+        } else {
+            return previous
+        }
+    })
+
+    // set scrollspy
+    setScrollSpySelection(mostProminentSection.id)
 }
+
+document.addEventListener('scroll', (e) => {
+    if (window.scrollY < 15) {
+        setScrollSpySelection(sections[0].id)
+    }
+})
 
 let scrollSpyObserver = new IntersectionObserver(scrollSpyCallback, scrollSpyOptions)
 
