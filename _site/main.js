@@ -1136,7 +1136,7 @@ document.body.addEventListener('click', (e) => {
 
         // scroll into view
         targetElement.scrollIntoView({behavior: "instant", block: "center"})
-        // console.log('wow')
+        document.dispatchEvent(new Event('scroll'))
     }
 
     // any clicks on a <section> that don't land on something focus-able should put focus the first input
@@ -1159,53 +1159,53 @@ document.addEventListener('mousedown', (e) => {
 let allTabs = document.querySelectorAll('#tab-picker li[scroll-target]')
 let allSections = document.querySelectorAll('section')
 
+document.addEventListener('scroll', (e) => {
+    scrollSpyHandler()
+})
+document.addEventListener('focusin', (e) => {
+    scrollSpyHandler()
+})
+
+function scrollSpyHandler() {
+    let currentScrollPosition = window.scrollY
+
+    // highlight section:focus-within if it's inside the viewport anywhere
+    let sectionsWithFocus = document.querySelectorAll('section:focus-within')
+    for (let swf of sectionsWithFocus) {
+        if (swf.offsetTop >= currentScrollPosition && swf.offsetTop + swf.offsetHeight <= currentScrollPosition + window.innerHeight) {
+            setScrollSpySelection(swf.id)
+            return
+        }
+    }
+
+    // highlight final section if scrolled within 30px of the bottom
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 30) {
+        let id = Array.from(allSections)?.at(-1)?.id
+        setScrollSpySelection(id)
+        return
+    }
+
+    // otherwise highlight topmost element whose top edge is within the viewport
+    for (let s of allSections) {
+        let offsetTop = s.offsetTop
+        let height = s.offsetHeight
+        let id = s.id
+
+        if ((s.offsetTop + 30) >= currentScrollPosition) {
+            setScrollSpySelection(id)
+            return
+        }
+    }
+}
+
+document.dispatchEvent(new Event('scroll'))
+
 function setScrollSpySelection(id) {
     let buttonToHighlight = document.querySelector(`li[scroll-target="${id}"]`)
     if (!buttonToHighlight) return
     for (let t of allTabs) {
         t.removeAttribute('aria-selected')
-        buttonToHighlight.setAttribute('aria-selected', true)
     }
+    buttonToHighlight.setAttribute('aria-selected', true)
 
-}
-
-let scrollThreshold = 0.8
-
-let scrollSpyOptions = {
-    // root: document,
-    // rootMargin: "10px",
-    threshold: scrollThreshold,
-}
-
-let scrollSpyCallback = function(entries, observer) {
-    // awards focus to the current section that has the highest % of its total rect in the viewport
-
-    // record latest-known %visible for each <section>
-    for (let e of entries) {
-        e.target.intersectionRatio = e.intersectionRatio
-    }
-
-    // find most prominent section using Array.reduce()
-    let mostProminentSection = Array.from(allSections).reduce((previous, current) => {
-        if (current.intersectionRatio >= (previous?.intersectionRatio || 0)) {
-            return current
-        } else {
-            return previous
-        }
-    })
-
-    // set scrollspy
-    setScrollSpySelection(mostProminentSection.id)
-}
-
-document.addEventListener('scroll', (e) => {
-    if (window.scrollY < 15) {
-        setScrollSpySelection(allSections[0].id)
-    }
-})
-
-let scrollSpyObserver = new IntersectionObserver(scrollSpyCallback, scrollSpyOptions)
-
-for (let s of allSections) {
-    scrollSpyObserver.observe(s)
 }
