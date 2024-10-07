@@ -51,16 +51,18 @@ section {
         "head head"
         "input output";
     gap: 1rem; */
+    background: linear-gradient(140deg, color-mix(in oklab, var(--colour-darkgrey) 2.5%, white) 0%, color-mix(in oklab, var(--colour-darkgrey) 5%, white) 100%);
     margin: 2rem 0 1rem 0;
     width: 100%;
     max-width: 100%;
     padding: 1rem;
     border-radius: 1rem;
-    border-color: color-mix(in oklab, var(--colour-darkgrey) 25%, white);
+    background-color: white;
+    /* border-color: color-mix(in oklab, var(--colour-darkgrey) 25%, white); */
     transform: scale(0.995);
     border: 1px solid transparent;
     box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
-    background-color: color-mix(in oklab, var(--colour-lightgrey) 98%, black);
+    /* background-color: color-mix(in oklab, var(--colour-lightgrey) 98%, black); */
     
     overflow: hidden;
 
@@ -81,6 +83,7 @@ section {
         }
         button {
             margin-left: auto;
+            margin-right: 0.3rem;
         }
     }
     & > .section-topper:hover img.icon {
@@ -103,7 +106,7 @@ section:focus-within, section:active {
     --shadow-colour: rgba(0,0,0,0.3);
     transform: scale(1.0);
     border-color: color-mix(in oklab, var(--colour-darkgrey) 25%, white);
-    background-color: color-mix(in oklab, var(--colour-lightgrey) 80%, white);
+    /* background-color: color-mix(in oklab, var(--colour-lightgrey) 80%, white); */
     box-shadow: 0px 5px 20px rgba(0,0,0,0.25);
     img.icon {
         transform: scale(1.2);
@@ -177,13 +180,22 @@ input[type="text"]:focus, input[type="search"]:focus, input[type="number"]:focus
 .selectbox:has(select:focus) {
     border-color: var(--colour-darkgrey);
 }
-/* Special cases */
+
+/* Calculators */
 label:has(>input[type="checkbox"]) {
     flex-direction: row;
     align-items: center;
     color: black;
 }
 
+[clinic-calculator-interpretation] {
+    margin: 0.25rem 0 0 0.5rem;
+    color: black;
+    font-weight: bold;
+}
+[clinic-calculator-interpretation]::before {
+    content: "↳ ";
+}
 
 /* Wrapper */
 
@@ -250,9 +262,9 @@ footer {
     padding: 0;
 
     & li {
-        --pill-color: var(--colour-lightgrey);
+        --pill-colour: var(--colour-lightgrey);
         list-style-type: none;
-        background-color: var(--pill-color);
+        background-color: var(--pill-colour);
         border: 2px solid lightgrey;
         margin: 0;
         padding: 0.5rem;
@@ -272,11 +284,11 @@ footer {
         }
 
         &:hover {
-            background-color: color-mix(in srgb, white, var(--pill-color) 80%);
+            background-color: color-mix(in srgb, white, var(--pill-colour) 80%);
         }
         &:hover:active {
             border-color: var(--colour-darkgrey);
-            background-color: var(--pill-color);
+            background-color: var(--pill-colour);
             transform: scale(0.99);
         }
     }
@@ -287,12 +299,12 @@ footer {
     }
 
     li.issue-pill {
-        --pill-color: var(--colour-darkgrey);
-        border-color: color-mix(in srgb, black, var(--pill-color) 80%);
-        color: white;
+        /* --pill-colour: var(--colour-darkgrey); */
+        /* --pill-colour: rgba(170, 166, 157,1.0); */
+        /* color: white; */
 
         &:hover {
-            /* border-color: color-mix(in srgb, black, var(--pill-color) 80%); */
+            /* border-color: color-mix(in srgb, black, var(--pill-colour) 80%); */
         }
     }
 
@@ -430,6 +442,10 @@ dialog {
         color: white;
         gap: 0.5rem;
     }
+    textarea {
+
+        min-height: 20rem;
+    }
 }
 
 .key {
@@ -450,7 +466,7 @@ dialog {
 /* TABBED UI */
 #tab-box {
     display: grid;
-    grid-template-columns: minmax(12rem, auto) 1fr;
+    grid-template-columns: minmax(11rem, auto) 1fr;
     gap: 1rem;
 }
 

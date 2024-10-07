@@ -5,7 +5,7 @@
 //   |____/ \___|_|    \_/ |_|\___\___|    \_/\_/ \___/|_|  |_|\_\___|_|           
                                                                                 
 if ("serviceWorker" in navigator) {
-    // const registration = navigator.serviceWorker.register("/sw.js")
+    const registration = navigator.serviceWorker.register("/sw.js")
 }
 
 //    ____   ___  ____ _____   ____                                                
@@ -158,8 +158,10 @@ sortContainer?.addEventListener('input', (e) => {
         }
     }
 
-    sortScoreOutput.value = calculateSortScore(requiredData)
-    sortScoreOutput.dispatchEvent(new Event('input', {bubbles: true}))
+    setAnyInputValue(sortScoreOutput, calculateSortScore(requiredData))
+    if (e.target != sortScoreOutput) {
+        sortScoreOutput.dispatchEvent(new Event('input', {bubbles: true}))
+    }
 })
 
 //    ____                   _                                                     
@@ -309,6 +311,29 @@ searchResults.addEventListener('click', (e) => {
     }
 })
 
+//    / ___|___  _ __  ___  ___ _ __ | |_                                          
+//   | |   / _ \| '_ \/ __|/ _ \ '_ \| __|                                         
+//   | |__| (_) | | | \__ \  __/ | | | |_                                          
+//    \____\___/|_| |_|___/\___|_| |_|\__|                                         
+                                 
+
+const consentSnippets = {
+    'consent-ga': `Discussed risks and benefits of GA by prevalence.  
+
+- VERY COMMON: sore throat (45% ETT, 20% LMA), PONV
+- COMMON: minor lip/tongue injury (1 in 100)
+- RARE: damage to teeth, severe allergy, nerve damage
+- VERY RARE: awareness, death (1 in 100,000 ASA 1, 1 in 50,000 for all ASAs)
+
+Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.`,
+    'consent-sedation': `Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.`,
+    'consent-regional': `Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions.`,
+    'consent-neuraxial': `Discussed risks and benefits of neuraxial anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.`,
+    'consent-blood': `Consented to blood products.`,
+    'consent-artline': `Consented to arterial line placement. Risks discussed include infection, bleeding, nerve damage (parasthesia and/or paralysis, damage to surrounding structures, adverse drug reactions, compartment syndrome, distal ischaemia.`,
+    'consent-cvc': `Consented to central line placement. Risks discussed include infection, bleeding, arterial puncture, pneumothorax, thrombosis, air embolism, pain, vessel damage, arrhythmia.`,
+}
+
 //    _____                    _       _   _                                       
 //   |_   _|__ _ __ ___  _ __ | | __ _| |_(_)_ __   __ _                           
 //     | |/ _ \ '_ ` _ \| '_ \| |/ _` | __| | '_ \ / _` |                          
@@ -333,16 +358,16 @@ let outputTemplates = {
 
 # Systems Review
 - Recent illness: {{recently-ill}}
---&gt; {{recently-ill-details}}
+--> {{recently-ill-details}}
 - GORD: {{gord}}
---&gt; {{gord-details}}
+--> {{gord-details}}
 - METs: {{mets}}
 - Supine: {{flat}}
 - Exercise: {{mets-details}}
 
 # SHx
 - Smoking: {{smoking}}
---&gt; {{smoking-details}}
+--> {{smoking-details}}
 - etOH: {{etoh}}
 - Illicit drugs: {{drugs}}
 - Occupation: {{occupation}}
@@ -406,10 +431,14 @@ let outputTemplates = {
 
 'risk': `# Risk Assessment
 - ASA: {{asa}}
-- STOP-BANG: {{stopbang-score}}
-- Apfel: {{apfel-score}}
-- RCRI: {{rcri-score}}
-- SORT: {{sort-score}}% (30 day mortality)`,
+- STOP-BANG: {{stopbang-score}}/8
+--> {{stopbang-interpretation}}
+- Apfel: {{apfel-score}}/4
+--> {{apfel-interpretation}}
+- RCRI: {{rcri-score}}/6
+--> {{rcri-interpretation}}
+- SORT
+--> {{sort-score}}% 30-day mortality`,
 
 'plan': `# Key Issues
 {{issues}}
@@ -426,6 +455,8 @@ function getAnyInputValue(inputElement) {
         return inputElement.value
     } else if (inputElement.tagName == 'INPUT' && inputElement.getAttribute('type') == 'checkbox') {
         return inputElement.checked
+    } else if (inputElement.tagName == 'P' || inputElement.tagName == 'SPAN') {
+        return inputElement.innerText
     } else {
         return inputElement.value
     }
@@ -436,6 +467,8 @@ function setAnyInputValue(inputElement, value) {
         inputElement.value = value
     } else if (inputElement.tagName == 'INPUT' && inputElement.getAttribute('type') == 'checkbox') {
         inputElement.checked = value
+    } else if (inputElement.tagName == 'P' || inputElement.tagName == 'SPAN') {
+        inputElement.innerText = value
     } else {
         inputElement.value = value
     }
@@ -444,6 +477,22 @@ function setAnyInputValue(inputElement, value) {
 // RENDER
 function getRenderedSection(id) {
     let template = outputTemplates[id]
+
+    // get comsent if needed
+    if (id == 'consent') {
+        let consentSwitches = document.querySelectorAll('section#consent input[type="checkbox"]')
+        let consent = ''
+        for (let s of consentSwitches) {
+            if (s.checked == true) {
+                let consentType = s.getAttribute('clinic-parameter')
+                let consentSnippet = consentSnippets[consentType]
+                consent += consentSnippet
+                consent += '\n\n'
+            }
+        }
+        consent = consent.trim()
+        template = template.replace('{{consent-output}}', consent)
+    }
 
     // replace known values
     for (let c of template.matchAll(/\{\{(.*?)\}\}/gmi)) {
@@ -463,7 +512,8 @@ function getRenderedSection(id) {
     for (let h of template.matchAll(/^#* .+(?=\n*$)(?!\n[^#\s])\n*/gm)) {
         template = template.replace(h[0], '')
     }
-    console.log(template)
+    
+    return template
 }
 
 //     ____      _            _       _                                            
@@ -492,34 +542,51 @@ let scoreInterpretationFunctions = {
     },
     'stopbang': (score) => {
         let risk
-        if (score >= 0 && score <=2) risk = 'low'
-        if (score >= 3 && score <=4) risk = 'intermediate'
-        if (score >= 5) risk = 'high'
+        if (score >= 0 && score <=2) risk = 'Low'
+        if (score >= 3 && score <=4) risk = 'Intermediate'
+        if (score >= 5) risk = 'High'
         return `${risk} OSA risk`
     },
 }
 
 let allCalculators = document.querySelectorAll('[clinic-calculator]')
 for (let c of allCalculators) {
+    // set up element handles
+    c.checkboxes = c.querySelectorAll('input[type="checkbox"]')
     c.output = c.querySelector('[clinic-calculator-output]')
+    c.interpretation = c.querySelector('[clinic-calculator-interpretation]')
+
+    // find interpreter
     let interpreter = c.getAttribute('clinic-interpreter') || false
     if (interpreter && Object.keys(scoreInterpretationFunctions).includes(interpreter)) {
         c.interpreter = scoreInterpretationFunctions[interpreter]
     }
-    c.checkboxes = c.querySelectorAll('input[type="checkbox"]')
+
+    // update score and interpretation on input
     c.addEventListener('input', (e) => {
         // prevent autophagy
         if (e.target.matches('[clinic-calculator-output]')) return
 
+        // get score
         let score = 0
         for (let b of c.checkboxes) {
             score += b.checked ? 1 : 0
         }
+
+        // save score
         if (c.output) {
-            // c.output.value = `${score} ${c.interpreter ? '(' + c.interpreter(score) + ')' : ''}`
-            c.output.value = `${score}`
-            // this event allows Beagle to interpret the final score
-            c.output.dispatchEvent(new Event('input', {bubbles: true}))
+            setAnyInputValue(c.output, score)
+            if (e.target != c.output) {
+                c.output.dispatchEvent(new Event('input', {bubbles: true}))
+            }
+        }
+
+        // get interpretation
+        if (c.interpreter && c.interpretation) {
+            setAnyInputValue(c.interpretation, c.interpreter(score))
+            if (e.target != c.interpretation) {
+                c.interpretation.dispatchEvent(new Event('input', {bubbles: true}))
+            }
         }
     })
 }
@@ -797,12 +864,13 @@ function downloadDocument() {
     let formattedDate = `${year}-${month}-${day}`
 
     // Fabricate a filename (date + UMRN)
-    let filename = `${formattedDate} ${document.querySelector('#umrn')?.value || 'Anonymous Patient'}.txt`
+    let filename = `${formattedDate} ${document.querySelector('#umrn')?.value || 'Clinic Patient'}.txt`
 
     // Create a text dump
     let textDump = ''
-    for (let o of document.querySelectorAll('div.output')) {
-        textDump += o.innerText.trim() + '\n\n'
+    for (let s of document.querySelectorAll('section')) {
+        let renderedTemplate = getRenderedSection(s.id)
+        textDump += renderedTemplate + '\n\n'
     }
 
     // Create sham download link
@@ -836,58 +904,6 @@ document.querySelector('#reset')?.addEventListener('click', (e) => {
 //    \____\___/| .__/ \__, | |____/ \__,_|\__|\__\___/|_| |_|___/                 
 //              |_|    |___/                                                       
 
-let allOutputs = document.querySelectorAll('.output')
-for (let o of allOutputs) {
-    // prevent copy button rom stealing focus
-    o.querySelector('.copy')?.addEventListener('mousedown', (e) => {
-        e.preventDefault()
-    })
-
-    // copy output text (when output OR button is clicked)
-    o.addEventListener('click', (e) => {
-        navigator.clipboard.writeText(o.innerText.trim())
-    })
-}
-
-//     ____                           _                                            
-//    / ___|___  _ __  ___  ___ _ __ | |_                                          
-//   | |   / _ \| '_ \/ __|/ _ \ '_ \| __|                                         
-//   | |__| (_) | | | \__ \  __/ | | | |_                                          
-//    \____\___/|_| |_|___/\___|_| |_|\__|                                         
-                                 
-
-const consentSnippets = {
-    'consent-ga': `Discussed risks and benefits of GA by prevalence.  
-
-- VERY COMMON: sore throat (45% ETT, 20% LMA), PONV
-- COMMON: minor lip/tongue injury (1 in 100)
-- RARE: damage to teeth, severe allergy, nerve damage
-- VERY RARE: awareness, death (1 in 100,000 ASA 1, 1 in 50,000 for all ASAs)
-
-Specific risks including aspiration, LRTI, post op confusion, covert CVA with possible cognitive changes, temporary memory loss, myocardial infarction also discussed.`,
-    'consent-sedation': `Consented for sedation, with risks discussed including death, failure, allergy, awareness, pain and need to progress to GA with its associated risks.`,
-    'consent-regional': `Regional risks discussed - superficial skin infection, bleeding, nerve damage (parasthesia and/or paralysis), failure of block, damage to surrounding structures, adverse drug reactions.`,
-    'consent-neuraxial': `Discussed risks and benefits of neuraxial anaesthesia. Specifically, nausea and vomiting, backache, headache, prolonged numbness or tingling, hypotension, urinary retention, nerve injury (1 in 500 temporary, ~1 in 25,000 permanent) and failure of regional technique.`,
-    'consent-blood': `Consented to blood products.`,
-    'consent-artline': `Consented to arterial line placement. Risks discussed include infection, bleeding, nerve damage (parasthesia and/or paralysis, damage to surrounding structures, adverse drug reactions, compartment syndrome, distal ischaemia.`,
-    'consent-cvc': `Consented to central line placement. Risks discussed include infection, bleeding, arterial puncture, pneumothorax, thrombosis, air embolism, pain, vessel damage, arrhythmia.`,
-}
-let consentSwitchBox = document.querySelector('div#consent')
-let consentSwitches = consentSwitchBox.querySelectorAll('input[type="checkbox"]')
-let consentOutput = consentSwitchBox.querySelector('[clinic-parameter="consent-output"]')
-consentSwitchBox.addEventListener('input', (e) => {
-    output = ''
-    for (let s of consentSwitches) {
-        if (s.checked == true) {
-            let consentType = s.getAttribute('clinic-parameter')
-            let consentSnippet = consentSnippets[consentType]
-            output += consentSnippet
-            output += '\n\n'
-        }
-    }
-    consentOutput.value = output
-    consentOutput.dispatchEvent(new Event('input'))
-})
 
 //    _____         _     _____                            _                       
 //   |_   _|____  _| |_  | ____|_  ___ __   __ _ _ __   __| | ___ _ __             
@@ -1135,8 +1151,8 @@ document.addEventListener('mousedown', (e) => {
         e.preventDefault()
         
         // copy contents
-        console.log('copy')
-        getRenderedSection(e.target.closest('section').id)
+        let output = getRenderedSection(e.target.closest('section').id)
+        navigator.clipboard.writeText(output.trim())
     }
 })
 

@@ -1,18 +1,35 @@
-let version = "7"
+let version = "9"
 
 let cacheName = `v${version}_data`
 
 let cachedAssetPaths = [
+    // HTML
     './',
     'index.html',
+    // CSS
     'main.css',
+    // JS
     'main.js',
-    'chevrons-down.svg',
-    'oplist.json',
-    'favicon.ico',
     'beagle.js',
     'brightspot.js',
     'fuzzysort.min.js',
+    // DATA
+    'oplist.json',
+    // IMAGES
+    'favicon.ico',
+    'chevrons-down.svg',
+    'icons/colour_zap.svg',
+    'icons/colour_search.svg',
+    'icons/colour_bookmark.svg',
+    'icons/colour_heart.svg',
+    'icons/colour_gas_mask.svg',
+    'icons/colour_droplet.svg',
+    'icons/colour_pen_tool.svg',
+    'icons/colour_life_buoy.svg',
+    'icons/colour_check_circle.svg',
+    'icons/download.svg',
+    'icons/refresh-ccw.svg',
+    'clinic_data_safety.svg',
 ]
 
 // install (pre-activation) event

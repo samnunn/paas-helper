@@ -13,7 +13,7 @@
         <div class="wrapped" id="tab-box">
             <nav id="tab-picker">
                 <ul>
-                    <!-- <h4>Tools</h4>
+                    <h4>Tools</h4>
                     <hr>
                     <li title="Quick-Add (⌘B)" role="button" id="quick-add-button">
                         <span class="icon"><img src="/icons/colour_zap.svg"></span>
@@ -24,7 +24,7 @@
                         <span class="icon"><img src="/icons/colour_search.svg"></span>
                         <span class="left">Quick-Find</span>
                         <span class="right">⌘K</span>
-                    </li> -->
+                    </li>
                     <!-- <li title="Text Snippets" role="button">
                         <span class="icon"><img src="/icons/colour_edit.svg"></span>
                         <span class="left">Text Snippets</span>
@@ -83,7 +83,7 @@
                         <h2>Patient Details</h2>
                         <button tabindex="2" class="section-copy">Copy</button>
                     </div>
-                    <div class="input vstack">
+                    <div class="vstack">
                         <div class="hstack">
                             <label>Age<input type="number" id="" clinic-parameter="age" clinic-sync="age" clinic-search="Age" min="0" max="125" step="1" autocomplete="off" autofocus></label>
                             <label>
@@ -132,7 +132,7 @@
                                 <textarea autocomplete="off" autocapitalize="off" spellcheck="false" name="history-pmhx" clinic-search="Past Medical History (PMHx)" id="" clinic-parameter="pmhx" class="bigbox autotall"></textarea>
                             </label>
                         </div>
-                        <div class="input vstack">
+                        <div class="vstack">
                             <!-- <h4>Systems Review</h4> -->
                             <label>
                                 Recent Illness
@@ -244,7 +244,7 @@
                                 <textarea autocomplete="off" autocapitalize="off" clinic-parameter="rx" clinic-search="Medications" class="bigbox autotall"></textarea>
                             </label>
                         </div>
-                        <div class="input vstack">
+                        <div class="vstack">
                             <label>
                                 Supplements
                                 <textarea autocomplete="off" autocapitalize="off" clinic-parameter="herbs" clinic-search="Supplements" class="bigbox short"></textarea>
@@ -424,56 +424,54 @@
                         <h2>Investigations</h2>
                         <button tabindex="2" class="section-copy">Copy</button>
                     </div>
-                    <div class="input">
-                        <div class="hstack">
-                            <div class="vstack">
-                                <label clinic-search="Investigations (Bloods etc.)">
-                                    Source
-                                    <input type="text" clinic-parameter="bloods-source" autocomplete="off" placeholder="When were these tests done?">
-                                </label>
-                                <div class="hstack">
-                                    <label>
-                                        FBC
-                                        <input type="text" clinic-parameter="fbc" autocomplete="off" clinic-search="Full Blood Count (FBC)">
-                                    </label>
-                                    <label>
-                                        UEC
-                                        <input type="text" clinic-parameter="uec" autocomplete="off" clinic-search="Urea and Electrolytes (UEC)">
-                                    </label>
-                                </div>
-                                <div class="hstack">
-                                    <label>
-                                        LFT
-                                        <input type="text" clinic-parameter="lft" autocomplete="off" clinic-search="Liver Function Tests (LFT)">
-                                    </label>
-                                    <label>
-                                        HbA1c
-                                        <input type="number" min="4" max="20" step="0.1" clinic-parameter="hba1c" autocomplete="off" clinic-search="Glycosylated Haemoglobin (HbA1c)">
-                                    </label>
-                                </div>
-                                <div class="hstack">
-                                    <label>
-                                        Iron Studies
-                                        <input type="text" clinic-parameter="iron" autocomplete="off" clinic-search="Iron Studies">
-                                    </label>
-                                    <label>
-                                        Coags
-                                        <input type="text" clinic-parameter="coags" autocomplete="off" clinic-search="Coagulation Profile">
-                                    </label>
-                                </div>
+                    <div class="hstack">
+                        <div class="vstack">
+                            <label clinic-search="Investigations (Bloods etc.)">
+                                Source
+                                <input type="text" clinic-parameter="bloods-source" autocomplete="off" placeholder="When were these tests done?">
+                            </label>
+                            <div class="hstack">
                                 <label>
-                                    ECG
-                                    <input type="text" clinic-parameter="ecg" clinic-search="ECG" autocomplete="off" clinic-search="ECG">
+                                    FBC
+                                    <input type="text" clinic-parameter="fbc" autocomplete="off" clinic-search="Full Blood Count (FBC)">
+                                </label>
+                                <label>
+                                    UEC
+                                    <input type="text" clinic-parameter="uec" autocomplete="off" clinic-search="Urea and Electrolytes (UEC)">
                                 </label>
                             </div>
-                            <div class="vstack">
+                            <div class="hstack">
                                 <label>
-                                    Other Investigations
-                                    <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="other-ix" class="bigbox autotall" placeholder=""></textarea>
+                                    LFT
+                                    <input type="text" clinic-parameter="lft" autocomplete="off" clinic-search="Liver Function Tests (LFT)">
+                                </label>
+                                <label>
+                                    HbA1c
+                                    <input type="number" min="4" max="20" step="0.1" clinic-parameter="hba1c" autocomplete="off" clinic-search="Glycosylated Haemoglobin (HbA1c)">
                                 </label>
                             </div>
-
+                            <div class="hstack">
+                                <label>
+                                    Iron Studies
+                                    <input type="text" clinic-parameter="iron" autocomplete="off" clinic-search="Iron Studies">
+                                </label>
+                                <label>
+                                    Coags
+                                    <input type="text" clinic-parameter="coags" autocomplete="off" clinic-search="Coagulation Profile">
+                                </label>
+                            </div>
+                            <label>
+                                ECG
+                                <input type="text" clinic-parameter="ecg" clinic-search="ECG" autocomplete="off" clinic-search="ECG">
+                            </label>
                         </div>
+                        <div class="vstack">
+                            <label>
+                                Other Investigations
+                                <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="other-ix" class="bigbox autotall" placeholder=""></textarea>
+                            </label>
+                        </div>
+
                     </div>
                 </section>
                 <section id="consent">
@@ -485,7 +483,7 @@
                     <div class="hstack">
                         <div class="vstack label-ish">
                             Pro Forma
-                            <div class="input" id="consent" clinic-search="Consent">
+                            <div id="consent" clinic-search="Consent">
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="consent-ga">General Anaesthesia</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="consent-sedation">Sedation</label>
                                 <label><input type="checkbox" tabindex=0 clinic-parameter="consent-regional">Regional</label>
@@ -509,12 +507,12 @@
                         <h2>Risk Assessment</h2>
                         <button tabindex="2" class="section-copy">Copy</button>
                     </div>
-                    <div class="input">
+                    <div class="vstack">
                         <div class="hstack">
                             <div class="vstack">
-                                <label>
-                                    STOP-BANG
-                                    <div clinic-calculator clinic-interpreter="stopbang" clinic-search="STOP-BANG Calculator">
+                                <label clinic-calculator clinic-interpreter="stopbang">
+                                    <span>STOP-BANG (<span clinic-calculator-output clinic-parameter="stopbang-score"></span>/8)</span> 
+                                    <div clinic-search="STOP-BANG Calculator">
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="snorer">Snorer</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="daytime-tiredness">Tiredness</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="observed-apnoea">Observed apnoea</label>
@@ -523,36 +521,32 @@
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-age" id="stopbang-age">Age > 50</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-neck">Neck ≥ 40cm</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="stopbang-sex" id="stopbang-sex">Male</label>
-                                        <input type="text" clinic-calculator-output clinic-parameter="stopbang-score" clinic-sync="stopbang-score" class="visually-hidden">
+                                        
+                                        <p type="text" clinic-calculator-interpretation clinic-parameter="stopbang-interpretation"></p>
                                     </div>
                                 </label>
-                                <label>
-                                    RCRI
-                                    <div clinic-calculator clinic-interpreter="rcri" clinic-search="RCRI Calculator">
+                                <label clinic-calculator clinic-interpreter="rcri">
+                                    <span>RCRI (<span clinic-calculator-output clinic-parameter="rcri-score"></span>/6)</span>
+                                    <div clinic-search="RCRI Calculator">
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-risky" autocomplete="off" id="">Elevated Risk*</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-ihd" autocomplete="off">IHD</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-ccf" autocomplete="off">CCF</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-cva" autocomplete="off">CVA</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-insulin" autocomplete="off">On insulin</label>
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-creatinine" autocomplete="off">Cr > 176.8 µmol/L</label>
-                                        <aside><small>* Intra-peritoneal, intra-thoracic, or supra-inguinal vascular surgery</small></aside>
-                                        <input type="text" clinic-calculator-output clinic-parameter="rcri-score" clinic-sync="rcri-score" class="visually-hidden">
+                                        <p type="text" clinic-calculator-interpretation clinic-parameter="rcri-interpretation"></p>
                                     </div>
                                 </label>
-                                <label>
-                                    Apfel
-                                    <div clinic-calculator clinic-interpreter="apfel" clinic-search="Apfel Calculator">
+                                <label clinic-calculator clinic-interpreter="apfel">
+                                    <span>Apfel (<span clinic-calculator-output clinic-parameter="apfel-score"></span>/4)</span>
+                                    <div clinic-search="Apfel Calculator">
                                         <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-sex" id="apfel-sex">Female</label>
                                         <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-smoking" id="apfel-smoking" checked>Non-smoker</label>
                                         <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-ponv">Prior PONV</label>
                                         <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-opioids">Postop opioids</label>
-                                        <input type="text" clinic-calculator-output clinic-parameter="apfel-score" clinic-sync="apfel-score" class="visually-hidden">
+                                        <p type="text" clinic-calculator-interpretation clinic-parameter="apfel-interpretation"></p>
                                     </div>
                                 </label>
-                                <input type="text" clinic-sync="stopbang-score" clinic-parameter="stopbang-score" class="visually-hidden">
-                                <input type="text" clinic-sync="rcri-score" clinic-parameter="rcri-score" class="visually-hidden">
-                                <input type="text" clinic-sync="apfel-score" clinic-parameter="apfel-score" class="visually-hidden">
-                                <input type="text" clinic-sync="osmrs-score" clinic-parameter="osmrs-score" class="visually-hidden">
                             </div>
                             <div class="vstack" id="sort-container">
                                 <form id="smart-search">
@@ -655,11 +649,12 @@
                                         </select>
                                     </div>
                                 </label>
+
+                                <span clinic-calculator-interpretation><span clinic-parameter="sort-score"></span>% 30-day mortality</span>
                             </div>
-                            <input type="number" class="visually-hidden" clinic-parameter="sort-score">
 
                         </div>
-
+                        <aside><small>* Intra-peritoneal, intra-thoracic, or supra-inguinal vascular surgery</small></aside>
                     </div>
                 </section>
                 <section id="plan">
@@ -669,7 +664,7 @@
                         <button tabindex="2" class="section-copy">Copy</button>
                     </div>
                     <div class="vstack">
-                        <div class="input hstack">
+                        <div class="hstack">
                             <div class="vstack">
                                 <label>
                                     Key Issues
@@ -692,7 +687,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input vstack">
+                        <div class="vstack">
                             <label>
                                 Medications and Fasting
                                 <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="medication" clinic-search="Medication and Fasting Plan" class="bigbox short"></textarea>
