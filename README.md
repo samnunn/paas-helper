@@ -8,7 +8,6 @@ This is a little web app to help perioperative doctors get through their clinic 
     - STOP-BANG
     - SORT Score
 - **Archiving functionality** to download a nice little markdown summary of your appointment
-- **Deep links** to commonly-used clinical applications (UMRN required)
 
 There are also some smarts about piping demographic and anthropometric data into score calculators automatically. Everything is done locally, on-device.
 
@@ -26,14 +25,11 @@ To speed things along, I re-implemented the score to run inside the browser tab 
 - [Protopapa KL, Simpson JC, Smith NC, Moonesinghe SR. Development and validation of the Surgical Outcome Risk Tool (SORT). Br J Surg. 2014 Dec;101(13):1774-83. doi: 10.1002/bjs.9638. PMID: 25388883; PMCID: PMC4240514.](https://doi.org/10.1002/bjs.9638)
 
 ## Open Source
-Gas Notes Clinic is released under the [MIT License](LICENSE.txt). This software makes use of these open source projects:
+Gas Notes: Clinic Helper is released under the [MIT License](LICENSE.txt). This software was made with the help of these open source projects:
 
-- [Flask](https://flask.palletsprojects.com) (BSD-3-Clause License)
 - [SORTWebCalc_dev](https://github.com/dannyjnwong/SORTWebCalc_dev) (MIT License)
 - [fuzzysort](https://github.com/farzher/fuzzysort?tab=readme-ov-file)
-- [pyenv](https://github.com/pyenv/pyenv) (MIT License)
-- [pipenv](https://github.com/pypa/pipenv) (MIT License)
-- [Homebrew](https://github.com/Homebrew/brew) (BSD-2-Clause License)
+- [Feather Icons](https://feathericons.com/) (MIT License)
 
 And these closed-source ones:
 
