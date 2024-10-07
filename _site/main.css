@@ -41,6 +41,36 @@ hr {
     border-radius: 0.5rem;
     padding: 0.75rem 1rem 1rem 1rem;
 }
+.invisible-link {
+    text-decoration: none;
+    color: black;
+}
+
+/* TITLE */
+#site-title {
+    /* background-color: var(--colour-blue); */
+    border-radius: 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0;
+    flex-direction: column;
+    h2 {
+        margin: 0;
+        padding: 0;
+        /* color: white; */
+        font-size: 1.5rem;
+        &::before {
+            content: "Gas Notes 😴";
+            display: block;
+        }
+    }
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}
 
 /* LAYOUT */
 section {
@@ -235,15 +265,11 @@ footer {
     margin: 1.5rem 0 1.5rem 0;
 }
 
-/* verbose because `issues:has(ul:empty)` doesn't work in Safari */
-/* temporarily removed */
-/* [clinic-suggestions-target] {
+/* hide suggestions box when there are none */
+/* bit of an ugly selector, sigh */
+#warnings-container:not(:has(li:not(.issue-pill))) {
     display: none;
-    & 
 }
-[clinic-suggestions-target]:has(li) {
-    display: flex;
-} */
 #warnings {
     #anonymous-suggestions {
         display: none;
@@ -466,7 +492,7 @@ dialog {
 /* TABBED UI */
 #tab-box {
     display: grid;
-    grid-template-columns: minmax(11rem, auto) 1fr;
+    grid-template-columns: minmax(10rem, auto) 1fr;
     gap: 1rem;
 }
 
@@ -555,6 +581,15 @@ dialog {
 }
 
 @media (max-width: 800px) {
+    #site-title {
+        margin: 1rem 0 0 0;
+        h2::before {
+            content: "😴";
+        }
+        p {
+            display: none;
+        }
+    }
     #tab-box {
         h4 {
             display: none;

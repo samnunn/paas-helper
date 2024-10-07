@@ -12,23 +12,13 @@
 <body>
         <div class="wrapped" id="tab-box">
             <nav id="tab-picker">
+                <a href="https://gasnotes.net" class="invisible-link">
+                    <div id="site-title">
+                        <h2></h2>
+                        <p>Clinic Helper</p>
+                    </div>
+                </a>
                 <ul>
-                    <h4>Tools</h4>
-                    <hr>
-                    <li title="Quick-Add (⌘B)" role="button" id="quick-add-button">
-                        <span class="icon"><img src="/icons/colour_zap.svg"></span>
-                        <span class="left">Quick-Add</span>
-                        <span class="right">⌘B</span>
-                    </li>
-                    <li title="Quick-Find ⌘K" role="button" id="quick-find-button">
-                        <span class="icon"><img src="/icons/colour_search.svg"></span>
-                        <span class="left">Quick-Find</span>
-                        <span class="right">⌘K</span>
-                    </li>
-                    <!-- <li title="Text Snippets" role="button">
-                        <span class="icon"><img src="/icons/colour_edit.svg"></span>
-                        <span class="left">Text Snippets</span>
-                    </li> -->
                     <h4>Note</h4>
                     <hr>
                     <li title="Patient Details" role="button" scroll-target="details">
@@ -55,24 +45,62 @@
                         <span class="icon"><img src="/icons/colour_pen_tool.svg"></span>
                         <span class="left">Consent</span>
                     </li>
-                    <li title="Risk Assessment" role="button" scroll-target="risk">
+                    <li title="Risk Profile" role="button" scroll-target="risk">
                         <span class="icon"><img src="/icons/colour_life_buoy.svg"></span>
-                        <span class="left">Risk Assessment</span>
+                        <span class="left">Risk Profile</span>
                         <!-- <span class="right"><div class="status-dot blank"></div></span> -->
                     </li>
                     <li title="Plan" role="button" scroll-target="plan">
                         <span class="icon"><img src="/icons/colour_check_circle.svg"></span>
                         <span class="left">Plan</span>
                     </li>
-                    <h4>Export</h4>
+                    <h4>Tools</h4>
                     <hr>
+                    <li title="Quick-Add (⌘B)" role="button" id="quick-add-button">
+                        <span class="icon"><img src="/icons/colour_zap.svg"></span>
+                        <span class="left">Quick-Add</span>
+                        <span class="right">⌘B</span>
+                    </li>
+                    <li title="Quick-Find (⌘K)" role="button" id="quick-find-button">
+                        <span class="icon"><img src="/icons/colour_search.svg"></span>
+                        <span class="left">Quick-Find</span>
+                        <span class="right">⌘K</span>
+                    </li>
+                    <!-- <li title="Text Snippets" role="button">
+                        <span class="icon"><img src="/icons/colour_edit.svg"></span>
+                        <span class="left">Text Snippets</span>
+                    </li> -->
                     <li id="download" title="Download" role="button">
-                        <span class="icon"><img src="/icons/download.svg"></span>
-                        <span class="left">Download Note</span>
+                        <span class="icon"><img src="/icons/colour_arrow_down_circle.svg"></span>
+                        <span class="left">Download</span>
                     </li>
                     <li id="reset" title="Reset" role="button">
-                        <span class="icon"><img src="/icons/refresh-ccw.svg"></span>
+                        <span class="icon"><img src="/icons/x_octagon.svg"></span>
                         <span class="left">Reset</span>
+                    </li>
+                    <h4>About</h4>
+                    <hr>
+                    <a class="invisible-link" href="https://nunn.science">
+                        <li title="Link to Sam Nunn's website" role="button">
+                            <span class="icon"><img src="/icons/propeller_hat.svg"></span>
+                            <span class="left">Made by Sam</span>
+                        </li>
+                    </a>
+                    <a class="invisible-link" href="https://github.com/samnunn/gasnotes-clinic">
+                        <li title="Link to this tool's source code on GitHub" role="button">
+                            <span class="icon"><img src="/icons/github-mark.svg"></span>
+                            <span class="left">Source Code</span>
+                        </li>
+                    </a>
+                    <!-- <a href="https://github.com/samnunn/gasnotes-clinic/blob/main/LICENSE.txt">
+                        <li title="Link to this tool's MIT license" role="button">
+                            <span class="icon"><img src="/icons/github-mark.svg"></span>
+                            <span class="left">License</span>
+                        </li>
+                    </a> -->
+                    <li title="Link to this tool's MIT license" onclick="welcomeDialog.showModal()" role="button">
+                        <span class="icon"><img src="/icons/colour_edit.svg"></span>
+                        <span class="left">Terms</span>
                     </li>
                 </ul>
             </nav>
@@ -81,7 +109,7 @@
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_bookmark.svg">
                         <h2>Patient Details</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="vstack">
                         <div class="hstack">
@@ -122,7 +150,7 @@
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_heart.svg">
                         <h2>Medical History</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="hstack">
                         <div class="vstack">
@@ -235,7 +263,7 @@
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_pill.svg">
                         <h2>Medication List</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="hstack">
                         <div class="vstack">
@@ -260,7 +288,7 @@
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_gas_mask.svg">
                         <h2>Anaesthetic History</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="hstack">
                         <div class="vstack">
@@ -422,7 +450,7 @@
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_droplet.svg">
                         <h2>Investigations</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="hstack">
                         <div class="vstack">
@@ -478,7 +506,7 @@
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_pen_tool.svg">
                         <h2>Consent</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="hstack">
                         <div class="vstack label-ish">
@@ -504,8 +532,8 @@
                 <section id="risk">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_life_buoy.svg">
-                        <h2>Risk Assessment</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <h2>Risk Profile</h2>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="vstack">
                         <div class="hstack">
@@ -661,7 +689,7 @@
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_check_circle.svg">
                         <h2>Plan</h2>
-                        <button tabindex="2" class="section-copy">Copy</button>
+                        <button tabindex="2" class="section-copy">Copy Text</button>
                     </div>
                     <div class="vstack">
                         <div class="hstack">
@@ -675,7 +703,7 @@
                                     <textarea autocomplete="off" autocapitalize="off" spellcheck="false" id="" clinic-parameter="plan" clinic-search="Anaesthetic Plan" clinic-sync="plan" class="bigbox short autotall"></textarea>
                                 </label>
                             </div>
-                            <div class="vstack">
+                            <div class="vstack" id="warnings-container">
                                 <div class="label-ish">
                                     Smart Suggestions ✨
                                     <div id="warnings">
@@ -696,7 +724,7 @@
                     </div>
                 </section>
                 <footer id="footer">
-                    <p>© <a href="http://nunn.science">Samuel Nunn</a>. Check out the source code <a href="https://github.com/samnunn/gasnotes-clinic">on GitHub.</a> By using this software, you accept the <a href="#footer" onclick="welcomeDialog.showModal()">terms of use</a>.</p>
+                    <p style="text-align: center;">By using this software, you accept the <a href="#footer" onclick="welcomeDialog.showModal()">terms of use</a>.</p>
                 </footer>
             </div>
         </div>
@@ -712,7 +740,7 @@
                 <p>All computations, scores, and data-processing happen on-device. As long as you use this on a work-approved computer, your data is safe.</p>
                 <h2>Responsiblity ⚖️</h2>
                 <p>All efforts have been made to ensure that Clinic Helper won't steer you wrong, but <strong>you are still the doctor</strong>. You are responsible for double-checking your work and treating your own patients.</p>
-                <p>This software is proudly provided free of charge under the <a href="https://github.com/samnunn/gasnotes-clinic/blob/main/LICENSE.txt">MIT License</a>. By using this software, you accept all such liability disclaimed in that license.</p>
+                <p>This software is proudly provided free of charge under the <a href="https://github.com/samnunn/gasnotes-clinic/blob/main/LICENSE.txt">MIT License</a>, which you must accept before using it.</p>
             </div>
             <h3>Do you accept these terms?</h3>
             <div id="buttons">
