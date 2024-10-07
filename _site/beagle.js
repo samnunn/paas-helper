@@ -186,8 +186,8 @@ let boneData = [
             (inputData) => parseInt(inputData['apfel-score']) > 0,
         ],
         defaultSuggestions: [
-            "Minimise use of nitrous oxide, volatile anaesthetics, and high-dose neostigmine",
-            "Utilise regional anaesthesia if possible",
+            // "Minimise use of nitrous oxide, volatile anaesthetics, and high-dose neostigmine",
+            // "Utilise regional anaesthesia if possible",
             "Maximise opioid-sparing analgesia",
         ],
         conditionalSuggestions: [
