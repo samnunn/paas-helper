@@ -26,9 +26,13 @@ let cachedAssetPaths = [
     'icons/colour_droplet.svg',
     'icons/colour_pen_tool.svg',
     'icons/colour_life_buoy.svg',
+    'icons/colour_pill.svg',
     'icons/colour_check_circle.svg',
-    'icons/download.svg',
-    'icons/refresh-ccw.svg',
+    'icons/colour_arrow_down_circle.svg',
+    'icons/x_octagon.svg',
+    'icons/colour_edit.svg',
+    'icons/propeller_hat.svg',
+    'icons/github-mark.svg',
     'clinic_data_safety.svg',
 ]
 
