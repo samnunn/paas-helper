@@ -1,4 +1,4 @@
-let version = "11"
+let version = "12"
 
 let cacheName = `v${version}_data`
 
@@ -35,6 +35,9 @@ let cachedAssetPaths = [
     'icons/github-mark.svg',
     'clinic_data_safety.svg',
     'propofol_molecule.svg',
+    'icons/arrow_up.svg',
+    'icons/arrow_down.svg',
+    'icons/arrow_down_left.svg',
 ]
 
 // install (pre-activation) event
