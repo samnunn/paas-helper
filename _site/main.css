@@ -13,6 +13,8 @@
     transition: all 200ms ease;
 }
 body {
+    /* prevent unhelpful bounce scrolling */
+    overscroll-behavior: none;
     font-family: sans-serif;
     margin: 0;
     padding: 0;
