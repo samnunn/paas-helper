@@ -18,6 +18,7 @@ body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
+    background-color: var(--colour-blue);
 }
 h4 {
     margin: 0.5rem 0 0.25rem 0;
@@ -56,7 +57,7 @@ hr {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 2rem 0;
+    margin: 0.5rem 0 1rem 0;
     flex-direction: column;
     h2 {
         margin: 0;
@@ -74,27 +75,21 @@ hr {
     }
 }
 
-/* LAYOUT */
-section {
-    /* display: grid; */
-    /* grid-template-columns: 0.55fr 0.45fr; */
-    /* grid-template-columns: repeat(auto-fit, minmax(0%, 1fr)); */
-    /* grid-template-areas:
-        "head head"
-        "input output";
-    gap: 1rem; */
+.island {
+    background-color: white;
     background: linear-gradient(140deg, color-mix(in oklab, var(--colour-darkgrey) 2.5%, white) 0%, color-mix(in oklab, var(--colour-darkgrey) 5%, white) 100%);
-    margin: 2rem 0 1rem 0;
-    width: 100%;
-    max-width: 100%;
     padding: 1rem;
     border-radius: 1rem;
-    background-color: white;
-    /* border-color: color-mix(in oklab, var(--colour-darkgrey) 25%, white); */
-    transform: scale(0.995);
-    border: 1px solid transparent;
     box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
-    /* background-color: color-mix(in oklab, var(--colour-lightgrey) 98%, black); */
+    border: 1px solid transparent;
+}
+
+/* LAYOUT */
+section {
+    margin: 1rem 0 1rem 0;
+    width: 100%;
+    max-width: 100%;
+    transform: scale(0.995);
     
     overflow: hidden;
 
@@ -173,7 +168,7 @@ section:focus-within, section:active {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    color: var(--colour-middlegrey);
+    color: var(--colour-darkgrey);
     font-size: 1rem;
 }
 input[type="text"], input[type="search"], input[type="number"], input[type="search"], textarea, .selectbox {
@@ -446,10 +441,6 @@ dialog {
     #quick-find-results {
         grid-template-columns: 1fr;
         margin: 0;
-
-        li[selected="true"] {
-            background-color: red;
-        }
     }
     #quick-find-results:has(li) {
         margin-top: 1rem;
@@ -500,12 +491,15 @@ dialog {
 
 #tab-picker {
     position: sticky;
-    top: 0;
+    top: 1rem;
+    margin: 1rem 0 0 0;
+    padding: 1rem 0.75rem !important;
     /* prevent #tab-picker from growing vertically */
     block-size: min-content; 
 
     ul {
         padding: 0;
+        margin: 0;
 
         li {
             user-select: none;
@@ -517,7 +511,7 @@ dialog {
             gap: 0.55rem;
 
             margin: 0 0 0.25rem 0;
-            padding: 0.5rem 0.55rem;
+            padding: 0.5rem 0.6rem;
             border-radius: 0.5rem;
 
             background-color: none;
@@ -551,10 +545,10 @@ dialog {
             }
         }
         li:hover:not([aria-selected="true"]) {
-            background-color: var(--colour-lightgrey);
+            background-color: color-mix(in oklab, black, var(--colour-lightgrey) 90%);
         }
         li:active:not([aria-selected="true"]) {
-            background-color: color-mix(in oklab, black, var(--colour-lightgrey) 90%);
+            background-color: color-mix(in oklab, black, var(--colour-lightgrey) 80%);
         }
     }
 }

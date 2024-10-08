@@ -11,7 +11,8 @@
 </head>
 <body>
         <div class="wrapped" id="tab-box">
-            <nav id="tab-picker">
+            <img id="secret-propofol" src="/propofol_molecule.svg" alt="">
+            <nav class="island" id="tab-picker">
                 <a href="https://gasnotes.net" class="invisible-link">
                     <div id="site-title">
                         <h2></h2>
@@ -105,7 +106,7 @@
                 </ul>
             </nav>
             <div id="tab-display">
-                <section id="details">
+                <section class="island" id="details">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_bookmark.svg">
                         <h2>Patient Details</h2>
@@ -146,7 +147,7 @@
                         </div>
                     </div>
                 </section>
-                <section id="medicalhx">
+                <section class="island" id="medicalhx">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_heart.svg">
                         <h2>Medical History</h2>
@@ -259,7 +260,7 @@
 
                     </div>
                 </section>
-                <section id="rx">
+                <section class="island" id="rx">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_pill.svg">
                         <h2>Medication List</h2>
@@ -284,7 +285,7 @@
                         </div>
                     </div>
                 </section>
-                <section id="gashx">
+                <section class="island" id="gashx">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_gas_mask.svg">
                         <h2>Anaesthetic History</h2>
@@ -446,7 +447,7 @@
 
                     </div>
                 </section>
-                <section id="ix">
+                <section class="island" id="ix">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_droplet.svg">
                         <h2>Investigations</h2>
@@ -502,7 +503,7 @@
 
                     </div>
                 </section>
-                <section id="consent">
+                <section class="island" id="consent">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_pen_tool.svg">
                         <h2>Consent</h2>
@@ -529,7 +530,7 @@
                         
                     </div>
                 </section>
-                <section id="risk">
+                <section class="island" id="risk">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_life_buoy.svg">
                         <h2>Risk Profile</h2>
@@ -575,6 +576,7 @@
                                         <p type="text" clinic-calculator-interpretation clinic-parameter="apfel-interpretation"></p>
                                     </div>
                                 </label>
+                                <aside><small>* Peritoneal, thoracic, or supra-inguinal vascular surgery</small></aside>
                             </div>
                             <div class="vstack" id="sort-container">
                                 <form id="smart-search">
@@ -682,10 +684,9 @@
                             </div>
 
                         </div>
-                        <aside><small>* Intra-peritoneal, intra-thoracic, or supra-inguinal vascular surgery</small></aside>
                     </div>
                 </section>
-                <section id="plan">
+                <section class="island" id="plan">
                     <div class="section-topper">
                         <img class="icon" src="/icons/colour_check_circle.svg">
                         <h2>Plan</h2>
@@ -723,9 +724,9 @@
                         </div>
                     </div>
                 </section>
-                <footer id="footer">
+                <!-- <footer id="footer">
                     <p style="text-align: center;">By using this software, you accept the <a href="#footer" onclick="welcomeDialog.showModal()">terms of use</a>.</p>
-                </footer>
+                </footer> -->
             </div>
         </div>
         <dialog id="big-welcome">
