@@ -20,9 +20,6 @@ body {
     padding: 0;
     background-color: var(--colour-blue);
 }
-h4 {
-    margin: 0.5rem 0 0.25rem 0;
-}
 hr {
     outline: none;
     border: none;
@@ -57,13 +54,13 @@ hr {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0.5rem 0 1rem 0;
+    margin: 0.25rem 0 0.75rem 0;
     flex-direction: column;
     h2 {
         margin: 0;
         padding: 0;
         /* color: white; */
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         &::before {
             content: "Gas Notes 😴";
             display: block;
@@ -168,7 +165,7 @@ section:focus-within, section:active {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    color: var(--colour-darkgrey);
+    color: black;
     font-size: 1rem;
 }
 input[type="text"], input[type="search"], input[type="number"], input[type="search"], textarea, .selectbox {
@@ -502,7 +499,10 @@ dialog {
     ul {
         padding: 0;
         margin: 0;
-
+        
+        h4 {
+            margin: 0.5rem 0 0.25rem 0.35rem;
+        }
         li {
             user-select: none;
             list-style: none;
@@ -513,7 +513,7 @@ dialog {
             gap: 0.55rem;
 
             margin: 0 0 0.25rem 0;
-            padding: 0.5rem 0.7rem 0.5rem 0.6rem;
+            padding: 0.5rem 0.6rem 0.5rem 0.6rem;
             border-radius: 0.5rem;
 
             background-color: none;
@@ -580,7 +580,7 @@ dialog {
 
 @media (max-width: 800px) {
     #site-title {
-        margin: 1rem 0 0 0;
+        margin: 0;
         h2::before {
             content: "😴";
         }
@@ -604,6 +604,16 @@ dialog {
 
     .icon {
         margin-right: 0 !important;
+    }
+}
+
+@media (max-width: 600px) {
+    section .hstack {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+    .autotall {
+        min-height: 10rem;
     }
 }
 
