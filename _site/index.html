@@ -539,7 +539,7 @@
                     <div class="vstack">
                         <div class="hstack">
                             <div class="vstack">
-                                <label clinic-calculator clinic-interpreter="stopbang">
+                                <div class="label-ish" clinic-calculator clinic-interpreter="stopbang">
                                     <span>STOP-BANG (<span clinic-calculator-output clinic-parameter="stopbang-score"></span>/8)</span> 
                                     <div clinic-search="STOP-BANG Calculator">
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="snorer">Snorer</label>
@@ -553,8 +553,8 @@
                                         
                                         <p type="text" clinic-calculator-interpretation clinic-parameter="stopbang-interpretation"></p>
                                     </div>
-                                </label>
-                                <label clinic-calculator clinic-interpreter="rcri">
+                                </div>
+                                <div class="label-ish" clinic-calculator clinic-interpreter="rcri">
                                     <span>RCRI (<span clinic-calculator-output clinic-parameter="rcri-score"></span>/6)</span>
                                     <div clinic-search="RCRI Calculator">
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-risky" autocomplete="off" id="">Elevated Risk*</label>
@@ -565,8 +565,8 @@
                                         <label><input type="checkbox" tabindex=0 clinic-parameter="rcri-creatinine" autocomplete="off">Cr > 176.8 µmol/L</label>
                                         <p type="text" clinic-calculator-interpretation clinic-parameter="rcri-interpretation"></p>
                                     </div>
-                                </label>
-                                <label clinic-calculator clinic-interpreter="apfel">
+                                </div>
+                                <div class="label-ish" clinic-calculator clinic-interpreter="apfel">
                                     <span>Apfel (<span clinic-calculator-output clinic-parameter="apfel-score"></span>/4)</span>
                                     <div clinic-search="Apfel Calculator">
                                         <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-sex" id="apfel-sex">Female</label>
@@ -575,7 +575,7 @@
                                         <label><input type="checkbox" tabindex=0 autocomplete="off" clinic-parameter="apfel-opioids">Postop opioids</label>
                                         <p type="text" clinic-calculator-interpretation clinic-parameter="apfel-interpretation"></p>
                                     </div>
-                                </label>
+                                </div>
                                 <aside><small>* Peritoneal, thoracic, or supra-inguinal vascular surgery</small></aside>
                             </div>
                             <div class="vstack" id="sort-container">

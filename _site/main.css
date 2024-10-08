@@ -213,6 +213,8 @@ label:has(>input[type="checkbox"]) {
     flex-direction: row;
     align-items: center;
     color: black;
+    /* prevent labels from taking up random whitespace over to the right */
+    width: max-content;
 }
 
 [clinic-calculator-interpretation] {
@@ -511,7 +513,7 @@ dialog {
             gap: 0.55rem;
 
             margin: 0 0 0.25rem 0;
-            padding: 0.5rem 0.6rem;
+            padding: 0.5rem 0.7rem 0.5rem 0.6rem;
             border-radius: 0.5rem;
 
             background-color: none;
