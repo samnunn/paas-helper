@@ -48,6 +48,7 @@ hr {
 
 /* TITLE */
 #site-title {
+    transition: none;
     /* background-color: var(--colour-blue); */
     border-radius: 0.5rem;
     width: 100%;
@@ -56,10 +57,10 @@ hr {
     align-items: center;
     margin: 0.25rem 0 0.75rem 0;
     flex-direction: column;
-    h2 {
+    image-rendering: pixelated;
+    /* h2 {
         margin: 0;
         padding: 0;
-        /* color: white; */
         font-size: 1.3rem;
         &::before {
             content: "Gas Notes 😴";
@@ -69,7 +70,17 @@ hr {
     p {
         margin: 0;
         font-size: 1rem;
+    } */
+    p {
+        font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin: 1rem 0 0 0;
     }
+    img {
+        width: 40%;
+    }
+
 }
 
 .island {
@@ -587,11 +598,15 @@ dialog {
 @media (max-width: 800px) {
     #site-title {
         margin: 0;
-        h2::before {
+        /* h2::before {
             content: "😴";
-        }
+        } */
         p {
             display: none;
+        }
+        img {
+            width: 75%;
+            margin-bottom: 1rem;
         }
     }
     #tab-box {

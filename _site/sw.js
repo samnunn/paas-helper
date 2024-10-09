@@ -1,4 +1,4 @@
-let version = "12"
+let version = "13"
 
 let cacheName = `v${version}_data`
 
@@ -38,6 +38,7 @@ let cachedAssetPaths = [
     'icons/arrow_up.svg',
     'icons/arrow_down.svg',
     'icons/arrow_down_left.svg',
+    'icons/gasper.png',
 ]
 
 // install (pre-activation) event
